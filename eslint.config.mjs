@@ -1,6 +1,7 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
+import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
   { ignores: ['**/dist/**', '**/build/**', '**/.expo/**', '**/coverage/**', '**/node_modules/**'] },
@@ -18,7 +19,10 @@ export default tseslint.config(
     },
   },
   {
+    // React Native runs in JS engines that are neither pure browser nor pure node.
+    // Browser globals are the closest match; node-specific globals are rarely needed in app code.
     files: ['apps/mobile/**/*.{ts,tsx}'],
     languageOptions: { globals: { ...globals.browser } },
   },
+  prettier,
 );
