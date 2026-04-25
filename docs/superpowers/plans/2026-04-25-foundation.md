@@ -56,6 +56,7 @@ smartroute/
 ```
 
 **File responsibilities:**
+
 - `apps/backend/src/server.ts` — exports a `buildServer()` factory so tests can `inject()` requests without binding a port. No top-level side-effects.
 - `apps/backend/src/index.ts` — calls `buildServer()` and `.listen()`. Single entrypoint for runtime, never imported by tests.
 - `apps/backend/src/routes/*.ts` — each route in its own file, registered in `server.ts`. Keeps `server.ts` short.
@@ -66,6 +67,7 @@ smartroute/
 ## Prerequisites Check
 
 Before starting, verify:
+
 - Node 22+ installed (`node --version`)
 - pnpm installed (`pnpm --version` — if missing: `npm i -g pnpm`)
 - Docker running (`docker --version` and `docker info`)
@@ -77,6 +79,7 @@ Before starting, verify:
 ## Task 1: Root package.json + pnpm workspace
 
 **Files:**
+
 - Create: `package.json`
 - Create: `pnpm-workspace.yaml`
 - Create: `.nvmrc`
@@ -85,8 +88,8 @@ Before starting, verify:
 
 ```yaml
 packages:
-  - "apps/*"
-  - "packages/*"
+  - 'apps/*'
+  - 'packages/*'
 ```
 
 - [ ] **Step 2: Create `.nvmrc`**
@@ -142,6 +145,7 @@ git commit -m "chore: initialize pnpm monorepo root"
 ## Task 2: .gitignore + .editorconfig
 
 **Files:**
+
 - Create: `.gitignore`
 - Create: `.editorconfig`
 
@@ -213,6 +217,7 @@ git commit -m "chore: add gitignore and editorconfig"
 ## Task 3: Prettier config
 
 **Files:**
+
 - Create: `.prettierrc.json`
 - Create: `.prettierignore`
 
@@ -259,6 +264,7 @@ git commit -m "chore: add prettier config"
 ## Task 4: ESLint flat config
 
 **Files:**
+
 - Create: `eslint.config.mjs`
 
 - [ ] **Step 1: Create `eslint.config.mjs`**
@@ -312,6 +318,7 @@ git commit -m "chore: add eslint flat config"
 ## Task 5: Root TypeScript base config
 
 **Files:**
+
 - Create: `tsconfig.base.json`
 
 - [ ] **Step 1: Create `tsconfig.base.json`**
@@ -352,6 +359,7 @@ git commit -m "chore: add shared TypeScript base config"
 ## Task 6: packages/shared scaffold
 
 **Files:**
+
 - Create: `packages/shared/package.json`
 - Create: `packages/shared/tsconfig.json`
 - Create: `packages/shared/src/index.ts`
@@ -417,6 +425,7 @@ git commit -m "feat(shared): scaffold @smartroute/shared package"
 ## Task 7: Backend scaffold with /health route (TDD)
 
 **Files:**
+
 - Create: `apps/backend/package.json`
 - Create: `apps/backend/tsconfig.json`
 - Create: `apps/backend/vitest.config.ts`
@@ -592,6 +601,7 @@ git commit -m "feat(backend): scaffold Fastify server with /health route"
 ## Task 8: Docker Compose for Postgres + .env
 
 **Files:**
+
 - Create: `docker-compose.yml`
 - Create: `.env.example`
 
@@ -608,11 +618,11 @@ services:
       POSTGRES_PASSWORD: smartroute_dev
       POSTGRES_DB: smartroute
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U smartroute -d smartroute"]
+      test: ['CMD-SHELL', 'pg_isready -U smartroute -d smartroute']
       interval: 5s
       timeout: 3s
       retries: 5
@@ -667,6 +677,7 @@ git commit -m "chore: add Docker Compose for local Postgres 16"
 ## Task 9: Prisma init + initial schema (TDD via migrate)
 
 **Files:**
+
 - Create: `apps/backend/prisma/schema.prisma`
 - Modify: `apps/backend/package.json` (add prisma dep + scripts)
 
@@ -780,6 +791,7 @@ git commit -m "feat(backend): add Prisma schema with Trip, FlightPriceCache, Cit
 ## Task 10: Mobile app scaffold (Expo TypeScript)
 
 **Files:**
+
 - Create: `apps/mobile/package.json`
 - Create: `apps/mobile/tsconfig.json`
 - Create: `apps/mobile/app.json`
@@ -852,7 +864,10 @@ git commit -m "feat(backend): add Prisma schema with Trip, FlightPriceCache, Cit
       "backgroundColor": "#ffffff"
     },
     "ios": { "supportsTablet": false, "bundleIdentifier": "com.smartroute.app" },
-    "android": { "package": "com.smartroute.app", "adaptiveIcon": { "backgroundColor": "#ffffff" } },
+    "android": {
+      "package": "com.smartroute.app",
+      "adaptiveIcon": { "backgroundColor": "#ffffff" }
+    },
     "assetBundlePatterns": ["**/*"]
   }
 }
@@ -936,6 +951,7 @@ git commit -m "feat(mobile): scaffold Expo app importing @smartroute/shared"
 ## Task 11: GitHub Actions CI
 
 **Files:**
+
 - Create: `.github/workflows/ci.yml`
 
 - [ ] **Step 1: Create `.github/workflows/ci.yml`**
@@ -1050,6 +1066,7 @@ Expected: every step exits 0. If any fails, fix and re-run before considering th
 ## Task 12: README
 
 **Files:**
+
 - Create: `README.md`
 
 - [ ] **Step 1: Create `README.md`**

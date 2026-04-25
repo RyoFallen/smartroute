@@ -34,14 +34,14 @@ This is a **shippable real product**, not a thesis demo. Polish and time-to-laun
 
 ## 3. Product Decisions Locked In
 
-| Decision | Choice |
-|---|---|
-| Primary value prop | Cheapest / best-value city ordering with multi-objective tradeoffs |
-| Platform V1 | Mobile-only (iOS + Android via Expo) |
-| Definition of "best" | Multi-objective composite: cost + time + directness, surface top-K options |
-| City cap | 2–8 cities per trip (brute-force search, no GA needed) |
-| V1 features | Auth + saved trips + route map + the optimizer |
-| Architecture approach | Pragmatic hybrid (Approach 3 from brainstorming) |
+| Decision              | Choice                                                                     |
+| --------------------- | -------------------------------------------------------------------------- |
+| Primary value prop    | Cheapest / best-value city ordering with multi-objective tradeoffs         |
+| Platform V1           | Mobile-only (iOS + Android via Expo)                                       |
+| Definition of "best"  | Multi-objective composite: cost + time + directness, surface top-K options |
+| City cap              | 2–8 cities per trip (brute-force search, no GA needed)                     |
+| V1 features           | Auth + saved trips + route map + the optimizer                             |
+| Architecture approach | Pragmatic hybrid (Approach 3 from brainstorming)                           |
 
 ## 4. Architecture
 
@@ -76,20 +76,20 @@ This is a **shippable real product**, not a thesis demo. Polish and time-to-laun
 
 ### Stack
 
-| Layer | Choice | Why |
-|---|---|---|
-| Mobile | React Native + Expo (latest SDK), TypeScript | Cross-platform, strong DX, EAS build pipeline |
-| State (mobile) | Zustand for app state, TanStack Query for server state | Spec-aligned; simpler than Redux |
-| Backend | Node 22 + Fastify + TypeScript | Modern alternative to Express; native Zod integration |
-| ORM | Prisma | Best-in-class DX, well-documented |
-| DB | Neon (managed Postgres 16) | Serverless, free tier, branching for dev |
-| Auth | Clerk (managed) | Saves 1–2 weeks of auth code; free under 10k MAU |
-| Hosting | Fly.io | Cheap (~$5/mo), full control |
-| Maps | MapLibre GL Native | OSS, no API key needed |
-| Observability | Sentry (mobile + backend); Pino logs | Industry standard |
-| Validation | Zod everywhere | Single source of truth for shapes |
-| Tests | Vitest + Postgres test container + RNTL | Fast, accurate to prod |
-| CI | GitHub Actions | Lint + typecheck + test on every push |
+| Layer          | Choice                                                 | Why                                                   |
+| -------------- | ------------------------------------------------------ | ----------------------------------------------------- |
+| Mobile         | React Native + Expo (latest SDK), TypeScript           | Cross-platform, strong DX, EAS build pipeline         |
+| State (mobile) | Zustand for app state, TanStack Query for server state | Spec-aligned; simpler than Redux                      |
+| Backend        | Node 22 + Fastify + TypeScript                         | Modern alternative to Express; native Zod integration |
+| ORM            | Prisma                                                 | Best-in-class DX, well-documented                     |
+| DB             | Neon (managed Postgres 16)                             | Serverless, free tier, branching for dev              |
+| Auth           | Clerk (managed)                                        | Saves 1–2 weeks of auth code; free under 10k MAU      |
+| Hosting        | Fly.io                                                 | Cheap (~$5/mo), full control                          |
+| Maps           | MapLibre GL Native                                     | OSS, no API key needed                                |
+| Observability  | Sentry (mobile + backend); Pino logs                   | Industry standard                                     |
+| Validation     | Zod everywhere                                         | Single source of truth for shapes                     |
+| Tests          | Vitest + Postgres test container + RNTL                | Fast, accurate to prod                                |
+| CI             | GitHub Actions                                         | Lint + typecheck + test on every push                 |
 
 ### Repository Structure
 
@@ -207,6 +207,7 @@ model City {
 ```
 
 Key choices:
+
 - **No `User` table.** Clerk owns identity; we hold its user ID as a string FK. If app-specific user fields appear later, add a `UserProfile` keyed by Clerk's ID.
 - **`flights` is JSONB snapshot.** A saved trip is read-only history. JSONB lets the schema evolve without migrations.
 - **`City` is seeded** with ~500 popular IATA airports/cities. The picker queries this table; no flight-API call needed for autosuggest.
@@ -214,6 +215,7 @@ Key choices:
 ### 5.4 Shared package
 
 `packages/shared` exports Zod schemas → derived TypeScript types:
+
 - `OptimizeRequest`, `OptimizeResponse`
 - `RouteOption` (label, ordered cities, legs, totalCost, totalDuration, score breakdown)
 - `FlightLeg` (origin, destination, depart, arrive, carrier, priceCents, stops, durationMin)
@@ -248,6 +250,7 @@ Mobile and backend both depend on `shared` so they can't drift on shapes.
 ```
 
 Key choices:
+
 - **Batched pricing after enumeration**, not during. We enumerate first, then collect every distinct triple, then fetch in one batch — drops API calls from O(orderings) to O(unique pairs).
 - **Dedupe** identical winners before responding (e.g., cheapest === fastest is common with few cities).
 - **`directOnly` is a hard filter**, not a score weight; legs with stops are removed before scoring.
@@ -270,17 +273,17 @@ Plain CRUD. `GET /trips` for the user; `GET /trips/:id`; `DELETE /trips/:id`. De
 
 ### 7.1 Taxonomy
 
-| # | Category | Status / Code | UX |
-|---|---|---|---|
-| 1 | Validation | 400 `INVALID_INPUT` | Inline form errors |
-| 2 | Auth | 401 `UNAUTHORIZED` | Mobile clears Clerk session, routes to Sign In |
-| 3 | Authorization (other user's trip) | 404 `NOT_FOUND` | Don't leak existence — same as missing |
-| 4 | Not found | 404 `NOT_FOUND` | Standard not-found UI |
-| 5 | Flight API failure | see 7.2 | see 7.2 |
-| 6 | No viable route | 200 `options: []` + reason | Banner suggests relaxing `directOnly` |
-| 7 | Optimizer timeout (>5s) | 200 + `partial: true` | Banner: "showing best so far" |
-| 8 | Network (mobile) | n/a | Toast + retry; TanStack Query auto-retries idempotent GETs |
-| 9 | Server crash / 500 | 500 `INTERNAL_ERROR` | Generic "Something went wrong" + retry; Sentry captures |
+| #   | Category                          | Status / Code              | UX                                                         |
+| --- | --------------------------------- | -------------------------- | ---------------------------------------------------------- |
+| 1   | Validation                        | 400 `INVALID_INPUT`        | Inline form errors                                         |
+| 2   | Auth                              | 401 `UNAUTHORIZED`         | Mobile clears Clerk session, routes to Sign In             |
+| 3   | Authorization (other user's trip) | 404 `NOT_FOUND`            | Don't leak existence — same as missing                     |
+| 4   | Not found                         | 404 `NOT_FOUND`            | Standard not-found UI                                      |
+| 5   | Flight API failure                | see 7.2                    | see 7.2                                                    |
+| 6   | No viable route                   | 200 `options: []` + reason | Banner suggests relaxing `directOnly`                      |
+| 7   | Optimizer timeout (>5s)           | 200 + `partial: true`      | Banner: "showing best so far"                              |
+| 8   | Network (mobile)                  | n/a                        | Toast + retry; TanStack Query auto-retries idempotent GETs |
+| 9   | Server crash / 500                | 500 `INTERNAL_ERROR`       | Generic "Something went wrong" + retry; Sentry captures    |
 
 ### 7.2 Flight API failure modes
 
@@ -295,7 +298,9 @@ Plain CRUD. `GET /trips` for the user; `GET /trips/:id`; `DELETE /trips/:id`. De
   "error": {
     "code": "FLIGHT_API_TIMEOUT",
     "message": "Human-readable, safe to display",
-    "details": { /* validation only */ }
+    "details": {
+      /* validation only */
+    }
   }
 }
 ```
@@ -321,31 +326,33 @@ Sign up and sign in happen between the **mobile client and Clerk directly** via 
 
 ## 8. Testing
 
-| Layer | Tool | What we test |
-|---|---|---|
-| Pure logic (optimizer, scoring, dedupe) | Vitest unit | All branches: ties, single-city, infeasible `directOnly`, partial pricing |
-| Service integration (FlightService) | Vitest + msw | Cache hit, cache miss → API, stale fallback, batching, 429 backoff |
-| API routes | Vitest + Fastify `inject()` | Auth, validation, happy paths |
-| DB layer | Prisma against Postgres test container | Migrations, unique constraints, cascades |
-| Mobile components | React Native Testing Library | Critical screens render with mock data; navigation; form validation |
-| End-to-end (mobile) | Manual QA on Expo dev build | Full optimize → save → reopen flow on a real device |
+| Layer                                   | Tool                                   | What we test                                                              |
+| --------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------- |
+| Pure logic (optimizer, scoring, dedupe) | Vitest unit                            | All branches: ties, single-city, infeasible `directOnly`, partial pricing |
+| Service integration (FlightService)     | Vitest + msw                           | Cache hit, cache miss → API, stale fallback, batching, 429 backoff        |
+| API routes                              | Vitest + Fastify `inject()`            | Auth, validation, happy paths                                             |
+| DB layer                                | Prisma against Postgres test container | Migrations, unique constraints, cascades                                  |
+| Mobile components                       | React Native Testing Library           | Critical screens render with mock data; navigation; form validation       |
+| End-to-end (mobile)                     | Manual QA on Expo dev build            | Full optimize → save → reopen flow on a real device                       |
 
 ### Coverage targets
+
 - Optimizer + scoring: 100% branch.
 - FlightService cache logic: 100% branch.
 - Routes: ≥80% line.
 - Mobile screens: ≥60% line + navigation smoke tests.
 
 ### CI
+
 GitHub Actions on every push: `pnpm install` → `pnpm typecheck` → `pnpm lint` → `pnpm test` (with Postgres service container). No deploy gates in V1.
 
 ## 9. Deferred / Open Questions
 
-| Item | Decision needed by |
-|---|---|
+| Item                                               | Decision needed by                      |
+| -------------------------------------------------- | --------------------------------------- |
 | Flight API vendor (Amadeus / Kiwi / Duffel / etc.) | Before flight-data implementation phase |
-| Mapbox token vs MapLibre tile source | Before map UI implementation phase |
-| App icon, brand name, color palette | Before any App Store submission |
+| Mapbox token vs MapLibre tile source               | Before map UI implementation phase      |
+| App icon, brand name, color palette                | Before any App Store submission         |
 
 ## 10. Out of Scope for V1 (Reiteration)
 
