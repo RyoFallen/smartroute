@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Trip {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  startDate   DateTime
+  endDate     DateTime
+  cabinClass  String
+  travelers   Int
+  cities      String[]
+  flights     Json
+  totalPrice  Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId, createdAt])
+}
+
+model FlightPriceCache {
+  id          String   @id @default(cuid())
+  origin      String
+  destination String
+  departDate  DateTime @db.Date
+  cabinClass  String
+  priceCents  Int
+  durationMin Int
+  stops       Int
+  carrier     String?
+  fetchedAt   DateTime @default(now())
+
+  @@unique([origin, destination, departDate, cabinClass])
+  @@index([fetchedAt])
+}
+
+model City {
+  iata     String  @id
+  name     String
+  country  String
+  lat      Float
+  lon      Float
+  timezone String
+}
