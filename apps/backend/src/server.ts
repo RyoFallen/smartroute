@@ -2,10 +2,18 @@ import Fastify from 'fastify';
 import type { FastifyInstance } from 'fastify';
 import { healthRoute } from './routes/health.route.js';
 import { errorHandlerPlugin } from './plugins/error-handler.js';
+import { prismaPlugin } from './plugins/prisma.js';
 
-export async function buildServer(): Promise<FastifyInstance> {
+export interface BuildOptions {
+  withDb?: boolean;
+}
+
+export async function buildServer(opts: BuildOptions = {}): Promise<FastifyInstance> {
   const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? 'info' } });
   await app.register(errorHandlerPlugin);
+  if (opts.withDb ?? Boolean(process.env.DATABASE_URL)) {
+    await app.register(prismaPlugin);
+  }
   await app.register(healthRoute);
   return app;
 }

@@ -5,5 +5,8 @@ export default defineConfig({
     environment: 'node',
     include: ['tests/**/*.test.ts'],
     globals: false,
+    env: {
+      DATABASE_URL: '',
+    },
   },
 });
