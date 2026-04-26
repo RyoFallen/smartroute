@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import type { FastifyInstance } from 'fastify';
 import { healthRoute } from './routes/health.route.js';
+import { optimizeRoute } from './routes/optimize.route.js';
 import { errorHandlerPlugin } from './plugins/error-handler.js';
 import { prismaPlugin } from './plugins/prisma.js';
 import { authPlugin } from './plugins/auth.js';
@@ -15,6 +16,7 @@ export async function buildServer(opts: BuildOptions = {}): Promise<FastifyInsta
   await app.register(authPlugin);
   if (opts.withDb ?? Boolean(process.env.DATABASE_URL)) {
     await app.register(prismaPlugin);
+    await app.register(optimizeRoute);
   }
   await app.register(healthRoute);
   return app;
