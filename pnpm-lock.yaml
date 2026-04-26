@@ -47,6 +47,9 @@ importers:
       fastify:
         specifier: ^4.28.1
         version: 4.29.1
+      fastify-plugin:
+        specifier: ^4.5.1
+        version: 4.5.1
       zod:
         specifier: ^3.23.8
         version: 3.25.76
@@ -2740,6 +2743,9 @@ packages:
   fast-xml-parser@4.5.6:
     resolution: {integrity: sha512-Yd4vkROfJf8AuJrDIVMVmYfULKmIJszVsMv7Vo71aocsKgFxpdlpSHXSaInvyYfgw2PRuObQSW2GFpVMUjxu9A==}
     hasBin: true
+
+  fastify-plugin@4.5.1:
+    resolution: {integrity: sha512-stRHYGeuqpEZTL1Ef0Ovr2ltazUT9g844X5z/zEBFLG8RYlpDiOCIG+ATvYEp+/zmc7sN29mcIMp8gvYplYPIQ==}
 
   fastify@4.29.1:
     resolution: {integrity: sha512-m2kMNHIG92tSNWv+Z3UeTR9AWLLuo7KctC7mlFPtMEVrfjIhmQhkQnT9v15qA/BfVq3vvj134Y0jl9SBje3jXQ==}
@@ -8477,6 +8483,8 @@ snapshots:
   fast-xml-parser@4.5.6:
     dependencies:
       strnum: 1.1.2
+
+  fastify-plugin@4.5.1: {}
 
   fastify@4.29.1:
     dependencies:
