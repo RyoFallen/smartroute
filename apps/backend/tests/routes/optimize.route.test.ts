@@ -5,9 +5,9 @@ vi.mock('@clerk/backend', () => ({
   createClerkClient: () => ({
     authenticateRequest: vi.fn(async (req: Request) => {
       if (req.headers.get('authorization') === 'Bearer good') {
-        return { isAuthenticated: true, toAuth: () => ({ userId: 'u1' }) };
+        return { isSignedIn: true, toAuth: () => ({ userId: 'u1' }) };
       }
-      return { isAuthenticated: false, toAuth: () => null };
+      return { isSignedIn: false, toAuth: () => null };
     }),
   }),
 }));
@@ -27,7 +27,8 @@ describe('POST /optimize', () => {
   it('400s on invalid input', async () => {
     const app = await buildServer({ withDb: true });
     const res = await app.inject({
-      method: 'POST', url: '/optimize',
+      method: 'POST',
+      url: '/optimize',
       headers: { authorization: 'Bearer good', 'content-type': 'application/json' },
       payload: { cities: ['JFK'] },
     });
@@ -38,7 +39,8 @@ describe('POST /optimize', () => {
   it('returns options on valid input', async () => {
     const app = await buildServer({ withDb: true });
     const res = await app.inject({
-      method: 'POST', url: '/optimize',
+      method: 'POST',
+      url: '/optimize',
       headers: { authorization: 'Bearer good', 'content-type': 'application/json' },
       payload: {
         cities: ['JFK', 'CDG', 'FCO'],

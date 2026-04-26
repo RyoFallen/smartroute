@@ -6,9 +6,9 @@ vi.mock('@clerk/backend', () => ({
     authenticateRequest: vi.fn(async (req: Request) => {
       const auth = req.headers.get('authorization');
       if (auth?.startsWith('Bearer u_')) {
-        return { isAuthenticated: true, toAuth: () => ({ userId: auth.slice(7) }) };
+        return { isSignedIn: true, toAuth: () => ({ userId: auth.slice(7) }) };
       }
-      return { isAuthenticated: false, toAuth: () => null };
+      return { isSignedIn: false, toAuth: () => null };
     }),
   }),
 }));
@@ -21,7 +21,16 @@ const body = {
   travelers: 1,
   cities: ['JFK', 'CDG', 'FCO'],
   flights: [
-    { origin: 'JFK', destination: 'CDG', depart: '2026-06-01T08:00:00.000Z', arrive: '2026-06-01T14:00:00.000Z', carrier: 'AF', priceCents: 50000, durationMin: 360, stops: 0 },
+    {
+      origin: 'JFK',
+      destination: 'CDG',
+      depart: '2026-06-01T08:00:00.000Z',
+      arrive: '2026-06-01T14:00:00.000Z',
+      carrier: 'AF',
+      priceCents: 50000,
+      durationMin: 360,
+      stops: 0,
+    },
   ],
   totalPriceCents: 50000,
 };
@@ -36,7 +45,12 @@ describe('/trips', () => {
     const app = await buildServer({ withDb: true });
     const auth = { authorization: 'Bearer u_alice', 'content-type': 'application/json' };
 
-    const create = await app.inject({ method: 'POST', url: '/trips', headers: auth, payload: body });
+    const create = await app.inject({
+      method: 'POST',
+      url: '/trips',
+      headers: auth,
+      payload: body,
+    });
     expect(create.statusCode).toBe(201);
     const id = create.json().id;
 

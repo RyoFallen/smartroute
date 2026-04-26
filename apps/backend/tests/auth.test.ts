@@ -6,9 +6,9 @@ vi.mock('@clerk/backend', () => ({
     authenticateRequest: vi.fn(async (req: Request) => {
       const auth = req.headers.get('authorization');
       if (auth === 'Bearer good') {
-        return { isAuthenticated: true, toAuth: () => ({ userId: 'user_123' }) };
+        return { isSignedIn: true, toAuth: () => ({ userId: 'user_123' }) };
       }
-      return { isAuthenticated: false, toAuth: () => null };
+      return { isSignedIn: false, toAuth: () => null };
     }),
   }),
 }));

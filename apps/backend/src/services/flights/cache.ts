@@ -4,7 +4,12 @@ import type { PriceQuery, PriceResult } from './provider.js';
 
 export type CacheKey = string;
 
-export function keyOf(q: { origin: string; destination: string; departDate: string; cabinClass: CabinClass }): CacheKey {
+export function keyOf(q: {
+  origin: string;
+  destination: string;
+  departDate: string;
+  cabinClass: CabinClass;
+}): CacheKey {
   return `${q.origin}|${q.destination}|${q.departDate}|${q.cabinClass}`;
 }
 
@@ -15,7 +20,10 @@ export interface LookupOptions {
 export class PriceCache {
   constructor(private readonly db: PrismaClient) {}
 
-  async lookup(queries: PriceQuery[], opts: LookupOptions = {}): Promise<Map<CacheKey, PriceResult>> {
+  async lookup(
+    queries: PriceQuery[],
+    opts: LookupOptions = {},
+  ): Promise<Map<CacheKey, PriceResult>> {
     if (queries.length === 0) return new Map();
     const ors = queries.map((q) => ({
       origin: q.origin,

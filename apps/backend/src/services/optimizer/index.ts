@@ -1,4 +1,11 @@
-import type { CabinClass, OptimizeRequest, OptimizeResponse, RouteLabel, RouteOption, FlightLeg } from '@smartroute/shared';
+import type {
+  CabinClass,
+  OptimizeRequest,
+  OptimizeResponse,
+  RouteLabel,
+  RouteOption,
+  FlightLeg,
+} from '@smartroute/shared';
 import type { FlightService } from '../flights/index.js';
 import type { PriceQuery, PriceResult } from '../flights/provider.js';
 import { keyOf } from '../flights/cache.js';
@@ -9,14 +16,30 @@ export class OptimizerService {
   constructor(private readonly flights: FlightService) {}
 
   async optimize(req: OptimizeRequest): Promise<OptimizeResponse> {
-    const orderings = enumerateOrderings(req.cities, { startCity: req.startCity, endCity: req.endCity });
-    const triples = collectTriples(orderings, req.perCityDays, req.cities, req.departDate, req.cabinClass);
+    const orderings = enumerateOrderings(req.cities, {
+      startCity: req.startCity,
+      endCity: req.endCity,
+    });
+    const triples = collectTriples(
+      orderings,
+      req.perCityDays,
+      req.cities,
+      req.departDate,
+      req.cabinClass,
+    );
 
     const { prices, partial, staleCache } = await this.flights.getPrices(triples);
 
     const candidates: Array<{ ordering: string[]; legs: PriceResult[] }> = [];
     for (const ordering of orderings) {
-      const legs = legsFor(ordering, req.perCityDays, req.cities, req.departDate, req.cabinClass, prices);
+      const legs = legsFor(
+        ordering,
+        req.perCityDays,
+        req.cities,
+        req.departDate,
+        req.cabinClass,
+        prices,
+      );
       if (legs.length !== ordering.length - 1) continue;
       if (req.directOnly && legs.some((l) => l.stops > 0)) continue;
       candidates.push({ ordering, legs });
@@ -25,7 +48,9 @@ export class OptimizerService {
     if (candidates.length === 0) {
       return {
         options: [],
-        reason: req.directOnly ? 'No direct-only routes available; try disabling directOnly.' : 'No viable routes found.',
+        reason: req.directOnly
+          ? 'No direct-only routes available; try disabling directOnly.'
+          : 'No viable routes found.',
         ...(partial && { partial }),
         ...(staleCache && { staleCache }),
       };
@@ -39,7 +64,10 @@ export class OptimizerService {
 
     const cheapest = pickBy(candidates, (c) => sumProp(c.legs, 'priceCents'));
     const fastest = pickBy(candidates, (c) => sumProp(c.legs, 'durationMin'));
-    const direct = pickBy(candidates, (c) => sumProp(c.legs, 'stops') * 1e9 + sumProp(c.legs, 'priceCents'));
+    const direct = pickBy(
+      candidates,
+      (c) => sumProp(c.legs, 'stops') * 1e9 + sumProp(c.legs, 'priceCents'),
+    );
 
     const labeled: Array<{ label: RouteLabel; pick: (typeof candidates)[number] }> = [
       { label: 'cheapest', pick: cheapest },

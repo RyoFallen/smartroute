@@ -62,6 +62,7 @@ apps/backend/tests/                # mirrors src/ paths
 ### Task 1: Prerequisites — env loading + TS project references
 
 **Files:**
+
 - Modify: `apps/backend/package.json` (add `dotenv` dep, change dev/start scripts)
 - Modify: `apps/backend/tsconfig.json` (add reference to shared)
 - Modify: `packages/shared/tsconfig.json` (mark composite)
@@ -172,6 +173,7 @@ git commit -m "feat(backend): add env loading and shared tsconfig project refere
 ### Task 2: Error envelope + `ErrorCode` in shared
 
 **Files:**
+
 - Create: `packages/shared/src/errors.ts`
 - Modify: `packages/shared/src/index.ts`
 
@@ -232,6 +234,7 @@ git commit -m "feat(shared): add ApiError envelope and ErrorCode enum"
 ### Task 3: Domain Zod schemas in shared (flights, routes, optimize, trips)
 
 **Files:**
+
 - Create: `packages/shared/src/flights.ts`
 - Create: `packages/shared/src/routes.ts`
 - Create: `packages/shared/src/optimize.ts`
@@ -246,7 +249,10 @@ import { z } from 'zod';
 export const CabinClass = z.enum(['ECONOMY', 'PREMIUM_ECONOMY', 'BUSINESS', 'FIRST']);
 export type CabinClass = z.infer<typeof CabinClass>;
 
-export const Iata = z.string().length(3).regex(/^[A-Z]{3}$/);
+export const Iata = z
+  .string()
+  .length(3)
+  .regex(/^[A-Z]{3}$/);
 
 export const FlightLeg = z.object({
   origin: Iata,
@@ -390,6 +396,7 @@ git commit -m "feat(shared): add flight, route, optimize, and trip Zod schemas"
 ### Task 4: Throwable `ApiError` class + global error handler plugin
 
 **Files:**
+
 - Create: `apps/backend/src/lib/ApiError.ts`
 - Create: `apps/backend/src/plugins/error-handler.ts`
 - Create: `apps/backend/tests/error-handler.test.ts`
@@ -530,6 +537,7 @@ git commit -m "feat(backend): add ApiError class and global error handler plugin
 ### Task 5: Prisma plugin
 
 **Files:**
+
 - Create: `apps/backend/src/plugins/prisma.ts`
 - Modify: `apps/backend/src/server.ts`
 
@@ -608,10 +616,11 @@ git commit -m "feat(backend): add Prisma lifecycle plugin"
 ### Task 6: Clerk JWT auth plugin
 
 **Files:**
+
 - Create: `apps/backend/src/plugins/auth.ts`
 - Create: `apps/backend/tests/auth.test.ts`
 - Modify: `apps/backend/src/server.ts`
-- Modify: `apps/backend/src/env.ts` (already has CLERK_* keys)
+- Modify: `apps/backend/src/env.ts` (already has CLERK\_\* keys)
 
 - [ ] **Step 1: Add Clerk SDK**
 
@@ -747,6 +756,7 @@ git commit -m "feat(backend): add Clerk JWT auth plugin with requireAuth preHand
 ### Task 7: Flight provider interface + mock
 
 **Files:**
+
 - Create: `apps/backend/src/services/flights/provider.ts`
 - Create: `apps/backend/tests/services/flights/provider.test.ts`
 
@@ -759,8 +769,12 @@ import { MockFlightProvider } from '../../../src/services/flights/provider.js';
 describe('MockFlightProvider', () => {
   it('returns deterministic price for same triple', async () => {
     const p = new MockFlightProvider();
-    const a = await p.getPrices([{ origin: 'JFK', destination: 'CDG', departDate: '2026-06-01', cabinClass: 'ECONOMY' }]);
-    const b = await p.getPrices([{ origin: 'JFK', destination: 'CDG', departDate: '2026-06-01', cabinClass: 'ECONOMY' }]);
+    const a = await p.getPrices([
+      { origin: 'JFK', destination: 'CDG', departDate: '2026-06-01', cabinClass: 'ECONOMY' },
+    ]);
+    const b = await p.getPrices([
+      { origin: 'JFK', destination: 'CDG', departDate: '2026-06-01', cabinClass: 'ECONOMY' },
+    ]);
     expect(a[0].priceCents).toBe(b[0].priceCents);
     expect(a[0].priceCents).toBeGreaterThan(0);
   });
@@ -847,6 +861,7 @@ git commit -m "feat(backend): add FlightProvider interface and deterministic moc
 ### Task 8: Flight price cache (Postgres-backed)
 
 **Files:**
+
 - Create: `apps/backend/src/services/flights/cache.ts`
 - Create: `apps/backend/tests/services/flights/cache.test.ts`
 - Modify: `apps/backend/vitest.config.ts` (set test timeout to 20s for DB tests)
@@ -867,10 +882,7 @@ beforeAll(() => {
 });
 
 beforeEach(async () => {
-  await prisma.$transaction([
-    prisma.trip.deleteMany(),
-    prisma.flightPriceCache.deleteMany(),
-  ]);
+  await prisma.$transaction([prisma.trip.deleteMany(), prisma.flightPriceCache.deleteMany()]);
 });
 
 afterAll(async () => {
@@ -900,7 +912,12 @@ import { describe, it, expect } from 'vitest';
 import { PriceCache } from '../../../src/services/flights/cache.js';
 import { prisma } from '../../setup-db.js';
 
-const Q = { origin: 'JFK', destination: 'CDG', departDate: '2026-06-01', cabinClass: 'ECONOMY' as const };
+const Q = {
+  origin: 'JFK',
+  destination: 'CDG',
+  departDate: '2026-06-01',
+  cabinClass: 'ECONOMY' as const,
+};
 
 describe('PriceCache', () => {
   it('returns empty when nothing is cached', async () => {
@@ -911,9 +928,7 @@ describe('PriceCache', () => {
 
   it('stores and retrieves a price', async () => {
     const cache = new PriceCache(prisma);
-    await cache.upsert([
-      { ...Q, priceCents: 50_000, durationMin: 420, stops: 0, carrier: 'AF' },
-    ]);
+    await cache.upsert([{ ...Q, priceCents: 50_000, durationMin: 420, stops: 0, carrier: 'AF' }]);
     const hits = await cache.lookup([Q]);
     expect(hits.size).toBe(1);
     const v = hits.get(`${Q.origin}|${Q.destination}|${Q.departDate}|${Q.cabinClass}`);
@@ -922,9 +937,7 @@ describe('PriceCache', () => {
 
   it('reports stale entries via maxAgeMs', async () => {
     const cache = new PriceCache(prisma);
-    await cache.upsert([
-      { ...Q, priceCents: 50_000, durationMin: 420, stops: 0, carrier: 'AF' },
-    ]);
+    await cache.upsert([{ ...Q, priceCents: 50_000, durationMin: 420, stops: 0, carrier: 'AF' }]);
     await new Promise((r) => setTimeout(r, 50));
     const fresh = await cache.lookup([Q], { maxAgeMs: 10 });
     const all = await cache.lookup([Q]);
@@ -948,7 +961,12 @@ import type { PriceQuery, PriceResult } from './provider.js';
 
 export type CacheKey = string;
 
-export function keyOf(q: { origin: string; destination: string; departDate: string; cabinClass: CabinClass }): CacheKey {
+export function keyOf(q: {
+  origin: string;
+  destination: string;
+  departDate: string;
+  cabinClass: CabinClass;
+}): CacheKey {
   return `${q.origin}|${q.destination}|${q.departDate}|${q.cabinClass}`;
 }
 
@@ -959,7 +977,10 @@ export interface LookupOptions {
 export class PriceCache {
   constructor(private readonly db: PrismaClient) {}
 
-  async lookup(queries: PriceQuery[], opts: LookupOptions = {}): Promise<Map<CacheKey, PriceResult>> {
+  async lookup(
+    queries: PriceQuery[],
+    opts: LookupOptions = {},
+  ): Promise<Map<CacheKey, PriceResult>> {
     if (queries.length === 0) return new Map();
     const ors = queries.map((q) => ({
       origin: q.origin,
@@ -1049,6 +1070,7 @@ git commit -m "feat(backend): add Prisma-backed flight price cache"
 ### Task 9: FlightService (cache + provider orchestration)
 
 **Files:**
+
 - Create: `apps/backend/src/services/flights/index.ts`
 - Create: `apps/backend/tests/services/flights/service.test.ts`
 
@@ -1058,16 +1080,38 @@ git commit -m "feat(backend): add Prisma-backed flight price cache"
 import { describe, it, expect, vi } from 'vitest';
 import { FlightService } from '../../../src/services/flights/index.js';
 import { PriceCache, keyOf } from '../../../src/services/flights/cache.js';
-import type { FlightProvider, PriceQuery, PriceResult } from '../../../src/services/flights/provider.js';
+import type {
+  FlightProvider,
+  PriceQuery,
+  PriceResult,
+} from '../../../src/services/flights/provider.js';
 import { prisma } from '../../setup-db.js';
 
-const Q1: PriceQuery = { origin: 'JFK', destination: 'CDG', departDate: '2026-06-01', cabinClass: 'ECONOMY' };
-const Q2: PriceQuery = { origin: 'CDG', destination: 'FCO', departDate: '2026-06-04', cabinClass: 'ECONOMY' };
-const r = (q: PriceQuery, p: number): PriceResult => ({ ...q, priceCents: p, durationMin: 300, stops: 0, carrier: 'AF' });
+const Q1: PriceQuery = {
+  origin: 'JFK',
+  destination: 'CDG',
+  departDate: '2026-06-01',
+  cabinClass: 'ECONOMY',
+};
+const Q2: PriceQuery = {
+  origin: 'CDG',
+  destination: 'FCO',
+  departDate: '2026-06-04',
+  cabinClass: 'ECONOMY',
+};
+const r = (q: PriceQuery, p: number): PriceResult => ({
+  ...q,
+  priceCents: p,
+  durationMin: 300,
+  stops: 0,
+  carrier: 'AF',
+});
 
 class FakeProvider implements FlightProvider {
   constructor(private readonly results: PriceResult[]) {}
-  getPrices = vi.fn(async (qs: PriceQuery[]) => qs.map((q) => this.results.find((x) => keyOf(x) === keyOf(q))!));
+  getPrices = vi.fn(async (qs: PriceQuery[]) =>
+    qs.map((q) => this.results.find((x) => keyOf(x) === keyOf(q))!),
+  );
 }
 
 describe('FlightService', () => {
@@ -1100,7 +1144,11 @@ describe('FlightService', () => {
     const cache = new PriceCache(prisma);
     await cache.upsert([r(Q1, 50_000)]);
     await new Promise((r) => setTimeout(r, 30));
-    const provider: FlightProvider = { getPrices: vi.fn(async () => { throw new Error('vendor down'); }) };
+    const provider: FlightProvider = {
+      getPrices: vi.fn(async () => {
+        throw new Error('vendor down');
+      }),
+    };
     const svc = new FlightService(cache, provider, { freshMs: 10 });
     const out = await svc.getPrices([Q1]);
     expect(out.prices.size).toBe(1);
@@ -1178,6 +1226,7 @@ git commit -m "feat(backend): add FlightService with cache, batch fetch, stale f
 ### Task 10: Optimizer scoring (pure)
 
 **Files:**
+
 - Create: `apps/backend/src/services/optimizer/score.ts`
 - Create: `apps/backend/tests/services/optimizer/score.test.ts`
 
@@ -1188,8 +1237,21 @@ import { describe, it, expect } from 'vitest';
 import { scoreOrdering, compositeScore } from '../../../src/services/optimizer/score.js';
 import type { PriceResult } from '../../../src/services/flights/provider.js';
 
-const leg = (origin: string, destination: string, price: number, durationMin: number, stops = 0): PriceResult => ({
-  origin, destination, departDate: '2026-06-01', cabinClass: 'ECONOMY', priceCents: price, durationMin, stops, carrier: 'X',
+const leg = (
+  origin: string,
+  destination: string,
+  price: number,
+  durationMin: number,
+  stops = 0,
+): PriceResult => ({
+  origin,
+  destination,
+  departDate: '2026-06-01',
+  cabinClass: 'ECONOMY',
+  priceCents: price,
+  durationMin,
+  stops,
+  carrier: 'X',
 });
 
 describe('scoreOrdering', () => {
@@ -1205,8 +1267,16 @@ describe('compositeScore', () => {
   it('produces lower (better) score for cheaper-faster-more-direct route', () => {
     const cheap = scoreOrdering([leg('A', 'B', 100, 60, 0)]);
     const expensive = scoreOrdering([leg('A', 'B', 1000, 600, 3)]);
-    const cheapComp = compositeScore(cheap, { maxCostCents: 1000, maxDurationMin: 600, maxStops: 3 });
-    const expComp = compositeScore(expensive, { maxCostCents: 1000, maxDurationMin: 600, maxStops: 3 });
+    const cheapComp = compositeScore(cheap, {
+      maxCostCents: 1000,
+      maxDurationMin: 600,
+      maxStops: 3,
+    });
+    const expComp = compositeScore(expensive, {
+      maxCostCents: 1000,
+      maxDurationMin: 600,
+      maxStops: 3,
+    });
     expect(cheapComp).toBeLessThan(expComp);
   });
 });
@@ -1272,6 +1342,7 @@ git commit -m "feat(optimizer): add pure scoring functions"
 ### Task 11: Optimizer enumeration + service (top-K with dedup)
 
 **Files:**
+
 - Create: `apps/backend/src/services/optimizer/enumerate.ts`
 - Create: `apps/backend/src/services/optimizer/index.ts`
 - Create: `apps/backend/tests/services/optimizer/enumerate.test.ts`
@@ -1351,7 +1422,11 @@ function fakeFlights(map: Record<string, Partial<PriceResult>>): FlightService {
       const prices = new Map<string, PriceResult>();
       for (const q of qs) {
         const k = keyOf(q);
-        const base = map[`${q.origin}-${q.destination}`] ?? { priceCents: 50_000, durationMin: 300, stops: 0 };
+        const base = map[`${q.origin}-${q.destination}`] ?? {
+          priceCents: 50_000,
+          durationMin: 300,
+          stops: 0,
+        };
         prices.set(k, { ...q, carrier: 'X', ...base } as PriceResult);
       }
       return { prices, partial: false, staleCache: false };
@@ -1400,7 +1475,14 @@ describe('OptimizerService', () => {
 - [ ] **Step 5: Implement `apps/backend/src/services/optimizer/index.ts`**
 
 ```typescript
-import type { CabinClass, OptimizeRequest, OptimizeResponse, RouteLabel, RouteOption, FlightLeg } from '@smartroute/shared';
+import type {
+  CabinClass,
+  OptimizeRequest,
+  OptimizeResponse,
+  RouteLabel,
+  RouteOption,
+  FlightLeg,
+} from '@smartroute/shared';
 import type { FlightService } from '../flights/index.js';
 import type { PriceQuery, PriceResult } from '../flights/provider.js';
 import { keyOf } from '../flights/cache.js';
@@ -1411,14 +1493,30 @@ export class OptimizerService {
   constructor(private readonly flights: FlightService) {}
 
   async optimize(req: OptimizeRequest): Promise<OptimizeResponse> {
-    const orderings = enumerateOrderings(req.cities, { startCity: req.startCity, endCity: req.endCity });
-    const triples = collectTriples(orderings, req.perCityDays, req.cities, req.departDate, req.cabinClass);
+    const orderings = enumerateOrderings(req.cities, {
+      startCity: req.startCity,
+      endCity: req.endCity,
+    });
+    const triples = collectTriples(
+      orderings,
+      req.perCityDays,
+      req.cities,
+      req.departDate,
+      req.cabinClass,
+    );
 
     const { prices, partial, staleCache } = await this.flights.getPrices(triples);
 
     const candidates: Array<{ ordering: string[]; legs: PriceResult[] }> = [];
     for (const ordering of orderings) {
-      const legs = legsFor(ordering, req.perCityDays, req.cities, req.departDate, req.cabinClass, prices);
+      const legs = legsFor(
+        ordering,
+        req.perCityDays,
+        req.cities,
+        req.departDate,
+        req.cabinClass,
+        prices,
+      );
       if (legs.length !== ordering.length - 1) continue;
       if (req.directOnly && legs.some((l) => l.stops > 0)) continue;
       candidates.push({ ordering, legs });
@@ -1427,7 +1525,9 @@ export class OptimizerService {
     if (candidates.length === 0) {
       return {
         options: [],
-        reason: req.directOnly ? 'No direct-only routes available; try disabling directOnly.' : 'No viable routes found.',
+        reason: req.directOnly
+          ? 'No direct-only routes available; try disabling directOnly.'
+          : 'No viable routes found.',
         ...(partial && { partial }),
         ...(staleCache && { staleCache }),
       };
@@ -1441,7 +1541,10 @@ export class OptimizerService {
 
     const cheapest = pickBy(candidates, (c) => sumProp(c.legs, 'priceCents'));
     const fastest = pickBy(candidates, (c) => sumProp(c.legs, 'durationMin'));
-    const direct = pickBy(candidates, (c) => sumProp(c.legs, 'stops') * 1e9 + sumProp(c.legs, 'priceCents'));
+    const direct = pickBy(
+      candidates,
+      (c) => sumProp(c.legs, 'stops') * 1e9 + sumProp(c.legs, 'priceCents'),
+    );
 
     const labeled: Array<{ label: RouteLabel; pick: (typeof candidates)[number] }> = [
       { label: 'cheapest', pick: cheapest },
@@ -1574,6 +1677,7 @@ git commit -m "feat(optimizer): add enumeration and top-K labeled route selectio
 ### Task 12: `POST /optimize` route
 
 **Files:**
+
 - Create: `apps/backend/src/routes/optimize.route.ts`
 - Create: `apps/backend/tests/routes/optimize.route.test.ts`
 - Modify: `apps/backend/src/server.ts`
@@ -1610,7 +1714,8 @@ describe('POST /optimize', () => {
   it('400s on invalid input', async () => {
     const app = await buildServer();
     const res = await app.inject({
-      method: 'POST', url: '/optimize',
+      method: 'POST',
+      url: '/optimize',
       headers: { authorization: 'Bearer good', 'content-type': 'application/json' },
       payload: { cities: ['JFK'] },
     });
@@ -1621,7 +1726,8 @@ describe('POST /optimize', () => {
   it('returns options on valid input', async () => {
     const app = await buildServer();
     const res = await app.inject({
-      method: 'POST', url: '/optimize',
+      method: 'POST',
+      url: '/optimize',
       headers: { authorization: 'Bearer good', 'content-type': 'application/json' },
       payload: {
         cities: ['JFK', 'CDG', 'FCO'],
@@ -1655,7 +1761,10 @@ export async function optimizeRoute(app: FastifyInstance): Promise<void> {
     const provider = new MockFlightProvider();
     const flights = cache
       ? new FlightService(cache, provider)
-      : new FlightService({ lookup: async () => new Map(), upsert: async () => {} } as unknown as PriceCache, provider);
+      : new FlightService(
+          { lookup: async () => new Map(), upsert: async () => {} } as unknown as PriceCache,
+          provider,
+        );
     const optimizer = new OptimizerService(flights);
     return await optimizer.optimize(parsed);
   });
@@ -1687,6 +1796,7 @@ git commit -m "feat(backend): add POST /optimize route"
 ### Task 13: TripService
 
 **Files:**
+
 - Create: `apps/backend/src/services/trips/index.ts`
 - Create: `apps/backend/tests/services/trips/trips.test.ts`
 
@@ -1706,8 +1816,26 @@ const sample = {
   travelers: 1,
   cities: ['JFK', 'CDG', 'FCO'],
   flights: [
-    { origin: 'JFK', destination: 'CDG', depart: '2026-06-01T08:00:00.000Z', arrive: '2026-06-01T14:00:00.000Z', carrier: 'AF', priceCents: 50_000, durationMin: 360, stops: 0 },
-    { origin: 'CDG', destination: 'FCO', depart: '2026-06-04T08:00:00.000Z', arrive: '2026-06-04T10:00:00.000Z', carrier: 'AF', priceCents: 20_000, durationMin: 120, stops: 0 },
+    {
+      origin: 'JFK',
+      destination: 'CDG',
+      depart: '2026-06-01T08:00:00.000Z',
+      arrive: '2026-06-01T14:00:00.000Z',
+      carrier: 'AF',
+      priceCents: 50_000,
+      durationMin: 360,
+      stops: 0,
+    },
+    {
+      origin: 'CDG',
+      destination: 'FCO',
+      depart: '2026-06-04T08:00:00.000Z',
+      arrive: '2026-06-04T10:00:00.000Z',
+      carrier: 'AF',
+      priceCents: 20_000,
+      durationMin: 120,
+      stops: 0,
+    },
   ],
   totalPriceCents: 70_000,
 };
@@ -1794,9 +1922,17 @@ export class TripService {
 }
 
 function toTrip(row: {
-  id: string; name: string; startDate: Date; endDate: Date; cabinClass: string;
-  travelers: number; cities: string[]; flights: Prisma.JsonValue; totalPrice: number;
-  createdAt: Date; updatedAt: Date;
+  id: string;
+  name: string;
+  startDate: Date;
+  endDate: Date;
+  cabinClass: string;
+  travelers: number;
+  cities: string[];
+  flights: Prisma.JsonValue;
+  totalPrice: number;
+  createdAt: Date;
+  updatedAt: Date;
 }): Trip {
   return {
     id: row.id,
@@ -1831,6 +1967,7 @@ git commit -m "feat(backend): add TripService with user-scoped CRUD"
 ### Task 14: `/trips` CRUD routes
 
 **Files:**
+
 - Create: `apps/backend/src/routes/trips.route.ts`
 - Create: `apps/backend/tests/routes/trips.route.test.ts`
 - Modify: `apps/backend/src/server.ts`
@@ -1862,7 +1999,16 @@ const body = {
   travelers: 1,
   cities: ['JFK', 'CDG', 'FCO'],
   flights: [
-    { origin: 'JFK', destination: 'CDG', depart: '2026-06-01T08:00:00.000Z', arrive: '2026-06-01T14:00:00.000Z', carrier: 'AF', priceCents: 50000, durationMin: 360, stops: 0 },
+    {
+      origin: 'JFK',
+      destination: 'CDG',
+      depart: '2026-06-01T08:00:00.000Z',
+      arrive: '2026-06-01T14:00:00.000Z',
+      carrier: 'AF',
+      priceCents: 50000,
+      durationMin: 360,
+      stops: 0,
+    },
   ],
   totalPriceCents: 50000,
 };
@@ -1877,7 +2023,12 @@ describe('/trips', () => {
     const app = await buildServer({ withDb: true });
     const auth = { authorization: 'Bearer u_alice', 'content-type': 'application/json' };
 
-    const create = await app.inject({ method: 'POST', url: '/trips', headers: auth, payload: body });
+    const create = await app.inject({
+      method: 'POST',
+      url: '/trips',
+      headers: auth,
+      payload: body,
+    });
     expect(create.statusCode).toBe(201);
     const id = create.json().id;
 
@@ -1955,8 +2106,9 @@ git commit -m "feat(backend): add /trips CRUD routes"
 ### Task 15: Update README + verify full suite
 
 **Files:**
+
 - Modify: `README.md`
-- Modify: `.env.example` (already has CLERK_*, no change unless missing)
+- Modify: `.env.example` (already has CLERK\_\*, no change unless missing)
 
 - [ ] **Step 1: Update README backend section** to document required env vars and dev workflow:
 
@@ -1969,6 +2121,7 @@ git commit -m "feat(backend): add /trips CRUD routes"
 4. `pnpm --filter @smartroute/backend dev` to start the API on `http://localhost:3000`
 
 Endpoints:
+
 - `GET /health` — liveness
 - `POST /optimize` — auth required; returns top-K routes
 - `POST /trips`, `GET /trips`, `GET /trips/:id`, `DELETE /trips/:id` — saved trips
@@ -1997,17 +2150,17 @@ git commit -m "docs: document backend dev workflow and endpoints"
 
 ## Coverage check against the spec
 
-| Spec section | Covered by |
-| --- | --- |
-| §5.2 backend modules | Tasks 4–14 |
-| §5.3 data model usage | Tasks 8 (cache), 13 (trips) |
-| §5.4 shared package | Tasks 2–3 |
-| §6.1 optimize flow (batched pricing, dedupe, directOnly hard filter) | Tasks 9, 11, 12 |
-| §6.2 save trip flow | Tasks 13–14 |
-| §6.3 list/view trips | Task 14 |
-| §7 errors (envelope, ZodError → 400, NOT_FOUND for cross-user) | Tasks 4, 13, 14 |
-| §7.2 partial / staleCache flags | Task 9 |
-| §7.5 Clerk JWT verification | Task 6 |
-| §8 testing (Vitest, Postgres test container, Fastify inject) | Tasks 4, 6, 8, 9, 13, 14 |
+| Spec section                                                         | Covered by                  |
+| -------------------------------------------------------------------- | --------------------------- |
+| §5.2 backend modules                                                 | Tasks 4–14                  |
+| §5.3 data model usage                                                | Tasks 8 (cache), 13 (trips) |
+| §5.4 shared package                                                  | Tasks 2–3                   |
+| §6.1 optimize flow (batched pricing, dedupe, directOnly hard filter) | Tasks 9, 11, 12             |
+| §6.2 save trip flow                                                  | Tasks 13–14                 |
+| §6.3 list/view trips                                                 | Task 14                     |
+| §7 errors (envelope, ZodError → 400, NOT_FOUND for cross-user)       | Tasks 4, 13, 14             |
+| §7.2 partial / staleCache flags                                      | Task 9                      |
+| §7.5 Clerk JWT verification                                          | Task 6                      |
+| §8 testing (Vitest, Postgres test container, Fastify inject)         | Tasks 4, 6, 8, 9, 13, 14    |
 
 Real flight provider integration, Sentry, and msw HTTP mocks for a real vendor are deferred to Plan 4 (Real Flight Integration). Mobile consumption is Plan 3. Deployment is Plan 5.

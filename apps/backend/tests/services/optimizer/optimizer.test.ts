@@ -10,7 +10,11 @@ function fakeFlights(map: Record<string, Partial<PriceResult>>): FlightService {
       const prices = new Map<string, PriceResult>();
       for (const q of qs) {
         const k = keyOf(q);
-        const base = map[`${q.origin}-${q.destination}`] ?? { priceCents: 50_000, durationMin: 300, stops: 0 };
+        const base = map[`${q.origin}-${q.destination}`] ?? {
+          priceCents: 50_000,
+          durationMin: 300,
+          stops: 0,
+        };
         prices.set(k, { ...q, carrier: 'X', ...base } as PriceResult);
       }
       return { prices, partial: false, staleCache: false };
@@ -31,7 +35,7 @@ describe('OptimizerService', () => {
     });
     expect(res.options.length).toBeGreaterThan(0);
     expect(res.options.length).toBeLessThanOrEqual(3);
-    const labels = new Set(res.options.map((o) => o.label));
+    const labels = new Set(res.options.map((o: { label: string }) => o.label));
     expect(labels.size).toBe(res.options.length);
   });
 

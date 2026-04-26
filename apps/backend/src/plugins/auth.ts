@@ -27,7 +27,7 @@ export const authPlugin = fp(async (app) => {
     }
     const fetchReq = new Request(url, { method: req.method, headers });
     const result = await clerk.authenticateRequest(fetchReq);
-    if (!result.isAuthenticated) {
+    if (!result.isSignedIn) {
       throw new ApiError('UNAUTHORIZED', 'Authentication required', 401);
     }
     const auth = result.toAuth();

@@ -45,9 +45,17 @@ export class TripService {
 }
 
 function toTrip(row: {
-  id: string; name: string; startDate: Date; endDate: Date; cabinClass: string;
-  travelers: number; cities: string[]; flights: Prisma.JsonValue; totalPrice: number;
-  createdAt: Date; updatedAt: Date;
+  id: string;
+  name: string;
+  startDate: Date;
+  endDate: Date;
+  cabinClass: string;
+  travelers: number;
+  cities: string[];
+  flights: Prisma.JsonValue;
+  totalPrice: number;
+  createdAt: Date;
+  updatedAt: Date;
 }): Trip {
   return {
     id: row.id,

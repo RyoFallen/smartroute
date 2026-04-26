@@ -3,7 +3,10 @@ import { z } from 'zod';
 export const CabinClass = z.enum(['ECONOMY', 'PREMIUM_ECONOMY', 'BUSINESS', 'FIRST']);
 export type CabinClass = z.infer<typeof CabinClass>;
 
-export const Iata = z.string().length(3).regex(/^[A-Z]{3}$/);
+export const Iata = z
+  .string()
+  .length(3)
+  .regex(/^[A-Z]{3}$/);
 
 export const FlightLeg = z.object({
   origin: Iata,

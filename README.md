@@ -46,6 +46,14 @@ pnpm --filter @smartroute/mobile start  # Expo dev server
 - `pnpm typecheck` — TS across all packages
 - `pnpm test` — Vitest across all packages
 
+## Backend endpoints
+
+- `GET /health` — liveness
+- `POST /optimize` — auth required; returns top-K labeled routes (`cheapest`/`fastest`/`most_direct`) for 2–8 cities
+- `POST /trips`, `GET /trips`, `GET /trips/:id`, `DELETE /trips/:id` — saved trips (auth required, user-scoped)
+
+All authenticated endpoints expect `Authorization: Bearer <Clerk JWT>`. Set `CLERK_SECRET_KEY` and `CLERK_PUBLISHABLE_KEY` in `.env` before running the backend.
+
 ## Specs and plans
 
 See `docs/superpowers/`.

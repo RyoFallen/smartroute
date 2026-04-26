@@ -11,8 +11,26 @@ const sample = {
   travelers: 1,
   cities: ['JFK', 'CDG', 'FCO'],
   flights: [
-    { origin: 'JFK', destination: 'CDG', depart: '2026-06-01T08:00:00.000Z', arrive: '2026-06-01T14:00:00.000Z', carrier: 'AF', priceCents: 50_000, durationMin: 360, stops: 0 },
-    { origin: 'CDG', destination: 'FCO', depart: '2026-06-04T08:00:00.000Z', arrive: '2026-06-04T10:00:00.000Z', carrier: 'AF', priceCents: 20_000, durationMin: 120, stops: 0 },
+    {
+      origin: 'JFK',
+      destination: 'CDG',
+      depart: '2026-06-01T08:00:00.000Z',
+      arrive: '2026-06-01T14:00:00.000Z',
+      carrier: 'AF',
+      priceCents: 50_000,
+      durationMin: 360,
+      stops: 0,
+    },
+    {
+      origin: 'CDG',
+      destination: 'FCO',
+      depart: '2026-06-04T08:00:00.000Z',
+      arrive: '2026-06-04T10:00:00.000Z',
+      carrier: 'AF',
+      priceCents: 20_000,
+      durationMin: 120,
+      stops: 0,
+    },
   ],
   totalPriceCents: 70_000,
 };

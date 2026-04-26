@@ -1,4 +1,5 @@
-import { PriceCache, keyOf, type CacheKey } from './cache.js';
+import type { PriceCache } from './cache.js';
+import { keyOf, type CacheKey } from './cache.js';
 import type { FlightProvider, PriceQuery, PriceResult } from './provider.js';
 
 export interface FlightServiceOptions {

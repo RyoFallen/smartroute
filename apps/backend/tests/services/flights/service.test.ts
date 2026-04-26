@@ -1,16 +1,38 @@
 import { describe, it, expect, vi } from 'vitest';
 import { FlightService } from '../../../src/services/flights/index.js';
 import { PriceCache, keyOf } from '../../../src/services/flights/cache.js';
-import type { FlightProvider, PriceQuery, PriceResult } from '../../../src/services/flights/provider.js';
+import type {
+  FlightProvider,
+  PriceQuery,
+  PriceResult,
+} from '../../../src/services/flights/provider.js';
 import { prisma } from '../../setup-db.js';
 
-const Q1: PriceQuery = { origin: 'JFK', destination: 'CDG', departDate: '2026-06-01', cabinClass: 'ECONOMY' };
-const Q2: PriceQuery = { origin: 'CDG', destination: 'FCO', departDate: '2026-06-04', cabinClass: 'ECONOMY' };
-const r = (q: PriceQuery, p: number): PriceResult => ({ ...q, priceCents: p, durationMin: 300, stops: 0, carrier: 'AF' });
+const Q1: PriceQuery = {
+  origin: 'JFK',
+  destination: 'CDG',
+  departDate: '2026-06-01',
+  cabinClass: 'ECONOMY',
+};
+const Q2: PriceQuery = {
+  origin: 'CDG',
+  destination: 'FCO',
+  departDate: '2026-06-04',
+  cabinClass: 'ECONOMY',
+};
+const r = (q: PriceQuery, p: number): PriceResult => ({
+  ...q,
+  priceCents: p,
+  durationMin: 300,
+  stops: 0,
+  carrier: 'AF',
+});
 
 class FakeProvider implements FlightProvider {
   constructor(private readonly results: PriceResult[]) {}
-  getPrices = vi.fn(async (qs: PriceQuery[]) => qs.map((q) => this.results.find((x) => keyOf(x) === keyOf(q))!));
+  getPrices = vi.fn(async (qs: PriceQuery[]) =>
+    qs.map((q) => this.results.find((x) => keyOf(x) === keyOf(q))!),
+  );
 }
 
 describe('FlightService', () => {
@@ -43,7 +65,11 @@ describe('FlightService', () => {
     const cache = new PriceCache(prisma);
     await cache.upsert([r(Q1, 50_000)]);
     await new Promise((r) => setTimeout(r, 30));
-    const provider: FlightProvider = { getPrices: vi.fn(async () => { throw new Error('vendor down'); }) };
+    const provider: FlightProvider = {
+      getPrices: vi.fn(async () => {
+        throw new Error('vendor down');
+      }),
+    };
     const svc = new FlightService(cache, provider, { freshMs: 10 });
     const out = await svc.getPrices([Q1]);
     expect(out.prices.size).toBe(1);
