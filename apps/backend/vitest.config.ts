@@ -2,11 +2,7 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    environment: 'node',
-    include: ['tests/**/*.test.ts'],
-    globals: false,
-    env: {
-      DATABASE_URL: '',
-    },
+    testTimeout: 20_000,
+    setupFiles: process.env.SKIP_DB_TESTS ? [] : ['./tests/setup-db.ts'],
   },
 });
