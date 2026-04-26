@@ -3,6 +3,7 @@ import type { FastifyInstance } from 'fastify';
 import { healthRoute } from './routes/health.route.js';
 import { errorHandlerPlugin } from './plugins/error-handler.js';
 import { prismaPlugin } from './plugins/prisma.js';
+import { authPlugin } from './plugins/auth.js';
 
 export interface BuildOptions {
   withDb?: boolean;
@@ -11,6 +12,7 @@ export interface BuildOptions {
 export async function buildServer(opts: BuildOptions = {}): Promise<FastifyInstance> {
   const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? 'info' } });
   await app.register(errorHandlerPlugin);
+  await app.register(authPlugin);
   if (opts.withDb ?? Boolean(process.env.DATABASE_URL)) {
     await app.register(prismaPlugin);
   }
