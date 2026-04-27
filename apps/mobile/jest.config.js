@@ -7,14 +7,15 @@ module.exports = {
   projects: [
     {
       displayName: 'unit',
-      testMatch: ['<rootDir>/__tests__/api/**/*.test.(ts|tsx)', '<rootDir>/__tests__/data/**/*.test.(ts|tsx)'],
+      testMatch: [
+        '<rootDir>/__tests__/api/**/*.test.(ts|tsx)',
+        '<rootDir>/__tests__/data/**/*.test.(ts|tsx)',
+      ],
       moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
       transform: {
         '^.+\\.tsx?$': ['babel-jest', { configFile: './babel.config.js' }],
       },
-      transformIgnorePatterns: [
-        'node_modules/(?!expo-constants)',
-      ],
+      transformIgnorePatterns: ['node_modules/(?!expo-constants)'],
       setupFilesAfterEnv: [],
       testEnvironment: 'node',
     },
@@ -23,10 +24,7 @@ module.exports = {
       // Manually spread jest-expo config
       ...jestExpoPreset,
       // But prepend our setup files BEFORE jest-expo's
-      setupFiles: [
-        '<rootDir>/jest.preSetup.js',
-        ...jestExpoPreset.setupFiles,
-      ],
+      setupFiles: ['<rootDir>/jest.preSetup.js', ...jestExpoPreset.setupFiles],
       setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
       moduleNameMapper: {
         ...jestExpoPreset.moduleNameMapper,

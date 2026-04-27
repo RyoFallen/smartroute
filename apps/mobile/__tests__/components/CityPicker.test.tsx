@@ -4,18 +4,14 @@ import { CityPicker } from '../../src/components/CityPicker';
 describe('CityPicker', () => {
   it('renders selected codes and removes one on tap', () => {
     const onChange = jest.fn();
-    const { getByText } = render(
-      <CityPicker selected={['JFK', 'CDG']} onChange={onChange} />,
-    );
+    const { getByText } = render(<CityPicker selected={['JFK', 'CDG']} onChange={onChange} />);
     fireEvent.press(getByText('JFK ✕'));
     expect(onChange).toHaveBeenCalledWith(['CDG']);
   });
 
   it('adds a code on submit and uppercases it', () => {
     const onChange = jest.fn();
-    const { getByPlaceholderText } = render(
-      <CityPicker selected={['JFK']} onChange={onChange} />,
-    );
+    const { getByPlaceholderText } = render(<CityPicker selected={['JFK']} onChange={onChange} />);
     const input = getByPlaceholderText('Add airport (e.g. CDG)');
     fireEvent.changeText(input, 'cdg');
     fireEvent(input, 'submitEditing');

@@ -57,14 +57,18 @@ export function ResultsScreen(): JSX.Element {
     <Screen>
       <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
         <Text style={styles.title}>Top routes</Text>
-        {response.options.map((opt: typeof response.options[0], i: number) => (
+        {response.options.map((opt: (typeof response.options)[0], i: number) => (
           <View key={`${opt.label}-${i}`}>
             <RouteOption option={opt} onPress={() => setSelectedIdx(i)} />
             {selectedIdx === i ? <RouteMap order={opt.order} /> : null}
           </View>
         ))}
         <View style={{ marginTop: 16 }}>
-          <Button title={saving ? 'Saving…' : 'Save selected trip'} onPress={save} disabled={saving} />
+          <Button
+            title={saving ? 'Saving…' : 'Save selected trip'}
+            onPress={save}
+            disabled={saving}
+          />
         </View>
       </ScrollView>
     </Screen>

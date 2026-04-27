@@ -30,15 +30,29 @@ export function RouteMap({ order, height = 280 }: Props): JSX.Element {
   return (
     <MapView style={[styles.map, { height }]} provider={PROVIDER_DEFAULT} initialRegion={region}>
       {points.map((p) => (
-        <Marker key={p.code} coordinate={{ latitude: p.latitude, longitude: p.longitude }} title={p.code} description={p.name} />
+        <Marker
+          key={p.code}
+          coordinate={{ latitude: p.latitude, longitude: p.longitude }}
+          title={p.code}
+          description={p.name}
+        />
       ))}
-      <Polyline coordinates={points.map((p) => ({ latitude: p.latitude, longitude: p.longitude }))} strokeColor="#0D9488" strokeWidth={3} />
+      <Polyline
+        coordinates={points.map((p) => ({ latitude: p.latitude, longitude: p.longitude }))}
+        strokeColor="#0D9488"
+        strokeWidth={3}
+      />
     </MapView>
   );
 }
 
 const styles = StyleSheet.create({
   map: { borderRadius: 12, overflow: 'hidden' },
-  empty: { backgroundColor: '#F1F5F9', borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+  empty: {
+    backgroundColor: '#F1F5F9',
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   emptyText: { color: '#64748B' },
 });

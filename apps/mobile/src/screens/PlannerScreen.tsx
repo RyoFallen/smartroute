@@ -19,7 +19,10 @@ export function PlannerScreen(): JSX.Element {
 
   useEffect(() => {
     if (state.status === 'success') {
-      nav.navigate('Results', { response: state.data, request: { cities, departDate, directOnly } });
+      nav.navigate('Results', {
+        response: state.data,
+        request: { cities, departDate, directOnly },
+      });
     }
   }, [state, cities, departDate, directOnly, nav]);
 
@@ -46,9 +49,19 @@ export function PlannerScreen(): JSX.Element {
         <Text style={styles.label}>Cities (2–8)</Text>
         <CityPicker selected={cities} onChange={setCities} />
         <Text style={styles.label}>Depart date (YYYY-MM-DD)</Text>
-        <TextInput style={styles.input} value={departDate} onChangeText={setDepartDate} autoCapitalize="none" />
+        <TextInput
+          style={styles.input}
+          value={departDate}
+          onChangeText={setDepartDate}
+          autoCapitalize="none"
+        />
         <Text style={styles.label}>Days per city</Text>
-        <TextInput style={styles.input} value={perCity} onChangeText={setPerCity} keyboardType="number-pad" />
+        <TextInput
+          style={styles.input}
+          value={perCity}
+          onChangeText={setPerCity}
+          keyboardType="number-pad"
+        />
         <View style={styles.row}>
           <Text style={styles.label}>Direct flights only</Text>
           <Switch value={directOnly} onValueChange={setDirectOnly} />
@@ -71,10 +84,20 @@ export function PlannerScreen(): JSX.Element {
 
 const styles = StyleSheet.create({
   scroll: { paddingBottom: 24 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   title: { fontSize: 24, fontWeight: '700', color: '#0F172A' },
   label: { fontSize: 14, color: '#475569', marginTop: 12, marginBottom: 6 },
   input: { borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 8, padding: 12, fontSize: 16 },
-  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 12,
+  },
   error: { color: '#DC2626', marginTop: 12 },
 });

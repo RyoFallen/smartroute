@@ -79,6 +79,13 @@ export function SignInScreen(): JSX.Element {
 const styles = StyleSheet.create({
   title: { fontSize: 32, fontWeight: '700', color: '#0D9488', marginBottom: 8 },
   subtitle: { fontSize: 16, color: '#64748B', marginBottom: 24 },
-  input: { borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 8, padding: 12, fontSize: 16, marginBottom: 12 },
+  input: {
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    marginBottom: 12,
+  },
   error: { color: '#DC2626', marginTop: 12 },
 });

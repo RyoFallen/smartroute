@@ -2,7 +2,7 @@ jest.mock('../../src/config', () => ({
   config: { apiUrl: 'http://test', clerkPublishableKey: 'pk_test' },
 }));
 
-import { apiFetch, ApiClientError } from '../../src/api/client';
+import { apiFetch } from '../../src/api/client';
 
 const getToken = async () => 'tok_abc';
 

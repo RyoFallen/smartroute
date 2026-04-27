@@ -48,8 +48,5 @@ export function useTrip(id: string) {
 
 export function useCreateTrip() {
   const { getToken } = useAuth();
-  return useCallback(
-    (body: CreateTripRequest) => createTrip(body, () => getToken()),
-    [getToken],
-  );
+  return useCallback((body: CreateTripRequest) => createTrip(body, () => getToken()), [getToken]);
 }

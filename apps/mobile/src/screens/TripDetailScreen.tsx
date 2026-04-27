@@ -9,8 +9,18 @@ export function TripDetailScreen(): JSX.Element {
   const route = useRoute<RouteProp<RootStackParamList, 'TripDetail'>>();
   const { trip, error } = useTrip(route.params.id);
 
-  if (error) return <Screen><Text style={styles.error}>{error}</Text></Screen>;
-  if (!trip) return <Screen><Text style={styles.loading}>Loading…</Text></Screen>;
+  if (error)
+    return (
+      <Screen>
+        <Text style={styles.error}>{error}</Text>
+      </Screen>
+    );
+  if (!trip)
+    return (
+      <Screen>
+        <Text style={styles.loading}>Loading…</Text>
+      </Screen>
+    );
 
   return (
     <Screen>
@@ -32,7 +42,8 @@ export function TripDetailScreen(): JSX.Element {
               {new Date(f.depart).toLocaleString()} → {new Date(f.arrive).toLocaleString()}
             </Text>
             <Text style={styles.legMeta}>
-              ${(f.priceCents / 100).toFixed(0)} · {Math.round(f.durationMin / 60)}h · {f.stops} stop(s)
+              ${(f.priceCents / 100).toFixed(0)} · {Math.round(f.durationMin / 60)}h · {f.stops}{' '}
+              stop(s)
             </Text>
           </View>
         ))}

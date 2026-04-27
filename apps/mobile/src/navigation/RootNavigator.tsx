@@ -38,10 +38,22 @@ export function RootNavigator(): JSX.Element {
       <Stack.Navigator>
         {isSignedIn ? (
           <>
-            <Stack.Screen name="Planner" component={PlannerScreen} options={{ title: 'SmartRoute' }} />
+            <Stack.Screen
+              name="Planner"
+              component={PlannerScreen}
+              options={{ title: 'SmartRoute' }}
+            />
             <Stack.Screen name="Results" component={ResultsScreen} options={{ title: 'Routes' }} />
-            <Stack.Screen name="TripsList" component={TripsListScreen} options={{ title: 'My Trips' }} />
-            <Stack.Screen name="TripDetail" component={TripDetailScreen} options={{ title: 'Trip' }} />
+            <Stack.Screen
+              name="TripsList"
+              component={TripsListScreen}
+              options={{ title: 'My Trips' }}
+            />
+            <Stack.Screen
+              name="TripDetail"
+              component={TripDetailScreen}
+              options={{ title: 'Trip' }}
+            />
           </>
         ) : (
           <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }} />
