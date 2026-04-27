@@ -54,6 +54,18 @@ pnpm --filter @smartroute/mobile start  # Expo dev server
 
 All authenticated endpoints expect `Authorization: Bearer <Clerk JWT>`. Set `CLERK_SECRET_KEY` and `CLERK_PUBLISHABLE_KEY` in `.env` before running the backend.
 
+## Mobile setup
+
+```bash
+cd apps/mobile
+cp .env.example .env
+# Edit .env: set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY (from your Clerk dashboard)
+# EXPO_PUBLIC_API_URL defaults to http://localhost:3000 (use your LAN IP for physical devices)
+pnpm --filter @smartroute/mobile start
+```
+
+Sign in with email + 6-digit code (Clerk). The planner accepts 2–8 IATA airport codes from a built-in list of ~50 popular airports (real geocoding lands in Plan 4).
+
 ## Specs and plans
 
 See `docs/superpowers/`.
