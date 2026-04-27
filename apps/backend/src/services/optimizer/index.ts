@@ -10,7 +10,7 @@ import type { FlightService } from '../flights/index.js';
 import type { PriceQuery, PriceResult } from '../flights/provider.js';
 import { keyOf } from '../flights/cache.js';
 import { enumerateOrderings } from './enumerate.js';
-import { compositeScore, scoreOrdering, type Bounds } from './score.js';
+import { scoreOrdering } from './score.js';
 
 export class OptimizerService {
   constructor(private readonly flights: FlightService) {}
@@ -56,12 +56,6 @@ export class OptimizerService {
       };
     }
 
-    const bounds: Bounds = {
-      maxCostCents: Math.max(...candidates.map((c) => sumProp(c.legs, 'priceCents'))) || 1,
-      maxDurationMin: Math.max(...candidates.map((c) => sumProp(c.legs, 'durationMin'))) || 1,
-      maxStops: Math.max(...candidates.map((c) => sumProp(c.legs, 'stops'))) || 1,
-    };
-
     const cheapest = pickBy(candidates, (c) => sumProp(c.legs, 'priceCents'));
     const fastest = pickBy(candidates, (c) => sumProp(c.legs, 'durationMin'));
     const direct = pickBy(
@@ -84,9 +78,10 @@ export class OptimizerService {
       const totals = scoreOrdering(pick.legs);
       options.push({
         label,
-        cities: pick.ordering,
-        legs: pick.legs.map(toFlightLeg),
-        score: { ...totals, composite: compositeScore(totals, bounds) },
+        order: pick.ordering,
+        flights: pick.legs.map(toFlightLeg),
+        totalPriceCents: totals.totalCostCents,
+        totalDurationMin: totals.totalDurationMin,
       });
     }
 
