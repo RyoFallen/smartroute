@@ -14,8 +14,9 @@ export type Score = z.infer<typeof Score>;
 
 export const RouteOption = z.object({
   label: RouteLabel,
-  cities: z.array(Iata).min(2).max(8),
-  legs: z.array(FlightLeg),
-  score: Score,
+  order: z.array(Iata).min(2).max(8),
+  flights: z.array(FlightLeg),
+  totalPriceCents: z.number().int().nonnegative(),
+  totalDurationMin: z.number().int().nonnegative(),
 });
 export type RouteOption = z.infer<typeof RouteOption>;
