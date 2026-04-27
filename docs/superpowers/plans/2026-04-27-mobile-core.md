@@ -9,6 +9,7 @@
 **Tech Stack:** Expo SDK 51 · React Native 0.74 · TypeScript · Clerk Expo · `@react-navigation/native` + native-stack · `react-native-maps` · `expo-secure-store` · `expo-constants` · Zod (via `@smartroute/shared`) · jest-expo for unit tests.
 
 **Carry-overs from Plan 2:**
+
 - CI must build `@smartroute/shared` before typecheck/test (TS project references need `dist/`). Addressed in T0.
 - `/optimize` is still backed by `MockFlightProvider`; that swap is Plan 4. Mobile treats `/optimize` as a black box.
 
@@ -19,6 +20,7 @@
 ## File Structure
 
 **Create:**
+
 - `apps/mobile/src/config.ts` — reads `API_URL` from `expo-constants`
 - `apps/mobile/src/auth/tokenCache.ts` — Clerk token cache backed by `expo-secure-store`
 - `apps/mobile/src/auth/ClerkProvider.tsx` — wraps app with `ClerkProvider` + `tokenCache`
@@ -45,6 +47,7 @@
 - `apps/mobile/__tests__/data/airports.test.ts`
 
 **Modify:**
+
 - `.github/workflows/ci.yml` — add `pnpm --filter @smartroute/shared build` step
 - `apps/mobile/package.json` — new deps + `test`/`lint` scripts
 - `apps/mobile/app.json` → rename to `apps/mobile/app.config.ts` for `extra.apiUrl` + `extra.clerkPublishableKey`
@@ -57,6 +60,7 @@
 ## Task 0: Fix CI to build @smartroute/shared
 
 **Files:**
+
 - Modify: `.github/workflows/ci.yml`
 
 - [ ] **Step 1: Add shared build step before typecheck**
@@ -64,8 +68,8 @@
 Edit `.github/workflows/ci.yml` — insert a new step between "Apply migrations" (line 67) and "Format check":
 
 ```yaml
-      - name: Build shared package
-        run: pnpm --filter @smartroute/shared build
+- name: Build shared package
+  run: pnpm --filter @smartroute/shared build
 ```
 
 - [ ] **Step 2: Verify CI file lints locally**
@@ -85,6 +89,7 @@ git commit -m "ci: build shared package before typecheck/test"
 ## Task 1: Install mobile dependencies
 
 **Files:**
+
 - Modify: `apps/mobile/package.json`
 
 - [ ] **Step 1: Add runtime deps**
@@ -144,6 +149,7 @@ git commit -m "feat(mobile): add Clerk, navigation, maps, and jest deps"
 ## Task 2: Add Jest config and tsconfig types
 
 **Files:**
+
 - Create: `apps/mobile/jest.config.js`
 - Create: `apps/mobile/jest.setup.ts`
 - Modify: `apps/mobile/tsconfig.json`
@@ -194,6 +200,7 @@ git commit -m "feat(mobile): add jest-expo config"
 ## Task 3: Migrate app.json → app.config.ts with extras
 
 **Files:**
+
 - Create: `apps/mobile/app.config.ts`
 - Delete: `apps/mobile/app.json`
 - Create: `apps/mobile/.env.example`
@@ -259,6 +266,7 @@ git commit -m "feat(mobile): switch to app.config.ts with extras"
 ## Task 4: Add config module reading expo-constants
 
 **Files:**
+
 - Create: `apps/mobile/src/config.ts`
 
 - [ ] **Step 1: Write config**
@@ -301,6 +309,7 @@ git commit -m "feat(mobile): add config module"
 ## Task 5: Add Clerk token cache (SecureStore)
 
 **Files:**
+
 - Create: `apps/mobile/src/auth/tokenCache.ts`
 
 - [ ] **Step 1: Write tokenCache**
@@ -345,6 +354,7 @@ git commit -m "feat(mobile): add SecureStore-backed Clerk token cache"
 ## Task 6: API client with token attachment and error decoding
 
 **Files:**
+
 - Create: `apps/mobile/src/api/client.ts`
 - Test: `apps/mobile/__tests__/api/client.test.ts`
 
@@ -469,6 +479,7 @@ git commit -m "feat(mobile): add API client with token + error envelope"
 ## Task 7: Optimize + Trips API wrappers
 
 **Files:**
+
 - Create: `apps/mobile/src/api/optimize.ts`
 - Create: `apps/mobile/src/api/trips.ts`
 
@@ -479,10 +490,7 @@ git commit -m "feat(mobile): add API client with token + error envelope"
 import type { OptimizeRequest, OptimizeResponse } from '@smartroute/shared';
 import { apiFetch, type GetToken } from './client';
 
-export function postOptimize(
-  body: OptimizeRequest,
-  getToken: GetToken,
-): Promise<OptimizeResponse> {
+export function postOptimize(body: OptimizeRequest, getToken: GetToken): Promise<OptimizeResponse> {
   return apiFetch<OptimizeResponse>(
     '/optimize',
     { method: 'POST', body: JSON.stringify(body) },
@@ -499,11 +507,7 @@ import type { Trip, CreateTripRequest } from '@smartroute/shared';
 import { apiFetch, type GetToken } from './client';
 
 export function createTrip(body: CreateTripRequest, getToken: GetToken): Promise<Trip> {
-  return apiFetch<Trip>(
-    '/trips',
-    { method: 'POST', body: JSON.stringify(body) },
-    getToken,
-  );
+  return apiFetch<Trip>('/trips', { method: 'POST', body: JSON.stringify(body) }, getToken);
 }
 
 export function listTrips(getToken: GetToken): Promise<Trip[]> {
@@ -532,6 +536,7 @@ git commit -m "feat(mobile): add optimize and trips API wrappers"
 ## Task 8: Static airport coordinates table
 
 **Files:**
+
 - Create: `apps/mobile/src/data/airports.ts`
 - Test: `apps/mobile/__tests__/data/airports.test.ts`
 
@@ -580,7 +585,13 @@ export const airports: Record<string, Airport> = {
   JFK: { code: 'JFK', name: 'John F. Kennedy Intl', city: 'New York', lat: 40.6413, lng: -73.7781 },
   LAX: { code: 'LAX', name: 'Los Angeles Intl', city: 'Los Angeles', lat: 33.9416, lng: -118.4085 },
   ORD: { code: 'ORD', name: "O'Hare Intl", city: 'Chicago', lat: 41.9742, lng: -87.9073 },
-  SFO: { code: 'SFO', name: 'San Francisco Intl', city: 'San Francisco', lat: 37.6213, lng: -122.379 },
+  SFO: {
+    code: 'SFO',
+    name: 'San Francisco Intl',
+    city: 'San Francisco',
+    lat: 37.6213,
+    lng: -122.379,
+  },
   ATL: { code: 'ATL', name: 'Hartsfield-Jackson', city: 'Atlanta', lat: 33.6407, lng: -84.4277 },
   MIA: { code: 'MIA', name: 'Miami Intl', city: 'Miami', lat: 25.7959, lng: -80.287 },
   SEA: { code: 'SEA', name: 'Seattle-Tacoma', city: 'Seattle', lat: 47.4502, lng: -122.3088 },
@@ -615,7 +626,13 @@ export const airports: Record<string, Airport> = {
   PVG: { code: 'PVG', name: 'Pudong', city: 'Shanghai', lat: 31.1443, lng: 121.8083 },
   BKK: { code: 'BKK', name: 'Suvarnabhumi', city: 'Bangkok', lat: 13.69, lng: 100.7501 },
   SYD: { code: 'SYD', name: 'Kingsford Smith', city: 'Sydney', lat: -33.9399, lng: 151.1753 },
-  GRU: { code: 'GRU', name: 'São Paulo-Guarulhos', city: 'São Paulo', lat: -23.4356, lng: -46.4731 },
+  GRU: {
+    code: 'GRU',
+    name: 'São Paulo-Guarulhos',
+    city: 'São Paulo',
+    lat: -23.4356,
+    lng: -46.4731,
+  },
   EZE: { code: 'EZE', name: 'Ezeiza', city: 'Buenos Aires', lat: -34.8222, lng: -58.5358 },
   MEX: { code: 'MEX', name: 'Mexico City', city: 'Mexico City', lat: 19.4361, lng: -99.0719 },
   YVR: { code: 'YVR', name: 'Vancouver', city: 'Vancouver', lat: 49.1939, lng: -123.1844 },
@@ -653,6 +670,7 @@ git commit -m "feat(mobile): add static airport coordinate table"
 ## Task 9: Screen wrapper component
 
 **Files:**
+
 - Create: `apps/mobile/src/components/Screen.tsx`
 
 - [ ] **Step 1: Implement**
@@ -694,6 +712,7 @@ git commit -m "feat(mobile): add Screen wrapper"
 ## Task 10: CityPicker component
 
 **Files:**
+
 - Create: `apps/mobile/src/components/CityPicker.tsx`
 - Test: `apps/mobile/__tests__/components/CityPicker.test.tsx`
 
@@ -707,18 +726,14 @@ import { CityPicker } from '../../src/components/CityPicker';
 describe('CityPicker', () => {
   it('renders selected codes and removes one on tap', () => {
     const onChange = jest.fn();
-    const { getByText } = render(
-      <CityPicker selected={['JFK', 'CDG']} onChange={onChange} />,
-    );
+    const { getByText } = render(<CityPicker selected={['JFK', 'CDG']} onChange={onChange} />);
     fireEvent.press(getByText('JFK ✕'));
     expect(onChange).toHaveBeenCalledWith(['CDG']);
   });
 
   it('adds a code on submit and uppercases it', () => {
     const onChange = jest.fn();
-    const { getByPlaceholderText } = render(
-      <CityPicker selected={['JFK']} onChange={onChange} />,
-    );
+    const { getByPlaceholderText } = render(<CityPicker selected={['JFK']} onChange={onChange} />);
     const input = getByPlaceholderText('Add airport (e.g. CDG)');
     fireEvent.changeText(input, 'cdg');
     fireEvent(input, 'submitEditing');
@@ -860,6 +875,7 @@ git commit -m "feat(mobile): add CityPicker component"
 ## Task 11: useOptimize and useTrips hooks
 
 **Files:**
+
 - Create: `apps/mobile/src/hooks/useOptimize.ts`
 - Create: `apps/mobile/src/hooks/useTrips.ts`
 
@@ -953,10 +969,7 @@ export function useTrip(id: string) {
 
 export function useCreateTrip() {
   const { getToken } = useAuth();
-  return useCallback(
-    (body: CreateTripRequest) => createTrip(body, () => getToken()),
-    [getToken],
-  );
+  return useCallback((body: CreateTripRequest) => createTrip(body, () => getToken()), [getToken]);
 }
 ```
 
@@ -977,6 +990,7 @@ git commit -m "feat(mobile): add useOptimize and useTrips hooks"
 ## Task 12: RouteOption card component
 
 **Files:**
+
 - Create: `apps/mobile/src/components/RouteOption.tsx`
 
 - [ ] **Step 1: Implement**
@@ -1029,7 +1043,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     backgroundColor: '#fff',
   },
-  tag: { alignSelf: 'flex-start', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3, marginBottom: 8 },
+  tag: {
+    alignSelf: 'flex-start',
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    marginBottom: 8,
+  },
   tagText: { color: '#fff', fontSize: 12, fontWeight: '700' },
   order: { fontSize: 18, fontWeight: '600', color: '#0F172A' },
   meta: { marginTop: 6, color: '#475569' },
@@ -1055,6 +1075,7 @@ git commit -m "feat(mobile): add RouteOption card"
 ## Task 13: RouteMap component
 
 **Files:**
+
 - Create: `apps/mobile/src/components/RouteMap.tsx`
 
 - [ ] **Step 1: Implement**
@@ -1093,16 +1114,30 @@ export function RouteMap({ order, height = 280 }: Props): JSX.Element {
   return (
     <MapView style={[styles.map, { height }]} provider={PROVIDER_DEFAULT} initialRegion={region}>
       {points.map((p) => (
-        <Marker key={p.code} coordinate={{ latitude: p.latitude, longitude: p.longitude }} title={p.code} description={p.name} />
+        <Marker
+          key={p.code}
+          coordinate={{ latitude: p.latitude, longitude: p.longitude }}
+          title={p.code}
+          description={p.name}
+        />
       ))}
-      <Polyline coordinates={points.map((p) => ({ latitude: p.latitude, longitude: p.longitude }))} strokeColor="#0D9488" strokeWidth={3} />
+      <Polyline
+        coordinates={points.map((p) => ({ latitude: p.latitude, longitude: p.longitude }))}
+        strokeColor="#0D9488"
+        strokeWidth={3}
+      />
     </MapView>
   );
 }
 
 const styles = StyleSheet.create({
   map: { borderRadius: 12, overflow: 'hidden' },
-  empty: { backgroundColor: '#F1F5F9', borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+  empty: {
+    backgroundColor: '#F1F5F9',
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   emptyText: { color: '#64748B' },
 });
 ```
@@ -1124,6 +1159,7 @@ git commit -m "feat(mobile): add RouteMap component"
 ## Task 14: SignInScreen
 
 **Files:**
+
 - Create: `apps/mobile/src/screens/SignInScreen.tsx`
 
 - [ ] **Step 1: Implement (email code flow)**
@@ -1211,7 +1247,14 @@ export function SignInScreen(): JSX.Element {
 const styles = StyleSheet.create({
   title: { fontSize: 32, fontWeight: '700', color: '#0D9488', marginBottom: 8 },
   subtitle: { fontSize: 16, color: '#64748B', marginBottom: 24 },
-  input: { borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 8, padding: 12, fontSize: 16, marginBottom: 12 },
+  input: {
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    marginBottom: 12,
+  },
   error: { color: '#DC2626', marginTop: 12 },
 });
 ```
@@ -1228,6 +1271,7 @@ git commit -m "feat(mobile): add SignInScreen with Clerk email-code flow"
 ## Task 15: PlannerScreen
 
 **Files:**
+
 - Create: `apps/mobile/src/screens/PlannerScreen.tsx`
 
 - [ ] **Step 1: Implement**
@@ -1280,9 +1324,19 @@ export function PlannerScreen(): JSX.Element {
         <Text style={styles.label}>Cities (2–8)</Text>
         <CityPicker selected={cities} onChange={setCities} />
         <Text style={styles.label}>Depart date (YYYY-MM-DD)</Text>
-        <TextInput style={styles.input} value={departDate} onChangeText={setDepartDate} autoCapitalize="none" />
+        <TextInput
+          style={styles.input}
+          value={departDate}
+          onChangeText={setDepartDate}
+          autoCapitalize="none"
+        />
         <Text style={styles.label}>Days per city</Text>
-        <TextInput style={styles.input} value={perCity} onChangeText={setPerCity} keyboardType="number-pad" />
+        <TextInput
+          style={styles.input}
+          value={perCity}
+          onChangeText={setPerCity}
+          keyboardType="number-pad"
+        />
         <View style={styles.row}>
           <Text style={styles.label}>Direct flights only</Text>
           <Switch value={directOnly} onValueChange={setDirectOnly} />
@@ -1305,11 +1359,21 @@ export function PlannerScreen(): JSX.Element {
 
 const styles = StyleSheet.create({
   scroll: { paddingBottom: 24 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   title: { fontSize: 24, fontWeight: '700', color: '#0F172A' },
   label: { fontSize: 14, color: '#475569', marginTop: 12, marginBottom: 6 },
   input: { borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 8, padding: 12, fontSize: 16 },
-  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 12,
+  },
   error: { color: '#DC2626', marginTop: 12 },
 });
 ```
@@ -1326,6 +1390,7 @@ git commit -m "feat(mobile): add PlannerScreen"
 ## Task 16: ResultsScreen with save action
 
 **Files:**
+
 - Create: `apps/mobile/src/screens/ResultsScreen.tsx`
 
 - [ ] **Step 1: Implement**
@@ -1398,7 +1463,11 @@ export function ResultsScreen(): JSX.Element {
           </View>
         ))}
         <View style={{ marginTop: 16 }}>
-          <Button title={saving ? 'Saving…' : 'Save selected trip'} onPress={save} disabled={saving} />
+          <Button
+            title={saving ? 'Saving…' : 'Save selected trip'}
+            onPress={save}
+            disabled={saving}
+          />
         </View>
       </ScrollView>
     </Screen>
@@ -1423,6 +1492,7 @@ git commit -m "feat(mobile): add ResultsScreen with save action"
 ## Task 17: TripsListScreen and TripDetailScreen
 
 **Files:**
+
 - Create: `apps/mobile/src/screens/TripsListScreen.tsx`
 - Create: `apps/mobile/src/screens/TripDetailScreen.tsx`
 
@@ -1488,8 +1558,18 @@ export function TripDetailScreen(): JSX.Element {
   const route = useRoute<RouteProp<RootStackParamList, 'TripDetail'>>();
   const { trip, error } = useTrip(route.params.id);
 
-  if (error) return <Screen><Text style={styles.error}>{error}</Text></Screen>;
-  if (!trip) return <Screen><Text style={styles.loading}>Loading…</Text></Screen>;
+  if (error)
+    return (
+      <Screen>
+        <Text style={styles.error}>{error}</Text>
+      </Screen>
+    );
+  if (!trip)
+    return (
+      <Screen>
+        <Text style={styles.loading}>Loading…</Text>
+      </Screen>
+    );
 
   return (
     <Screen>
@@ -1511,7 +1591,8 @@ export function TripDetailScreen(): JSX.Element {
               {new Date(f.depart).toLocaleString()} → {new Date(f.arrive).toLocaleString()}
             </Text>
             <Text style={styles.legMeta}>
-              ${(f.priceCents / 100).toFixed(0)} · {Math.round(f.durationMin / 60)}h · {f.stops} stop(s)
+              ${(f.priceCents / 100).toFixed(0)} · {Math.round(f.durationMin / 60)}h · {f.stops}{' '}
+              stop(s)
             </Text>
           </View>
         ))}
@@ -1546,6 +1627,7 @@ git commit -m "feat(mobile): add TripsList and TripDetail screens"
 ## Task 18: Root navigator with auth gate
 
 **Files:**
+
 - Create: `apps/mobile/src/navigation/RootNavigator.tsx`
 
 - [ ] **Step 1: Implement**
@@ -1592,10 +1674,22 @@ export function RootNavigator(): JSX.Element {
       <Stack.Navigator>
         {isSignedIn ? (
           <>
-            <Stack.Screen name="Planner" component={PlannerScreen} options={{ title: 'SmartRoute' }} />
+            <Stack.Screen
+              name="Planner"
+              component={PlannerScreen}
+              options={{ title: 'SmartRoute' }}
+            />
             <Stack.Screen name="Results" component={ResultsScreen} options={{ title: 'Routes' }} />
-            <Stack.Screen name="TripsList" component={TripsListScreen} options={{ title: 'My Trips' }} />
-            <Stack.Screen name="TripDetail" component={TripDetailScreen} options={{ title: 'Trip' }} />
+            <Stack.Screen
+              name="TripsList"
+              component={TripsListScreen}
+              options={{ title: 'My Trips' }}
+            />
+            <Stack.Screen
+              name="TripDetail"
+              component={TripDetailScreen}
+              options={{ title: 'Trip' }}
+            />
           </>
         ) : (
           <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }} />
@@ -1623,6 +1717,7 @@ git commit -m "feat(mobile): add auth-gated root navigator"
 ## Task 19: Wire ClerkProvider in App.tsx
 
 **Files:**
+
 - Modify: `apps/mobile/App.tsx`
 
 - [ ] **Step 1: Replace App.tsx**
@@ -1668,13 +1763,14 @@ git commit -m "feat(mobile): wire ClerkProvider, SafeAreaProvider, and navigator
 ## Task 20: Update README with mobile setup
 
 **Files:**
+
 - Modify: `README.md`
 
 - [ ] **Step 1: Append mobile section**
 
 Add this section to `README.md` after the existing "Backend endpoints" section:
 
-```markdown
+````markdown
 ## Mobile setup
 
 ```bash
@@ -1684,16 +1780,18 @@ cp .env.example .env
 # EXPO_PUBLIC_API_URL defaults to http://localhost:3000 (use your LAN IP for physical devices)
 pnpm --filter @smartroute/mobile start
 ```
+````
 
 Sign in with email + 6-digit code (Clerk). The planner accepts 2–8 IATA airport codes from a built-in list of ~50 popular airports (real geocoding lands in Plan 4).
-```
+
+````
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add README.md
 git commit -m "docs: add mobile setup instructions"
-```
+````
 
 ---
 
