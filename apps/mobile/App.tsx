@@ -1,24 +1,18 @@
+// apps/mobile/App.tsx
+import { ClerkProvider } from '@clerk/clerk-expo';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { SHARED_VERSION } from '@smartroute/shared';
+import { config } from './src/config';
+import { tokenCache } from './src/auth/tokenCache';
+import { RootNavigator } from './src/navigation/RootNavigator';
 
 export default function App(): JSX.Element {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>SmartRoute</Text>
-      <Text style={styles.subtitle}>shared v{SHARED_VERSION}</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ClerkProvider publishableKey={config.clerkPublishableKey} tokenCache={tokenCache}>
+      <SafeAreaProvider>
+        <StatusBar style="auto" />
+        <RootNavigator />
+      </SafeAreaProvider>
+    </ClerkProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: { fontSize: 28, fontWeight: '600', color: '#0D9488' },
-  subtitle: { marginTop: 8, fontSize: 14, color: '#64748B' },
-});
