@@ -5,7 +5,7 @@ import { RouteMap } from '../components/RouteMap';
 import { useTrip } from '../hooks/useTrips';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 
-export function TripDetailScreen(): JSX.Element {
+export function TripDetailScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'TripDetail'>>();
   const { trip, error } = useTrip(route.params.id);
 

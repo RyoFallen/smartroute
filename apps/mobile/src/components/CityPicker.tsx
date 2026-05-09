@@ -4,7 +4,7 @@ import { findAirport } from '../data/airports';
 
 type Props = { selected: string[]; onChange: (next: string[]) => void };
 
-export function CityPicker({ selected, onChange }: Props): JSX.Element {
+export function CityPicker({ selected, onChange }: Props) {
   const [draft, setDraft] = useState('');
   const [error, setError] = useState<string | null>(null);
 

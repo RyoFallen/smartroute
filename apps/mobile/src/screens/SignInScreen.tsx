@@ -3,7 +3,7 @@ import { Button, StyleSheet, Text, TextInput } from 'react-native';
 import { useSignIn } from '@clerk/clerk-expo';
 import { Screen } from '../components/Screen';
 
-export function SignInScreen(): JSX.Element {
+export function SignInScreen() {
   const { signIn, setActive, isLoaded } = useSignIn();
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');

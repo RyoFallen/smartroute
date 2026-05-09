@@ -5,7 +5,7 @@ import { Screen } from '../components/Screen';
 import { useTripsList } from '../hooks/useTrips';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 
-export function TripsListScreen(): JSX.Element {
+export function TripsListScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList, 'TripsList'>>();
   const { trips, error, loading, refresh } = useTripsList();
 

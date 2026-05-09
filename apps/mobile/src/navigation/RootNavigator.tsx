@@ -22,7 +22,7 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export function RootNavigator(): JSX.Element {
+export function RootNavigator() {
   const { isLoaded, isSignedIn } = useAuth();
 
   if (!isLoaded) {

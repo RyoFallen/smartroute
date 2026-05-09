@@ -8,7 +8,7 @@ import { RouteMap } from '../components/RouteMap';
 import { useCreateTrip } from '../hooks/useTrips';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 
-export function ResultsScreen(): JSX.Element {
+export function ResultsScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Results'>>();
   const route = useRoute<RouteProp<RootStackParamList, 'Results'>>();
   const createTrip = useCreateTrip();

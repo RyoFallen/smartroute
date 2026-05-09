@@ -19,7 +19,7 @@ export function RouteOption({
 }: {
   option: RouteOptionT;
   onPress?: () => void;
-}): JSX.Element {
+}) {
   const totalUsd = (option.totalPriceCents / 100).toFixed(0);
   const totalH = Math.round(option.totalDurationMin / 60);
   return (

@@ -6,7 +6,7 @@ import { config } from './src/config';
 import { tokenCache } from './src/auth/tokenCache';
 import { RootNavigator } from './src/navigation/RootNavigator';
 
-export default function App(): JSX.Element {
+export default function App() {
   return (
     <ClerkProvider publishableKey={config.clerkPublishableKey} tokenCache={tokenCache}>
       <SafeAreaProvider>

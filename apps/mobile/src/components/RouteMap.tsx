@@ -4,7 +4,7 @@ import { findAirport } from '../data/airports';
 
 type Props = { order: string[]; height?: number };
 
-export function RouteMap({ order, height = 280 }: Props): JSX.Element {
+export function RouteMap({ order, height = 280 }: Props) {
   const points = order
     .map((c) => findAirport(c))
     .filter((a): a is NonNullable<ReturnType<typeof findAirport>> => Boolean(a))

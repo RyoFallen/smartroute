@@ -8,7 +8,7 @@ import { CityPicker } from '../components/CityPicker';
 import { useOptimize } from '../hooks/useOptimize';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 
-export function PlannerScreen(): JSX.Element {
+export function PlannerScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Planner'>>();
   const { signOut } = useAuth();
   const { state, run } = useOptimize();
