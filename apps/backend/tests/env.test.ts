@@ -34,10 +34,9 @@ describe('env', () => {
 
   it('exits when FLIGHT_PROVIDER=duffel but DUFFEL_API_KEY is missing', () => {
     process.env.FLIGHT_PROVIDER = 'duffel';
-    const exit = process.exit as unknown as (code?: number) => never;
-    const spy = vi.spyOn(process, 'exit').mockImplementation((() => {
+    const spy = vi.spyOn(process, 'exit').mockImplementation(((): never => {
       throw new Error('exit called');
-    }) as typeof exit);
+    }) as never);
     expect(() => loadEnv()).toThrow('exit called');
     spy.mockRestore();
   });
