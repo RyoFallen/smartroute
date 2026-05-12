@@ -26,7 +26,13 @@ export const authPlugin = fp(async (app) => {
       else if (Array.isArray(v)) headers.set(k, v.join(','));
     }
     const fetchReq = new Request(url, { method: req.method, headers });
-    const result = await clerk.authenticateRequest(fetchReq);
+    let result: Awaited<ReturnType<typeof clerk.authenticateRequest>>;
+    try {
+      result = await clerk.authenticateRequest(fetchReq);
+    } catch (err) {
+      req.log.debug({ err }, 'clerk.authenticateRequest threw');
+      throw new ApiError('UNAUTHORIZED', 'Authentication required', 401);
+    }
     if (!result.isSignedIn) {
       throw new ApiError('UNAUTHORIZED', 'Authentication required', 401);
     }

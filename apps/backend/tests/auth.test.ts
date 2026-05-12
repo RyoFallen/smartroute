@@ -8,6 +8,9 @@ vi.mock('@clerk/backend', () => ({
       if (auth === 'Bearer good') {
         return { isSignedIn: true, toAuth: () => ({ userId: 'user_123' }) };
       }
+      if (auth === 'Bearer throws') {
+        throw new Error('Publishable key not valid');
+      }
       return { isSignedIn: false, toAuth: () => null };
     }),
   }),
@@ -23,6 +26,18 @@ describe('auth plugin', () => {
     const app = await buildServer();
     app.get('/protected', { preHandler: [app.requireAuth] }, async (req) => ({ uid: req.userId }));
     const res = await app.inject({ method: 'GET', url: '/protected' });
+    expect(res.statusCode).toBe(401);
+    expect(res.json().error.code).toBe('UNAUTHORIZED');
+  });
+
+  it('converts thrown Clerk errors to 401, not 500', async () => {
+    const app = await buildServer();
+    app.get('/protected', { preHandler: [app.requireAuth] }, async (req) => ({ uid: req.userId }));
+    const res = await app.inject({
+      method: 'GET',
+      url: '/protected',
+      headers: { authorization: 'Bearer throws' },
+    });
     expect(res.statusCode).toBe(401);
     expect(res.json().error.code).toBe('UNAUTHORIZED');
   });
