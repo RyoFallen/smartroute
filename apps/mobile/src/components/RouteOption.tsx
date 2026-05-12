@@ -13,13 +13,7 @@ const labelColor: Record<string, string> = {
   most_direct: '#7C3AED',
 };
 
-export function RouteOption({
-  option,
-  onPress,
-}: {
-  option: RouteOptionT;
-  onPress?: () => void;
-}) {
+export function RouteOption({ option, onPress }: { option: RouteOptionT; onPress?: () => void }) {
   const totalUsd = (option.totalPriceCents / 100).toFixed(0);
   const totalH = Math.round(option.totalDurationMin / 60);
   return (
