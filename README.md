@@ -54,6 +54,21 @@ pnpm --filter @smartroute/mobile start  # Expo dev server
 
 All authenticated endpoints expect `Authorization: Bearer <Clerk JWT>`. Set `CLERK_SECRET_KEY` and `CLERK_PUBLISHABLE_KEY` in `.env` before running the backend.
 
+## Using real flight data (Duffel)
+
+By default, the backend uses `MockFlightProvider` — deterministic fake prices. To use real flights:
+
+1. Sign up at https://app.duffel.com/access/sign-up (no card required for test mode).
+2. In the Duffel dashboard, **Settings → Access tokens**, copy a `duffel_test_*` key.
+3. In `apps/backend/.env`, set:
+   ```
+   FLIGHT_PROVIDER=duffel
+   DUFFEL_API_KEY=duffel_test_xxx...
+   ```
+4. Restart the backend. It logs the selected provider at boot and refuses to start if `FLIGHT_PROVIDER=duffel` but `DUFFEL_API_KEY` is missing.
+
+CI always runs with the mock provider (no key in the workflow), so tests stay deterministic and offline.
+
 ## Mobile setup
 
 ```bash

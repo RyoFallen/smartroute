@@ -45,7 +45,7 @@ Provider is chosen once at boot in `server.ts` based on `FLIGHT_PROVIDER` and `D
 We do not book. We only shop. The minimal path:
 
 1. `POST /air/offer_requests` with slices `[{origin, destination, departure_date}]`, `passengers: [{ type: "adult" }]`, `cabin_class`. Returns an `offer_request` with embedded offers (or set `return_offers: false` and list separately — we use embedded for one round-trip).
-2. From the response, take the *cheapest* `offer` per slice, extract:
+2. From the response, take the _cheapest_ `offer` per slice, extract:
    - `total_amount` + `total_currency` → `priceCents` (convert via FX or restrict to USD)
    - `slices[0].duration` (ISO 8601 like `"PT8H30M"`) → `durationMin`
    - `slices[0].segments.length - 1` → `stops`
@@ -181,6 +181,7 @@ export function classify(err: unknown): DuffelErrorClass { ... }
 ```
 
 The SDK throws `DuffelError` with a `meta.status` and `errors[].code`. Map:
+
 - 401/403 → `auth` (fatal — surface as `ApiError.providerAuth()`)
 - 422 → `validation` (often "no offers found"; treat as empty result, not throw)
 - 429 → `rate_limit` (retryable; one retry with backoff; then throw)
@@ -191,7 +192,10 @@ The SDK throws `DuffelError` with a `meta.status` and `errors[].code`. Map:
 
 ```ts
 class DuffelFlightProvider {
-  constructor(private duffel: Duffel, private logger: Logger) {}
+  constructor(
+    private duffel: Duffel,
+    private logger: Logger,
+  ) {}
   async getPrices(queries: PriceQuery[]): Promise<PriceResult[]> {
     const results = await Promise.allSettled(queries.map((q) => this.fetchOne(q)));
     // For each settled: fulfilled non-null → push; rejected → log+skip (partial success).
@@ -201,7 +205,7 @@ class DuffelFlightProvider {
 }
 ```
 
-Decision to document inline: `Promise.allSettled` + skip-on-failure gives us *partial success*, which is exactly what `FlightService.partial` was designed for. Do not switch to `Promise.all`.
+Decision to document inline: `Promise.allSettled` + skip-on-failure gives us _partial success_, which is exactly what `FlightService.partial` was designed for. Do not switch to `Promise.all`.
 
 - [ ] **Step 3: Fixtures.** Run a real test-mode call once locally with a real key and `curl -s 'https://api.duffel.com/...'`, capture three responses, scrub any PII (none expected, but check), commit as JSON. Document the capture date and Duffel API version (header `Duffel-Version`) in a `README.md` inside `fixtures/`.
 
@@ -272,7 +276,7 @@ If anything in steps 3-4 produces a 500, the most likely culprit is a mapper edg
 
 - **Bookings.** We do not call `/air/orders`. Test mode would let us, but it adds confirmation flows, payment intents, and order management — separate plan if we ever want it.
 - **Multi-passenger.** We hardcode `[{ type: "adult" }]`. Multi-pax changes Duffel pricing and our optimizer scoring; that's a UX-led change, not infra.
-- **Caching tiers.** The Plan 2 `PriceCache` (6h freshness) is sufficient. Duffel's own cache headers / offer expiry are not honored — offers technically expire in ~20min, but we never book, so a stale cached *price* is fine for optimizer scoring.
+- **Caching tiers.** The Plan 2 `PriceCache` (6h freshness) is sufficient. Duffel's own cache headers / offer expiry are not honored — offers technically expire in ~20min, but we never book, so a stale cached _price_ is fine for optimizer scoring.
 - **Currency conversion.** USD only. Plan 5 (deploy) can revisit if we want INR/EUR users.
 - **Webhook handling.** Duffel offers webhooks for order lifecycle; irrelevant without bookings.
 
