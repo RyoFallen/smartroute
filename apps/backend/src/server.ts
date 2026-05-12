@@ -6,6 +6,7 @@ import { tripsRoute } from './routes/trips.route.js';
 import { errorHandlerPlugin } from './plugins/error-handler.js';
 import { prismaPlugin } from './plugins/prisma.js';
 import { authPlugin } from './plugins/auth.js';
+import { flightsPlugin } from './plugins/flights.js';
 
 export interface BuildOptions {
   withDb?: boolean;
@@ -17,6 +18,7 @@ export async function buildServer(opts: BuildOptions = {}): Promise<FastifyInsta
   await app.register(authPlugin);
   if (opts.withDb ?? Boolean(process.env.DATABASE_URL)) {
     await app.register(prismaPlugin);
+    await app.register(flightsPlugin);
     await app.register(optimizeRoute);
     await app.register(tripsRoute);
   }
