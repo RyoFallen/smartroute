@@ -2,6 +2,8 @@ import type { CreateOfferRequest, Offer } from '@duffel/api/types';
 import type { CabinClass } from '@smartroute/shared';
 import type { PriceQuery, PriceResult } from '../provider.js';
 
+type OfferForPricing = Omit<Offer, 'available_services'>;
+
 type DuffelCabinClass = 'economy' | 'premium_economy' | 'business' | 'first';
 
 const cabinClassMap: Record<CabinClass, DuffelCabinClass> = {
@@ -47,11 +49,14 @@ export function parseIsoDurationMinutes(iso: string | null | undefined): number 
  * fields we require (duration, segments). Non-USD offers are dropped — the
  * caller treats this as partial-success.
  */
-export function bestOfferToPriceResult(query: PriceQuery, offers: Offer[]): PriceResult | null {
+export function bestOfferToPriceResult(
+  query: PriceQuery,
+  offers: OfferForPricing[],
+): PriceResult | null {
   const usd = offers.filter((o) => o.total_currency === 'USD');
   if (usd.length === 0) return null;
 
-  let best: Offer | null = null;
+  let best: OfferForPricing | null = null;
   let bestAmount = Number.POSITIVE_INFINITY;
   for (const o of usd) {
     const amt = parseFloat(o.total_amount);
