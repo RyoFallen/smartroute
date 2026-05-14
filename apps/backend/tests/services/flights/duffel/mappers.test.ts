@@ -108,9 +108,20 @@ describe('bestOfferToPriceResult', () => {
     expect(bestOfferToPriceResult(query, [])).toBeNull();
   });
 
-  it('drops non-USD offers and returns null when none remain', () => {
+  it('falls back to non-USD offers when no USD present', () => {
     const offers = [makeOffer({ totalAmount: '120.00', currency: 'EUR' })];
-    expect(bestOfferToPriceResult(query, offers)).toBeNull();
+    const r = bestOfferToPriceResult(query, offers);
+    expect(r).not.toBeNull();
+    expect(r!.priceCents).toBe(12000);
+  });
+
+  it('prefers USD when both USD and non-USD offers exist', () => {
+    const offers = [
+      makeOffer({ totalAmount: '100.00', currency: 'EUR' }),
+      makeOffer({ totalAmount: '500.00', currency: 'USD' }),
+    ];
+    const r = bestOfferToPriceResult(query, offers);
+    expect(r!.priceCents).toBe(50000);
   });
 
   it('picks the cheapest USD offer', () => {

@@ -124,13 +124,14 @@ describe('DuffelFlightProvider', () => {
     expect(create).toHaveBeenCalledTimes(2); // 1 attempt + 1 retry
   });
 
-  it('returns no PriceResult when the offer list is all non-USD', async () => {
+  it('accepts non-USD offers when no USD alternative is present', async () => {
     const duffel = mkDuffel(async () => ({
       data: { offers: [offer({ total: '120.00', currency: 'EUR' })] },
     }));
     const prov = mkProvider(duffel);
     const out = await prov.getPrices([q1]);
-    expect(out).toHaveLength(0);
+    expect(out).toHaveLength(1);
+    expect(out[0]!.priceCents).toBe(12000);
   });
 
   it('propagates ApiError instance for assertions in callers', async () => {

@@ -42,23 +42,26 @@ export function parseIsoDurationMinutes(iso: string | null | undefined): number 
 }
 
 /**
- * Pick the cheapest USD offer from a single-slice offer_request response and
+ * Pick the cheapest offer from a single-slice offer_request response and
  * project it onto the shape FlightService expects.
  *
- * Returns null when no USD offer is present, or when the offer is missing
- * fields we require (duration, segments). Non-USD offers are dropped — the
- * caller treats this as partial-success.
+ * Prefers USD offers if present; otherwise falls back to the cheapest offer
+ * in any currency. Returns null only when no offers are usable (no segments,
+ * no duration). Proper FX conversion is deferred — test-mode prices are
+ * synthetic, and live mode will need a real FX layer (TODO Plan 5+).
  */
 export function bestOfferToPriceResult(
   query: PriceQuery,
   offers: OfferForPricing[],
 ): PriceResult | null {
+  if (offers.length === 0) return null;
+
   const usd = offers.filter((o) => o.total_currency === 'USD');
-  if (usd.length === 0) return null;
+  const pool = usd.length > 0 ? usd : offers;
 
   let best: OfferForPricing | null = null;
   let bestAmount = Number.POSITIVE_INFINITY;
-  for (const o of usd) {
+  for (const o of pool) {
     const amt = parseFloat(o.total_amount);
     if (Number.isFinite(amt) && amt < bestAmount) {
       bestAmount = amt;

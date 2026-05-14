@@ -59,7 +59,7 @@ All authenticated endpoints expect `Authorization: Bearer <Clerk JWT>`. Set `CLE
 By default, the backend uses `MockFlightProvider` — deterministic fake prices. To use real flights:
 
 1. Sign up at https://app.duffel.com/access/sign-up (no card required for test mode).
-2. In the Duffel dashboard, **Settings → Access tokens**, copy a `duffel_test_*` key.
+2. Verify your email, then in the dashboard click your **organisation name → Developers → Access tokens → New token**. Make sure the dashboard is in **Developer test mode**; test tokens start with `duffel_test_`.
 3. In `apps/backend/.env`, set:
    ```
    FLIGHT_PROVIDER=duffel
@@ -67,7 +67,9 @@ By default, the backend uses `MockFlightProvider` — deterministic fake prices.
    ```
 4. Restart the backend. It logs the selected provider at boot and refuses to start if `FLIGHT_PROVIDER=duffel` but `DUFFEL_API_KEY` is missing.
 
-CI always runs with the mock provider (no key in the workflow), so tests stay deterministic and offline.
+Test mode only returns offers from the synthetic carrier "Duffel Airways". Prices come back in the origin region's local currency (e.g. GBP for LHR origins); the mapper prefers USD when available and falls back to the cheapest offer in any currency. Direct cross-currency comparison is not correct for production — a real FX layer is a follow-up (see Plan 5+).
+
+CI always runs with the mock provider (no `FLIGHT_PROVIDER` or `DUFFEL_API_KEY` in the workflow env), so tests stay deterministic and offline.
 
 ## Mobile setup
 
