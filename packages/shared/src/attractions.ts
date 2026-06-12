@@ -17,8 +17,8 @@ export const Attraction = z.object({
   name: z.string(),
   category: AttractionCategory,
   rank: z.number().int().positive(),
-  lat: z.number(),
-  lon: z.number(),
+  lat: z.number().min(-90).max(90),
+  lon: z.number().min(-180).max(180),
   description: z.string(),
 });
 export type Attraction = z.infer<typeof Attraction>;
