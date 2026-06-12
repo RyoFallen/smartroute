@@ -18,16 +18,16 @@ This is the core feature. A second major feature is in design: after saving a tr
 
 ## 2. Technical Stack
 
-| Layer | Technology | Why |
-|---|---|---|
-| Mobile app | React Native + Expo SDK 54 + TypeScript | Cross-platform iOS/Android from one codebase; Expo enables fast iteration without Xcode/Android Studio builds |
-| Backend API | Node.js 22 + Fastify + TypeScript | Fastify is significantly faster than Express; TypeScript ensures shared types between backend and mobile |
-| Database | PostgreSQL 16 + Prisma ORM | Prisma generates a fully-typed query client; schema changes are tracked as versioned migration files |
-| Authentication | Clerk | Handles email + 6-digit OTP sign-in; JWT tokens are verified server-side on every authenticated request |
-| Real flight data | Duffel API | Commercial flight data API; test mode returns synthetic offers so the app can be developed without spending money |
-| Shared types | Custom `@smartroute/shared` package (Zod schemas) | Both the backend and mobile import the same Zod schemas — if a field changes, the TypeScript compiler catches mismatches in both places simultaneously |
-| Monorepo tooling | pnpm workspaces | Manages the three packages (backend, mobile, shared) with a single `pnpm install` |
-| CI/CD | GitHub Actions | Runs on every push to `main`: format check, lint, type check, 55 automated tests against a real PostgreSQL service |
+| Layer            | Technology                                        | Why                                                                                                                                                    |
+| ---------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Mobile app       | React Native + Expo SDK 54 + TypeScript           | Cross-platform iOS/Android from one codebase; Expo enables fast iteration without Xcode/Android Studio builds                                          |
+| Backend API      | Node.js 22 + Fastify + TypeScript                 | Fastify is significantly faster than Express; TypeScript ensures shared types between backend and mobile                                               |
+| Database         | PostgreSQL 16 + Prisma ORM                        | Prisma generates a fully-typed query client; schema changes are tracked as versioned migration files                                                   |
+| Authentication   | Clerk                                             | Handles email + 6-digit OTP sign-in; JWT tokens are verified server-side on every authenticated request                                                |
+| Real flight data | Duffel API                                        | Commercial flight data API; test mode returns synthetic offers so the app can be developed without spending money                                      |
+| Shared types     | Custom `@smartroute/shared` package (Zod schemas) | Both the backend and mobile import the same Zod schemas — if a field changes, the TypeScript compiler catches mismatches in both places simultaneously |
+| Monorepo tooling | pnpm workspaces                                   | Manages the three packages (backend, mobile, shared) with a single `pnpm install`                                                                      |
+| CI/CD            | GitHub Actions                                    | Runs on every push to `main`: format check, lint, type check, 55 automated tests against a real PostgreSQL service                                     |
 
 ---
 
@@ -67,7 +67,7 @@ This is the core feature. A second major feature is in design: after saving a tr
 
 - **Shared Zod schemas** (`packages/shared`): The `OptimizeRequest`, `OptimizeResponse`, `Trip`, and `FlightLeg` types are defined once as Zod schemas and imported by both the backend and the mobile app. This means the API contract is enforced at compile time, not discovered at runtime.
 
-- **Provider pattern for flights**: The backend has a `FlightProvider` interface. In production, it is satisfied by `DuffelFlightProvider`. In CI tests, it is satisfied by `MockFlightProvider` (returns deterministic fake prices). This is a software design pattern called *dependency injection* — it means the optimizer logic can be tested without making real network calls to Duffel.
+- **Provider pattern for flights**: The backend has a `FlightProvider` interface. In production, it is satisfied by `DuffelFlightProvider`. In CI tests, it is satisfied by `MockFlightProvider` (returns deterministic fake prices). This is a software design pattern called _dependency injection_ — it means the optimizer logic can be tested without making real network calls to Duffel.
 
 - **In-memory price cache**: Flight prices are cached in memory for 10 minutes. If Duffel is slow or returns stale data, the cache serves the previous result and flags it as `staleCache: true` in the response.
 
@@ -76,11 +76,13 @@ This is the core feature. A second major feature is in design: after saving a tr
 ## 4. What Is Currently Working
 
 ### 4.1 User Authentication
+
 - Email + 6-digit code sign-in via Clerk
 - JWT token stored on device; sent with every API request
 - Backend rejects any request without a valid JWT with HTTP 401
 
 ### 4.2 Route Optimizer
+
 - User enters 2–8 IATA airport codes (e.g. IST, BER, WAW, BUD), a departure date, days per city, and optionally "direct flights only"
 - Backend enumerates all valid city orderings (fixing the start city, optionally fixing the end city)
 - Queries Duffel API for the price of every needed flight leg
@@ -90,10 +92,12 @@ This is the core feature. A second major feature is in design: after saving a tr
 **Verified live example:** Istanbul → Mexico City returned $422, 16 hours, 1 connection.
 
 ### 4.3 Results Screen with Map
+
 - Results screen shows the three route options as cards
 - Tapping a route opens Apple Maps (iOS) / Google Maps (Android) with each city plotted as a pin in the chosen order
 
 ### 4.4 Saved Trips
+
 - User can save any route result to their account
 - Saved trips are stored in PostgreSQL, scoped to the authenticated user
 - Trips list screen shows all saved trips with summary info
@@ -101,11 +105,13 @@ This is the core feature. A second major feature is in design: after saving a tr
 - User can delete trips
 
 ### 4.5 Real Flight Data via Duffel
+
 - Backend connects to Duffel's test-mode API
 - Duffel test mode returns synthetic flight offers (carrier name: "Duffel Airways") with realistic prices and durations
 - The mapper handles a currency edge case: Duffel returns prices in the origin airport's local currency (e.g. GBP for London Heathrow). The backend prefers USD offers but falls back to the cheapest offer in any currency when no USD offers are available.
 
 ### 4.6 Automated Test Suite
+
 - **55 tests** passing across backend services
 - Tests cover: optimizer logic, route enumeration, flight pricing mapper, Duffel provider retry behaviour (tests that a 429 rate-limit triggers a retry, a 401 auth failure returns the right error code, a 422 "no offers" is silently skipped)
 - Tests run in CI on every push — no Duffel credentials in CI, so tests are offline and deterministic
