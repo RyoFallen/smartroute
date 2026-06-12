@@ -36,7 +36,7 @@ This is the first slice of the trip-planning half of SmartRoute. It deliberately
 | --------------- | --------------------------------------------------------------------------------------------------- |
 | Two-tier output | `mustGo` now; `mightLike` added beside it in Plan 7 — response shape designed for that from day one |
 | Data source     | Hand-curated JSON committed to the repo. No LLM-generated content at runtime, no external POI API   |
-| Curation        | Claude drafts all 8 cities, Burak reviews/edits per city in the PR diff                             |
+| Curation        | First draft generated from well-known canon, Burak reviews/edits per city in the diff               |
 | City model      | Adopt the existing (currently unused) `City` Prisma model — extend, don't duplicate                 |
 | Visit order     | Derived from the saved trip's `flights` leg chain (authoritative), falling back to `cities` array   |
 | Category field  | `String` in Prisma + zod enum in `@smartroute/shared` (repo convention — same as `cabinClass`)      |
