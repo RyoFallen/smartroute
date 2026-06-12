@@ -4,3 +4,4 @@ export * from './flights.js';
 export * from './routes.js';
 export * from './optimize.js';
 export * from './trips.js';
+export * from './attractions.js';
