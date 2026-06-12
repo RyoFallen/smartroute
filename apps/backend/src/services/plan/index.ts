@@ -1,10 +1,18 @@
 import type { PrismaClient } from '@prisma/client';
-import type { Trip, TripPlanCity, TripPlanResponse, AttractionCategory } from '@smartroute/shared';
+import type { Trip, TripPlanCity, TripPlanResponse } from '@smartroute/shared';
+import { AttractionCategory } from '@smartroute/shared';
 import { TripService } from '../trips/index.js';
 
 export function visitOrder(trip: Trip): string[] {
   if (trip.flights.length > 0) {
-    return [trip.flights[0]!.origin, ...trip.flights.map((f) => f.destination)];
+    const derived = [trip.flights[0]!.origin, ...trip.flights.map((f) => f.destination)];
+    // Trust the chain only if it's a permutation of the saved cities;
+    // otherwise (broken/inconsistent client data) fall back to stored order.
+    const a = [...derived].sort();
+    const b = [...trip.cities].sort();
+    if (a.length === b.length && a.every((v, i) => v === b[i])) {
+      return derived;
+    }
   }
   return trip.cities;
 }
@@ -39,7 +47,7 @@ export class PlanService {
           mustGo: c.attractions.map((a) => ({
             id: a.id,
             name: a.name,
-            category: a.category as AttractionCategory,
+            category: AttractionCategory.parse(a.category),
             rank: a.rank,
             lat: a.lat,
             lon: a.lon,

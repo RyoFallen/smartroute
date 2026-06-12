@@ -60,6 +60,16 @@ describe('visitOrder', () => {
     const t = { flights: [], cities: ['IST', 'BER'] };
     expect(visitOrder(t as unknown as Trip)).toEqual(['IST', 'BER']);
   });
+
+  it('falls back to cities when the flight chain does not match them', () => {
+    const t = { flights: [leg('XXX', 'BER'), leg('BER', 'JFK')], cities: ['IST', 'BER', 'JFK'] };
+    expect(visitOrder(t as unknown as Trip)).toEqual(['IST', 'BER', 'JFK']);
+  });
+
+  it('falls back to cities when the chain visits a city twice', () => {
+    const t = { flights: [leg('IST', 'BER'), leg('BER', 'IST')], cities: ['IST', 'BER'] };
+    expect(visitOrder(t as unknown as Trip)).toEqual(['IST', 'BER']);
+  });
 });
 
 describe('PlanService', () => {
