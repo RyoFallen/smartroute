@@ -41,10 +41,29 @@ model FlightPriceCache {
 }
 
 model City {
-  iata     String  @id
-  name     String
-  country  String
-  lat      Float
-  lon      Float
-  timezone String
+  iata        String       @id
+  altCodes    String[]     @default([])
+  name        String
+  country     String
+  lat         Float
+  lon         Float
+  timezone    String
+  attractions Attraction[]
+}
+
+model Attraction {
+  id          String   @id @default(cuid())
+  cityIata    String
+  name        String
+  category    String // validated against AttractionCategory (zod) at seed time
+  mustGo      Boolean  @default(true)
+  rank        Int // 1 = most iconic; display order within a city
+  lat         Float
+  lon         Float
+  description String
+  tags        String[] // unused in Plan 6 responses; powers Plan 7 filtering
+  city        City     @relation(fields: [cityIata], references: [iata])
+
+  @@unique([cityIata, name])
+  @@index([cityIata, mustGo, rank])
 }

@@ -9,7 +9,12 @@ beforeAll(() => {
 });
 
 beforeEach(async () => {
-  await prisma.$transaction([prisma.trip.deleteMany(), prisma.flightPriceCache.deleteMany()]);
+  await prisma.$transaction([
+    prisma.trip.deleteMany(),
+    prisma.flightPriceCache.deleteMany(),
+    prisma.attraction.deleteMany(),
+    prisma.city.deleteMany(),
+  ]);
 });
 
 afterAll(async () => {

@@ -45,7 +45,7 @@ This is the first slice of the trip-planning half of SmartRoute. It deliberately
 
 ### 4.1 Prisma schema changes
 
-The existing `City` model keeps all its columns (`iata` PK, `name`, `country`, `lat`, `lon`, `timezone`) and gains only the Prisma back-reference `attractions Attraction[]` (relation field, no DB column). One new model:
+The existing `City` model keeps all its columns (`iata` PK, `name`, `country`, `lat`, `lon`, `timezone`) and gains `altCodes String[] @default([])` (secondary airport codes that resolve to the same city — London is LHR + LGW, Paris CDG + ORY) plus the Prisma back-reference `attractions Attraction[]`. One new model:
 
 ```prisma
 model Attraction {
@@ -114,6 +114,7 @@ export const TripPlanResponse = z.object({
 [
   {
     "iata": "IST",
+    "altCodes": [],
     "name": "Istanbul",
     "country": "Türkiye",
     "lat": 41.0082,
