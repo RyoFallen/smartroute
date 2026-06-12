@@ -16,6 +16,8 @@ describe('POST /optimize', () => {
   beforeEach(() => {
     process.env.CLERK_SECRET_KEY = 'sk_test_x';
     process.env.CLERK_PUBLISHABLE_KEY = 'pk_test_x';
+    process.env.FLIGHT_PROVIDER = 'mock';
+    delete process.env.DUFFEL_API_KEY;
   });
 
   it('rejects unauth', async () => {
