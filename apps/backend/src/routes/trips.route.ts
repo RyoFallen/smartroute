@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { CreateTripRequest } from '@smartroute/shared';
 import { TripService } from '../services/trips/index.js';
+import { PlanService } from '../services/plan/index.js';
 
 export async function tripsRoute(app: FastifyInstance): Promise<void> {
   app.post('/trips', { preHandler: [app.requireAuth] }, async (req, reply) => {
@@ -17,6 +18,12 @@ export async function tripsRoute(app: FastifyInstance): Promise<void> {
     '/trips/:id',
     { preHandler: [app.requireAuth] },
     async (req) => new TripService(app.prisma).findById(req.userId, req.params.id),
+  );
+
+  app.get<{ Params: { id: string } }>(
+    '/trips/:id/plan',
+    { preHandler: [app.requireAuth] },
+    async (req) => new PlanService(app.prisma).planForTrip(req.userId, req.params.id),
   );
 
   app.delete<{ Params: { id: string } }>(
