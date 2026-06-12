@@ -8,7 +8,9 @@ export const SeedAttraction = z.object({
   lat: z.number().min(-90).max(90),
   lon: z.number().min(-180).max(180),
   description: z.string().min(10).max(300),
-  tags: z.array(z.string().min(1)).min(1),
+  tags: z
+    .array(z.string().regex(/^[a-z][a-z0-9-]*$/, 'tags must be lowercase with optional hyphens'))
+    .min(1),
 });
 export type SeedAttraction = z.infer<typeof SeedAttraction>;
 
@@ -20,7 +22,7 @@ export const SeedCity = z.object({
   lat: z.number().min(-90).max(90),
   lon: z.number().min(-180).max(180),
   timezone: z.string().min(1),
-  attractions: z.array(SeedAttraction).min(8),
+  attractions: z.array(SeedAttraction).min(8), // absolute loader floor; QA test enforces ≥10 for curated data
 });
 export type SeedCity = z.infer<typeof SeedCity>;
 

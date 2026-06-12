@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import { SeedFile } from '../../../src/services/plan/seed-schema.js';
 
 // ESM project — no __dirname; resolve relative to this file via import.meta.url
@@ -7,11 +7,21 @@ const file = new URL('../../../prisma/seed/attractions.json', import.meta.url);
 const raw: unknown = JSON.parse(readFileSync(file, 'utf8'));
 
 describe('attractions seed data', () => {
-  it('parses against the seed schema', () => {
-    expect(() => SeedFile.parse(raw)).not.toThrow();
+  // Parse once in beforeAll: if the schema rejects the file, the whole suite
+  // fails here before any it() runs — that's the intended failure mode.
+  let cities: SeedFile;
+  beforeAll(() => {
+    cities = SeedFile.parse(raw);
   });
 
-  const cities = SeedFile.parse(raw);
+  it('parses against the seed schema', () => {
+    expect(cities).toBeDefined();
+  });
+
+  it('has no duplicate city IATAs', () => {
+    const codes = cities.map((c) => c.iata);
+    expect(new Set(codes).size, 'duplicate IATA in seed file').toBe(codes.length);
+  });
 
   it('covers exactly the 8 starter cities', () => {
     const codes = cities.map((c) => c.iata).sort();
@@ -37,6 +47,7 @@ describe('attractions seed data', () => {
   it('every attraction is near its city center (~within 60km)', () => {
     for (const c of cities) {
       for (const a of c.attractions) {
+        // lat 0.6° ≈ 67 km; lon 0.8° ≈ 60-75 km at 41-53°N — conservative for current cities
         expect(Math.abs(a.lat - c.lat), `${c.iata}/${a.name}`).toBeLessThan(0.6);
         expect(Math.abs(a.lon - c.lon), `${c.iata}/${a.name}`).toBeLessThan(0.8);
       }
