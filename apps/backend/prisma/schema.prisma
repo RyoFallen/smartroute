@@ -62,7 +62,7 @@ model Attraction {
   lon         Float
   description String
   tags        String[] // unused in Plan 6 responses; powers Plan 7 filtering
-  city        City     @relation(fields: [cityIata], references: [iata])
+  city        City     @relation(fields: [cityIata], references: [iata], onDelete: Cascade)
 
   @@unique([cityIata, name])
   @@index([cityIata, mustGo, rank])
