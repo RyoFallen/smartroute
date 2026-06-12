@@ -1,5 +1,6 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useRoute, type RouteProp } from '@react-navigation/native';
+import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Screen } from '../components/Screen';
 import { RouteMap } from '../components/RouteMap';
 import { useTrip } from '../hooks/useTrips';
@@ -7,6 +8,7 @@ import type { RootStackParamList } from '../navigation/RootNavigator';
 
 export function TripDetailScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'TripDetail'>>();
+  const nav = useNavigation<NativeStackNavigationProp<RootStackParamList, 'TripDetail'>>();
   const { trip, error } = useTrip(route.params.id);
 
   if (error)
@@ -31,6 +33,9 @@ export function TripDetailScreen() {
         </Text>
         <View style={{ marginVertical: 16 }}>
           <RouteMap order={trip.cities} />
+        </View>
+        <View style={{ marginBottom: 16 }}>
+          <Button title="Plan trip" onPress={() => nav.navigate('TripPlan', { id: trip.id })} />
         </View>
         <Text style={styles.section}>Flights</Text>
         {trip.flights.map((f, i) => (

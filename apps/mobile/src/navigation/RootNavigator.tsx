@@ -8,6 +8,7 @@ import { PlannerScreen } from '../screens/PlannerScreen';
 import { ResultsScreen } from '../screens/ResultsScreen';
 import { TripsListScreen } from '../screens/TripsListScreen';
 import { TripDetailScreen } from '../screens/TripDetailScreen';
+import { TripPlanScreen } from '../screens/TripPlanScreen';
 
 export type RootStackParamList = {
   SignIn: undefined;
@@ -18,6 +19,7 @@ export type RootStackParamList = {
   };
   TripsList: undefined;
   TripDetail: { id: string };
+  TripPlan: { id: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -53,6 +55,11 @@ export function RootNavigator() {
               name="TripDetail"
               component={TripDetailScreen}
               options={{ title: 'Trip' }}
+            />
+            <Stack.Screen
+              name="TripPlan"
+              component={TripPlanScreen}
+              options={{ title: 'Trip plan' }}
             />
           </>
         ) : (
