@@ -1,0 +1,945 @@
+[
+  {
+    "iata": "IST",
+    "altCodes": [],
+    "name": "Istanbul",
+    "country": "Türkiye",
+    "lat": 41.0082,
+    "lon": 28.9784,
+    "timezone": "Europe/Istanbul",
+    "attractions": [
+      {
+        "name": "Hagia Sophia",
+        "category": "RELIGIOUS",
+        "rank": 1,
+        "lat": 41.0086,
+        "lon": 28.985,
+        "description": "Byzantine cathedral turned mosque — 1,500 years of empire under one vast dome.",
+        "tags": ["history", "architecture", "religious"]
+      },
+      {
+        "name": "Blue Mosque (Sultanahmet Camii)",
+        "category": "RELIGIOUS",
+        "rank": 2,
+        "lat": 41.0054,
+        "lon": 28.9768,
+        "description": "Early-1600s imperial mosque famous for the blue İznik tiles lining its interior and six minarets.",
+        "tags": ["religious", "architecture", "history"]
+      },
+      {
+        "name": "Topkapı Palace",
+        "category": "HISTORICAL",
+        "rank": 3,
+        "lat": 41.0115,
+        "lon": 28.9833,
+        "description": "Sprawling court of the Ottoman sultans for 400 years, with treasury, harem and Bosphorus views.",
+        "tags": ["history", "architecture", "views"]
+      },
+      {
+        "name": "Basilica Cistern",
+        "category": "HISTORICAL",
+        "rank": 4,
+        "lat": 41.0084,
+        "lon": 28.9779,
+        "description": "Vast 6th-century underground reservoir held up by 336 columns, two resting on Medusa heads.",
+        "tags": ["history", "architecture", "photography"]
+      },
+      {
+        "name": "Grand Bazaar",
+        "category": "MARKET",
+        "rank": 5,
+        "lat": 41.0108,
+        "lon": 28.968,
+        "description": "One of the world's oldest covered markets, a labyrinth of 4,000 shops selling carpets, gold and spices.",
+        "tags": ["shopping", "history", "food"]
+      },
+      {
+        "name": "Galata Tower",
+        "category": "VIEWPOINT",
+        "rank": 6,
+        "lat": 41.0256,
+        "lon": 28.9744,
+        "description": "Medieval Genoese stone tower whose top gallery offers a 360-degree panorama over the old city and Golden Horn.",
+        "tags": ["views", "history", "photography"]
+      },
+      {
+        "name": "Süleymaniye Mosque",
+        "category": "RELIGIOUS",
+        "rank": 7,
+        "lat": 41.0165,
+        "lon": 28.9639,
+        "description": "Sinan's masterpiece mosque crowning a hill, with a serene courtyard and sweeping views of the Golden Horn.",
+        "tags": ["religious", "architecture", "views"]
+      },
+      {
+        "name": "Dolmabahçe Palace",
+        "category": "HISTORICAL",
+        "rank": 8,
+        "lat": 41.0391,
+        "lon": 29.0001,
+        "description": "Opulent 19th-century waterfront palace blending Ottoman and European styles, with a four-tonne crystal chandelier.",
+        "tags": ["history", "architecture", "views"]
+      },
+      {
+        "name": "Spice Bazaar",
+        "category": "MARKET",
+        "rank": 9,
+        "lat": 41.0165,
+        "lon": 28.9706,
+        "description": "Aromatic 17th-century market near Eminönü stacked with spices, Turkish delight, teas and dried fruit.",
+        "tags": ["shopping", "food", "history"]
+      },
+      {
+        "name": "İstiklal Street & Taksim",
+        "category": "LANDMARK",
+        "rank": 10,
+        "lat": 41.0351,
+        "lon": 28.9776,
+        "description": "Buzzing pedestrian boulevard lined with shops and cafes, running from Taksim Square down to Galata.",
+        "tags": ["shopping", "food", "architecture"]
+      },
+      {
+        "name": "Hippodrome & Sultanahmet Square",
+        "category": "HISTORICAL",
+        "rank": 11,
+        "lat": 41.0058,
+        "lon": 28.9753,
+        "description": "Former Byzantine chariot-racing arena, now a square holding the Egyptian Obelisk and Serpent Column.",
+        "tags": ["history", "architecture", "photography"]
+      },
+      {
+        "name": "Chora Church (Kariye)",
+        "category": "RELIGIOUS",
+        "rank": 12,
+        "lat": 41.0312,
+        "lon": 28.9391,
+        "description": "Small Byzantine church preserving some of the finest medieval mosaics and frescoes in the world.",
+        "tags": ["history", "art", "religious"]
+      }
+    ]
+  },
+  {
+    "iata": "BER",
+    "altCodes": [],
+    "name": "Berlin",
+    "country": "Germany",
+    "lat": 52.52,
+    "lon": 13.405,
+    "timezone": "Europe/Berlin",
+    "attractions": [
+      {
+        "name": "Brandenburg Gate",
+        "category": "LANDMARK",
+        "rank": 1,
+        "lat": 52.5163,
+        "lon": 13.3777,
+        "description": "Neoclassical 18th-century gate topped by a chariot, the enduring symbol of a once-divided, now-reunited Berlin.",
+        "tags": ["history", "architecture", "photography"]
+      },
+      {
+        "name": "Reichstag Building",
+        "category": "LANDMARK",
+        "rank": 2,
+        "lat": 52.5186,
+        "lon": 13.3762,
+        "description": "Seat of the German parliament crowned by Norman Foster's glass dome, which visitors can climb for city views.",
+        "tags": ["history", "architecture", "views"]
+      },
+      {
+        "name": "Museum Island",
+        "category": "MUSEUM",
+        "rank": 3,
+        "lat": 52.5169,
+        "lon": 13.4019,
+        "description": "UNESCO-listed cluster of five world-class museums on the Spree, home to the Pergamon Altar and Nefertiti bust.",
+        "tags": ["art", "history", "architecture"]
+      },
+      {
+        "name": "Memorial to the Murdered Jews of Europe",
+        "category": "HISTORICAL",
+        "rank": 4,
+        "lat": 52.5139,
+        "lon": 13.3789,
+        "description": "Field of 2,711 grey concrete stelae of varying heights forming a stark, disorienting Holocaust memorial.",
+        "tags": ["history", "architecture"]
+      },
+      {
+        "name": "East Side Gallery",
+        "category": "HISTORICAL",
+        "rank": 5,
+        "lat": 52.505,
+        "lon": 13.4396,
+        "description": "Longest surviving stretch of the Berlin Wall, painted by artists into a 1.3 km open-air mural gallery.",
+        "tags": ["history", "art", "photography"]
+      },
+      {
+        "name": "Berlin Wall Memorial — Bernauer Straße",
+        "category": "HISTORICAL",
+        "rank": 6,
+        "lat": 52.5354,
+        "lon": 13.3903,
+        "description": "Preserved section of the wall with watchtower and death strip, documenting the city's Cold War division.",
+        "tags": ["history", "architecture"]
+      },
+      {
+        "name": "Checkpoint Charlie",
+        "category": "HISTORICAL",
+        "rank": 7,
+        "lat": 52.5076,
+        "lon": 13.3904,
+        "description": "Famous Cold War crossing point between East and West Berlin, marked by a reconstructed guard booth.",
+        "tags": ["history", "photography"]
+      },
+      {
+        "name": "Berliner Dom",
+        "category": "RELIGIOUS",
+        "rank": 8,
+        "lat": 52.5191,
+        "lon": 13.4011,
+        "description": "Grand Baroque-revival Protestant cathedral on Museum Island with a climbable dome over the Spree.",
+        "tags": ["religious", "architecture", "views"]
+      },
+      {
+        "name": "TV Tower — Alexanderplatz",
+        "category": "VIEWPOINT",
+        "rank": 9,
+        "lat": 52.5208,
+        "lon": 13.4094,
+        "description": "At 368 m the tallest structure in Germany, with an observation deck and revolving restaurant.",
+        "tags": ["views", "architecture", "photography"]
+      },
+      {
+        "name": "Tiergarten",
+        "category": "PARK",
+        "rank": 10,
+        "lat": 52.5145,
+        "lon": 13.3501,
+        "description": "Berlin's largest central park, a sprawling green expanse of woodland paths, lakes and the Victory Column.",
+        "tags": ["nature", "history"]
+      },
+      {
+        "name": "Charlottenburg Palace",
+        "category": "HISTORICAL",
+        "rank": 11,
+        "lat": 52.5208,
+        "lon": 13.2957,
+        "description": "Largest Prussian palace in Berlin, with Baroque state rooms and formal landscaped gardens.",
+        "tags": ["history", "architecture", "nature"]
+      },
+      {
+        "name": "Gendarmenmarkt",
+        "category": "LANDMARK",
+        "rank": 12,
+        "lat": 52.5138,
+        "lon": 13.3927,
+        "description": "Elegant square framed by the twin German and French cathedrals and the colonnaded Konzerthaus.",
+        "tags": ["architecture", "history", "photography"]
+      }
+    ]
+  },
+  {
+    "iata": "WAW",
+    "altCodes": [],
+    "name": "Warsaw",
+    "country": "Poland",
+    "lat": 52.2297,
+    "lon": 21.0122,
+    "timezone": "Europe/Warsaw",
+    "attractions": [
+      {
+        "name": "Old Town Market Square",
+        "category": "LANDMARK",
+        "rank": 1,
+        "lat": 52.2497,
+        "lon": 21.0122,
+        "description": "Heart of the meticulously rebuilt Old Town, ringed by colourful burgher houses and a mermaid statue.",
+        "tags": ["history", "architecture", "photography"]
+      },
+      {
+        "name": "Royal Castle",
+        "category": "HISTORICAL",
+        "rank": 2,
+        "lat": 52.2478,
+        "lon": 21.0144,
+        "description": "Former residence of Polish kings, destroyed in WWII and faithfully reconstructed with restored state rooms.",
+        "tags": ["history", "architecture", "art"]
+      },
+      {
+        "name": "Łazienki Park",
+        "category": "PARK",
+        "rank": 3,
+        "lat": 52.2151,
+        "lon": 21.0353,
+        "description": "Warsaw's grandest park, with the Palace on the Isle, peacocks and a monument to composer Chopin.",
+        "tags": ["nature", "history", "architecture"]
+      },
+      {
+        "name": "Warsaw Uprising Museum",
+        "category": "MUSEUM",
+        "rank": 4,
+        "lat": 52.2325,
+        "lon": 20.981,
+        "description": "Immersive museum chronicling the 1944 revolt against Nazi occupation through artefacts and recreated streets.",
+        "tags": ["history", "art"]
+      },
+      {
+        "name": "POLIN Museum of the History of Polish Jews",
+        "category": "MUSEUM",
+        "rank": 5,
+        "lat": 52.2496,
+        "lon": 20.993,
+        "description": "Award-winning museum tracing a thousand years of Polish-Jewish life, set on the former ghetto grounds.",
+        "tags": ["history", "art", "architecture"]
+      },
+      {
+        "name": "Palace of Culture and Science",
+        "category": "VIEWPOINT",
+        "rank": 6,
+        "lat": 52.2317,
+        "lon": 21.0061,
+        "description": "Towering Stalinist-era skyscraper, Poland's tallest building, with a 30th-floor observation terrace.",
+        "tags": ["views", "architecture", "history"]
+      },
+      {
+        "name": "Wilanów Palace",
+        "category": "HISTORICAL",
+        "rank": 7,
+        "lat": 52.1655,
+        "lon": 21.0907,
+        "description": "Lavish Baroque royal palace, often called the Polish Versailles, set amid formal gardens.",
+        "tags": ["history", "architecture", "nature"]
+      },
+      {
+        "name": "Copernicus Science Centre",
+        "category": "MUSEUM",
+        "rank": 8,
+        "lat": 52.2419,
+        "lon": 21.0285,
+        "description": "Hands-on science museum on the Vistula riverbank with hundreds of interactive exhibits and a planetarium.",
+        "tags": ["art", "nature"]
+      },
+      {
+        "name": "Krakowskie Przedmieście",
+        "category": "LANDMARK",
+        "rank": 9,
+        "lat": 52.2419,
+        "lon": 21.0152,
+        "description": "Elegant Royal Route boulevard lined with palaces, churches and the University of Warsaw.",
+        "tags": ["history", "architecture", "shopping"]
+      },
+      {
+        "name": "Holy Cross Church",
+        "category": "RELIGIOUS",
+        "rank": 10,
+        "lat": 52.239,
+        "lon": 21.0173,
+        "description": "Baroque church on the Royal Route holding an urn with Chopin's heart, sealed within a pillar.",
+        "tags": ["religious", "history", "architecture"]
+      },
+      {
+        "name": "Warsaw Barbican",
+        "category": "HISTORICAL",
+        "rank": 11,
+        "lat": 52.2503,
+        "lon": 21.0083,
+        "description": "Semicircular brick fortification of the medieval city walls, rebuilt as a gateway between Old and New Towns.",
+        "tags": ["history", "architecture", "photography"]
+      }
+    ]
+  },
+  {
+    "iata": "BUD",
+    "altCodes": [],
+    "name": "Budapest",
+    "country": "Hungary",
+    "lat": 47.4979,
+    "lon": 19.0402,
+    "timezone": "Europe/Budapest",
+    "attractions": [
+      {
+        "name": "Hungarian Parliament Building",
+        "category": "LANDMARK",
+        "rank": 1,
+        "lat": 47.5072,
+        "lon": 19.0456,
+        "description": "Vast neo-Gothic parliament on the Danube, the largest building in Hungary, holding the crown jewels.",
+        "tags": ["architecture", "history", "photography"]
+      },
+      {
+        "name": "Buda Castle",
+        "category": "HISTORICAL",
+        "rank": 2,
+        "lat": 47.496,
+        "lon": 19.0396,
+        "description": "Historic hilltop palace complex of Hungarian kings, now housing the National Gallery and city views.",
+        "tags": ["history", "architecture", "views"]
+      },
+      {
+        "name": "Fisherman's Bastion",
+        "category": "VIEWPOINT",
+        "rank": 3,
+        "lat": 47.5022,
+        "lon": 19.0347,
+        "description": "Whimsical neo-Romanesque terrace of turrets on Castle Hill framing postcard views across the Danube.",
+        "tags": ["views", "architecture", "photography"]
+      },
+      {
+        "name": "Matthias Church",
+        "category": "RELIGIOUS",
+        "rank": 4,
+        "lat": 47.5019,
+        "lon": 19.0342,
+        "description": "Ornate Gothic church with a vivid tiled roof where Hungarian kings were crowned.",
+        "tags": ["religious", "architecture", "history"]
+      },
+      {
+        "name": "St. Stephen's Basilica",
+        "category": "RELIGIOUS",
+        "rank": 5,
+        "lat": 47.5009,
+        "lon": 19.0539,
+        "description": "Grand neoclassical basilica housing the mummified hand of Hungary's first king and a panoramic dome.",
+        "tags": ["religious", "architecture", "views"]
+      },
+      {
+        "name": "Széchenyi Chain Bridge",
+        "category": "LANDMARK",
+        "rank": 6,
+        "lat": 47.4986,
+        "lon": 19.0436,
+        "description": "Stately 19th-century suspension bridge guarded by stone lions, the first permanent span across the Danube here.",
+        "tags": ["architecture", "history", "photography"]
+      },
+      {
+        "name": "Széchenyi Thermal Baths",
+        "category": "LANDMARK",
+        "rank": 7,
+        "lat": 47.5188,
+        "lon": 19.0822,
+        "description": "Grand neo-Baroque spa complex with steaming outdoor pools, Europe's largest medicinal thermal bath.",
+        "tags": ["architecture", "history"]
+      },
+      {
+        "name": "Heroes' Square",
+        "category": "LANDMARK",
+        "rank": 8,
+        "lat": 47.5151,
+        "lon": 19.0779,
+        "description": "Monumental square anchored by the Millennium Memorial colonnade honouring Hungary's founding chieftains.",
+        "tags": ["history", "architecture", "photography"]
+      },
+      {
+        "name": "Great Market Hall",
+        "category": "MARKET",
+        "rank": 9,
+        "lat": 47.4869,
+        "lon": 19.0589,
+        "description": "Cavernous three-floor covered market for paprika, sausages, langos and Hungarian crafts.",
+        "tags": ["food", "shopping", "architecture"]
+      },
+      {
+        "name": "Gellért Hill & Citadella",
+        "category": "VIEWPOINT",
+        "rank": 10,
+        "lat": 47.4862,
+        "lon": 19.0464,
+        "description": "Rocky hill topped by a fortress and the Liberty Statue, offering the city's broadest panorama.",
+        "tags": ["views", "nature", "history"]
+      },
+      {
+        "name": "Dohány Street Synagogue",
+        "category": "RELIGIOUS",
+        "rank": 11,
+        "lat": 47.4956,
+        "lon": 19.0606,
+        "description": "Largest synagogue in Europe, a Moorish-revival landmark with a memorial garden to Holocaust victims.",
+        "tags": ["religious", "architecture", "history"]
+      },
+      {
+        "name": "Shoes on the Danube Bank",
+        "category": "HISTORICAL",
+        "rank": 12,
+        "lat": 47.5028,
+        "lon": 19.0448,
+        "description": "Haunting memorial of cast-iron shoes by the river honouring Jews shot here during WWII.",
+        "tags": ["history", "art"]
+      }
+    ]
+  },
+  {
+    "iata": "LHR",
+    "altCodes": ["LGW"],
+    "name": "London",
+    "country": "United Kingdom",
+    "lat": 51.5074,
+    "lon": -0.1278,
+    "timezone": "Europe/London",
+    "attractions": [
+      {
+        "name": "Tower of London",
+        "category": "HISTORICAL",
+        "rank": 1,
+        "lat": 51.5081,
+        "lon": -0.0759,
+        "description": "Nearly 1,000-year-old riverside fortress guarding the Crown Jewels, once a royal palace and prison.",
+        "tags": ["history", "architecture", "photography"]
+      },
+      {
+        "name": "Tower Bridge",
+        "category": "LANDMARK",
+        "rank": 2,
+        "lat": 51.5055,
+        "lon": -0.0754,
+        "description": "Iconic Victorian bascule bridge over the Thames with twin towers and a high-level glass walkway.",
+        "tags": ["architecture", "views", "photography"]
+      },
+      {
+        "name": "British Museum",
+        "category": "MUSEUM",
+        "rank": 3,
+        "lat": 51.5194,
+        "lon": -0.1269,
+        "description": "Encyclopedic museum of world cultures holding the Rosetta Stone, Parthenon marbles and Egyptian mummies.",
+        "tags": ["history", "art", "architecture"]
+      },
+      {
+        "name": "Westminster Abbey",
+        "category": "RELIGIOUS",
+        "rank": 4,
+        "lat": 51.4994,
+        "lon": -0.1273,
+        "description": "Gothic abbey where English monarchs are crowned and buried, alongside poets and scientists.",
+        "tags": ["religious", "history", "architecture"]
+      },
+      {
+        "name": "Big Ben & Houses of Parliament",
+        "category": "LANDMARK",
+        "rank": 5,
+        "lat": 51.5007,
+        "lon": -0.1246,
+        "description": "Neo-Gothic seat of UK government beside the Thames, fronted by the famous Elizabeth Tower clock.",
+        "tags": ["architecture", "history", "photography"]
+      },
+      {
+        "name": "Buckingham Palace",
+        "category": "LANDMARK",
+        "rank": 6,
+        "lat": 51.5014,
+        "lon": -0.1419,
+        "description": "Official London residence of the British monarch, fronted by the daily Changing of the Guard.",
+        "tags": ["history", "architecture", "photography"]
+      },
+      {
+        "name": "London Eye",
+        "category": "VIEWPOINT",
+        "rank": 7,
+        "lat": 51.5033,
+        "lon": -0.1196,
+        "description": "Giant 135 m observation wheel on the South Bank giving slow-turning views across the whole city.",
+        "tags": ["views", "photography"]
+      },
+      {
+        "name": "National Gallery & Trafalgar Square",
+        "category": "MUSEUM",
+        "rank": 8,
+        "lat": 51.5089,
+        "lon": -0.1283,
+        "description": "Free gallery of Western masterpieces from Van Gogh to Turner, overlooking lion-flanked Trafalgar Square.",
+        "tags": ["art", "history", "architecture"]
+      },
+      {
+        "name": "St Paul's Cathedral",
+        "category": "RELIGIOUS",
+        "rank": 9,
+        "lat": 51.5138,
+        "lon": -0.0984,
+        "description": "Wren's domed Baroque cathedral with a Whispering Gallery and far-reaching views from its upper galleries.",
+        "tags": ["religious", "architecture", "views"]
+      },
+      {
+        "name": "Hyde Park",
+        "category": "PARK",
+        "rank": 10,
+        "lat": 51.5073,
+        "lon": -0.1657,
+        "description": "Sprawling central royal park with the Serpentine lake, Speakers' Corner and open lawns.",
+        "tags": ["nature", "history"]
+      },
+      {
+        "name": "Borough Market",
+        "category": "MARKET",
+        "rank": 11,
+        "lat": 51.5055,
+        "lon": -0.0909,
+        "description": "Historic foodie market under railway arches packed with artisan produce, cheeses and street food.",
+        "tags": ["food", "shopping", "history"]
+      },
+      {
+        "name": "Natural History Museum",
+        "category": "MUSEUM",
+        "rank": 12,
+        "lat": 51.4967,
+        "lon": -0.1764,
+        "description": "Cathedral-like museum of the natural world famed for its dinosaur skeletons and ornate terracotta hall.",
+        "tags": ["history", "architecture", "art"]
+      }
+    ]
+  },
+  {
+    "iata": "CDG",
+    "altCodes": ["ORY"],
+    "name": "Paris",
+    "country": "France",
+    "lat": 48.8566,
+    "lon": 2.3522,
+    "timezone": "Europe/Paris",
+    "attractions": [
+      {
+        "name": "Eiffel Tower",
+        "category": "LANDMARK",
+        "rank": 1,
+        "lat": 48.8584,
+        "lon": 2.2945,
+        "description": "Paris's 330 m wrought-iron icon, built for the 1889 World's Fair, with viewing decks over the city.",
+        "tags": ["views", "architecture", "photography"]
+      },
+      {
+        "name": "Louvre Museum",
+        "category": "MUSEUM",
+        "rank": 2,
+        "lat": 48.8606,
+        "lon": 2.3376,
+        "description": "World's most-visited museum, home to the Mona Lisa and Venus de Milo behind a glass pyramid.",
+        "tags": ["art", "history", "architecture"]
+      },
+      {
+        "name": "Notre-Dame Cathedral",
+        "category": "RELIGIOUS",
+        "rank": 3,
+        "lat": 48.853,
+        "lon": 2.3499,
+        "description": "Medieval Gothic masterpiece on the Île de la Cité, famed for its flying buttresses and rose windows.",
+        "tags": ["religious", "architecture", "history"]
+      },
+      {
+        "name": "Sacré-Cœur & Montmartre",
+        "category": "RELIGIOUS",
+        "rank": 4,
+        "lat": 48.8867,
+        "lon": 2.3431,
+        "description": "White-domed hilltop basilica above the artsy Montmartre quarter, with sweeping views over Paris.",
+        "tags": ["religious", "views", "art"]
+      },
+      {
+        "name": "Arc de Triomphe",
+        "category": "LANDMARK",
+        "rank": 5,
+        "lat": 48.8738,
+        "lon": 2.295,
+        "description": "Monumental triumphal arch honouring Napoleon's armies, with a rooftop terrace over twelve radiating avenues.",
+        "tags": ["history", "architecture", "views"]
+      },
+      {
+        "name": "Champs-Élysées",
+        "category": "LANDMARK",
+        "rank": 6,
+        "lat": 48.8698,
+        "lon": 2.3079,
+        "description": "Grand tree-lined avenue of cafes, flagship shops and theatres running to the Arc de Triomphe.",
+        "tags": ["shopping", "architecture", "food"]
+      },
+      {
+        "name": "Musée d'Orsay",
+        "category": "MUSEUM",
+        "rank": 7,
+        "lat": 48.86,
+        "lon": 2.3266,
+        "description": "Former Beaux-Arts railway station holding the world's finest collection of Impressionist masterpieces.",
+        "tags": ["art", "architecture", "history"]
+      },
+      {
+        "name": "Sainte-Chapelle",
+        "category": "RELIGIOUS",
+        "rank": 8,
+        "lat": 48.8554,
+        "lon": 2.345,
+        "description": "Royal Gothic chapel renowned for its towering walls of 13th-century stained glass.",
+        "tags": ["religious", "art", "architecture"]
+      },
+      {
+        "name": "Luxembourg Gardens",
+        "category": "PARK",
+        "rank": 9,
+        "lat": 48.8462,
+        "lon": 2.3372,
+        "description": "Elegant formal gardens around the Luxembourg Palace, with fountains, statues and sail-boat ponds.",
+        "tags": ["nature", "history"]
+      },
+      {
+        "name": "Panthéon",
+        "category": "HISTORICAL",
+        "rank": 10,
+        "lat": 48.8462,
+        "lon": 2.3464,
+        "description": "Neoclassical mausoleum in the Latin Quarter where Voltaire, Curie and other French luminaries rest.",
+        "tags": ["history", "architecture"]
+      },
+      {
+        "name": "Centre Pompidou",
+        "category": "MUSEUM",
+        "rank": 11,
+        "lat": 48.8607,
+        "lon": 2.3522,
+        "description": "Radical inside-out building housing Europe's largest modern art museum and a rooftop city view.",
+        "tags": ["art", "architecture", "views"]
+      },
+      {
+        "name": "Trocadéro",
+        "category": "VIEWPOINT",
+        "rank": 12,
+        "lat": 48.8616,
+        "lon": 2.2893,
+        "description": "Terraced plaza across the Seine offering the classic head-on panorama of the Eiffel Tower.",
+        "tags": ["views", "photography", "architecture"]
+      }
+    ]
+  },
+  {
+    "iata": "FCO",
+    "altCodes": [],
+    "name": "Rome",
+    "country": "Italy",
+    "lat": 41.9028,
+    "lon": 12.4964,
+    "timezone": "Europe/Rome",
+    "attractions": [
+      {
+        "name": "Colosseum",
+        "category": "HISTORICAL",
+        "rank": 1,
+        "lat": 41.8902,
+        "lon": 12.4922,
+        "description": "Vast 1st-century amphitheatre where gladiators fought before crowds of 50,000, Rome's enduring emblem.",
+        "tags": ["history", "architecture", "photography"]
+      },
+      {
+        "name": "Roman Forum & Palatine Hill",
+        "category": "HISTORICAL",
+        "rank": 2,
+        "lat": 41.8925,
+        "lon": 12.4853,
+        "description": "Ruined heart of ancient Rome, a sprawl of temples and arches beside the hill where emperors lived.",
+        "tags": ["history", "architecture", "nature"]
+      },
+      {
+        "name": "Pantheon",
+        "category": "HISTORICAL",
+        "rank": 3,
+        "lat": 41.8986,
+        "lon": 12.4769,
+        "description": "Best-preserved ancient Roman building, its vast unreinforced concrete dome open to the sky through an oculus.",
+        "tags": ["history", "architecture"]
+      },
+      {
+        "name": "Trevi Fountain",
+        "category": "LANDMARK",
+        "rank": 4,
+        "lat": 41.9009,
+        "lon": 12.4833,
+        "description": "Theatrical Baroque fountain where visitors toss a coin over the shoulder to ensure a return to Rome.",
+        "tags": ["architecture", "art", "photography"]
+      },
+      {
+        "name": "Spanish Steps",
+        "category": "LANDMARK",
+        "rank": 5,
+        "lat": 41.906,
+        "lon": 12.4828,
+        "description": "Sweeping 18th-century stairway of 135 steps rising to the Trinità dei Monti church above.",
+        "tags": ["architecture", "history", "photography"]
+      },
+      {
+        "name": "Piazza Navona",
+        "category": "LANDMARK",
+        "rank": 6,
+        "lat": 41.8992,
+        "lon": 12.4731,
+        "description": "Lively Baroque square built over a Roman stadium, centred on Bernini's Fountain of the Four Rivers.",
+        "tags": ["architecture", "art", "food"]
+      },
+      {
+        "name": "Vatican Museums & Sistine Chapel",
+        "category": "MUSEUM",
+        "rank": 7,
+        "lat": 41.9065,
+        "lon": 12.4536,
+        "description": "Papal art collection culminating in Michelangelo's frescoed Sistine Chapel ceiling and Last Judgment.",
+        "tags": ["art", "history", "religious"]
+      },
+      {
+        "name": "St. Peter's Basilica",
+        "category": "RELIGIOUS",
+        "rank": 8,
+        "lat": 41.9022,
+        "lon": 12.4539,
+        "description": "Monumental Renaissance basilica in Vatican City, with Michelangelo's dome and Pietà sculpture.",
+        "tags": ["religious", "architecture", "art"]
+      },
+      {
+        "name": "Castel Sant'Angelo",
+        "category": "HISTORICAL",
+        "rank": 9,
+        "lat": 41.9031,
+        "lon": 12.4663,
+        "description": "Cylindrical riverside fortress built as Hadrian's mausoleum, later a papal stronghold with rooftop views.",
+        "tags": ["history", "architecture", "views"]
+      },
+      {
+        "name": "Galleria Borghese",
+        "category": "MUSEUM",
+        "rank": 10,
+        "lat": 41.9142,
+        "lon": 12.492,
+        "description": "Jewel-box villa gallery holding Bernini sculptures and Caravaggio paintings amid a leafy park.",
+        "tags": ["art", "history", "nature"]
+      },
+      {
+        "name": "Campo de' Fiori",
+        "category": "MARKET",
+        "rank": 11,
+        "lat": 41.8956,
+        "lon": 12.4722,
+        "description": "Bustling square hosting a morning produce-and-flower market and a lively nightlife scene after dark.",
+        "tags": ["food", "shopping", "history"]
+      },
+      {
+        "name": "Trastevere",
+        "category": "LANDMARK",
+        "rank": 12,
+        "lat": 41.8896,
+        "lon": 12.4695,
+        "description": "Atmospheric riverside quarter of cobbled lanes, ivy-draped houses and traditional Roman trattorias.",
+        "tags": ["food", "history", "photography"]
+      }
+    ]
+  },
+  {
+    "iata": "BCN",
+    "altCodes": [],
+    "name": "Barcelona",
+    "country": "Spain",
+    "lat": 41.3874,
+    "lon": 2.1686,
+    "timezone": "Europe/Madrid",
+    "attractions": [
+      {
+        "name": "Sagrada Família",
+        "category": "RELIGIOUS",
+        "rank": 1,
+        "lat": 41.4036,
+        "lon": 2.1744,
+        "description": "Gaudí's still-unfinished basilica, a soaring forest of organic stone columns and luminous stained glass.",
+        "tags": ["religious", "architecture", "art"]
+      },
+      {
+        "name": "Park Güell",
+        "category": "PARK",
+        "rank": 2,
+        "lat": 41.4145,
+        "lon": 2.1527,
+        "description": "Gaudí's whimsical hillside park of mosaic terraces, serpentine benches and gingerbread gatehouses.",
+        "tags": ["architecture", "art", "views"]
+      },
+      {
+        "name": "Casa Batlló",
+        "category": "LANDMARK",
+        "rank": 3,
+        "lat": 41.3917,
+        "lon": 2.1649,
+        "description": "Gaudí's fantastical townhouse on Passeig de Gràcia, with a scaly roof and bone-like balconies.",
+        "tags": ["architecture", "art", "history"]
+      },
+      {
+        "name": "Casa Milà — La Pedrera",
+        "category": "LANDMARK",
+        "rank": 4,
+        "lat": 41.3953,
+        "lon": 2.162,
+        "description": "Gaudí's wave-fronted stone apartment block crowned by a rooftop of sculptural chimneys.",
+        "tags": ["architecture", "art", "views"]
+      },
+      {
+        "name": "La Rambla",
+        "category": "LANDMARK",
+        "rank": 5,
+        "lat": 41.3809,
+        "lon": 2.1734,
+        "description": "Famous tree-lined pedestrian boulevard threading from Plaça Catalunya down to the old harbour.",
+        "tags": ["shopping", "food", "photography"]
+      },
+      {
+        "name": "Gothic Quarter & Barcelona Cathedral",
+        "category": "HISTORICAL",
+        "rank": 6,
+        "lat": 41.3839,
+        "lon": 2.1762,
+        "description": "Medieval maze of narrow lanes and squares around a Gothic cathedral with a cloister of geese.",
+        "tags": ["history", "architecture", "religious"]
+      },
+      {
+        "name": "La Boqueria Market",
+        "category": "MARKET",
+        "rank": 7,
+        "lat": 41.3817,
+        "lon": 2.1716,
+        "description": "Vibrant covered food market off La Rambla brimming with fruit, jamón, seafood and juice stalls.",
+        "tags": ["food", "shopping", "photography"]
+      },
+      {
+        "name": "Picasso Museum",
+        "category": "MUSEUM",
+        "rank": 8,
+        "lat": 41.3852,
+        "lon": 2.1809,
+        "description": "Collection of over 4,000 works tracing Picasso's formative years, set in medieval Gothic mansions.",
+        "tags": ["art", "history", "architecture"]
+      },
+      {
+        "name": "Montjuïc & Magic Fountain",
+        "category": "VIEWPOINT",
+        "rank": 9,
+        "lat": 41.3711,
+        "lon": 2.1518,
+        "description": "Hilltop park with castle, gardens and city views above the choreographed Magic Fountain light shows.",
+        "tags": ["views", "nature", "architecture"]
+      },
+      {
+        "name": "Palau de la Música Catalana",
+        "category": "LANDMARK",
+        "rank": 10,
+        "lat": 41.3875,
+        "lon": 2.1751,
+        "description": "Dazzling Modernista concert hall with a stained-glass skylight and richly ornamented mosaic interior.",
+        "tags": ["architecture", "art", "history"]
+      },
+      {
+        "name": "Bunkers del Carmel",
+        "category": "VIEWPOINT",
+        "rank": 11,
+        "lat": 41.4194,
+        "lon": 2.1622,
+        "description": "Former Civil War anti-aircraft battery on a hilltop, now the city's best 360-degree sunset viewpoint.",
+        "tags": ["views", "history", "photography"]
+      },
+      {
+        "name": "Barcelona Beach — Barceloneta",
+        "category": "PARK",
+        "rank": 12,
+        "lat": 41.3784,
+        "lon": 2.1925,
+        "description": "Golden city beach backed by the old fishermen's quarter, palm-lined promenade and seafood bars.",
+        "tags": ["nature", "food"]
+      }
+    ]
+  }
+]
