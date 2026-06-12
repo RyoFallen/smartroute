@@ -35,6 +35,7 @@ pnpm install
 cp .env.example .env
 docker compose up -d                # start Postgres
 pnpm --filter @smartroute/backend db:migrate
+pnpm --filter @smartroute/backend db:seed     # load must-go attractions (8 cities)
 pnpm --filter @smartroute/backend dev   # backend on :3000
 pnpm --filter @smartroute/mobile start  # Expo dev server
 ```
@@ -51,6 +52,7 @@ pnpm --filter @smartroute/mobile start  # Expo dev server
 - `GET /health` — liveness
 - `POST /optimize` — auth required; returns top-K labeled routes (`cheapest`/`fastest`/`most_direct`) for 2–8 cities
 - `POST /trips`, `GET /trips`, `GET /trips/:id`, `DELETE /trips/:id` — saved trips (auth required, user-scoped)
+- `GET /trips/:id/plan` — auth required; per-city must-go attractions for a saved trip, in visiting order
 
 All authenticated endpoints expect `Authorization: Bearer <Clerk JWT>`. Set `CLERK_SECRET_KEY` and `CLERK_PUBLISHABLE_KEY` in `.env` before running the backend.
 

@@ -72,6 +72,9 @@ jobs:
       - name: Build shared package
         run: pnpm --filter @smartroute/shared build
 
+      - name: Seed attractions (validates dataset against real schema)
+        run: pnpm --filter @smartroute/backend db:seed
+
       - name: Format check
         run: pnpm format:check
 
