@@ -3,4 +3,5 @@ package com.smartroute.traveler
 import androidx.compose.ui.window.ComposeUIViewController
 import platform.UIKit.UIViewController
 
-fun mainViewController(): UIViewController = ComposeUIViewController { App() }
+@Suppress("ktlint:standard:function-naming")
+fun MainViewController(): UIViewController = ComposeUIViewController { App() }
