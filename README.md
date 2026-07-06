@@ -4,17 +4,25 @@ Mobile app that finds the cheapest order to visit multiple cities, with a route 
 
 ## Stack
 
-- **Mobile:** React Native + Expo + TypeScript
+- **Mobile:** Kotlin + Compose Multiplatform (Android + iOS from one codebase) — replacing the legacy Expo app
 - **Backend:** Node 22 + Fastify + Prisma + Postgres 16
 - **Auth:** Clerk (added in Plan 2)
+- **Maps (mobile):** MapLibre via expect/actual native embedding
 - **Hosting (later):** Fly.io + Neon
+
+> **Tech stack pivot (July 2026):** the mobile client is being rewritten in Kotlin/Compose Multiplatform (see `docs/superpowers/specs/2026-07-06-smartroute-traveler-thesis-spec.md`). The Expo app in `apps/mobile` remains until the KMP app reaches feature parity, then gets retired.
 
 ## Repo layout
 
 ```
+mobile/      # Kotlin Multiplatform app (Gradle build, NOT part of the pnpm workspace)
+  composeApp/
+    src/commonMain/   # shared UI + logic (Compose Multiplatform)
+    src/androidMain/  # MainActivity, MapLibre map
+    src/iosMain/      # iOS entry point (compiled in CI; needs macOS)
 apps/
   backend/   # Fastify API
-  mobile/    # Expo app
+  mobile/    # Expo app (legacy, being replaced by mobile/)
 packages/
   shared/    # Zod schemas + types
 docs/
@@ -27,6 +35,7 @@ docs/
 - Node 22+
 - pnpm 9
 - Docker (for local Postgres)
+- JDK 17 + Android SDK (platform 35) — for the KMP mobile app
 
 ## Getting started
 
@@ -73,7 +82,19 @@ Test mode only returns offers from the synthetic carrier "Duffel Airways". Price
 
 CI always runs with the mock provider (no `FLIGHT_PROVIDER` or `DUFFEL_API_KEY` in the workflow env), so tests stay deterministic and offline.
 
-## Mobile setup
+## Mobile (Kotlin Multiplatform)
+
+```bash
+cd mobile
+./gradlew :composeApp:assembleDebug        # build Android APK
+./gradlew :composeApp:testDebugUnitTest    # shared unit tests
+./gradlew ktlintCheck                      # lint
+./gradlew :composeApp:installDebug         # install on running emulator/device
+```
+
+Windows note: iOS targets cannot compile locally — the `Mobile CI` workflow's macOS job (`ios-framework`) is the iOS compile check.
+
+## Mobile setup (legacy Expo app)
 
 ```bash
 cd apps/mobile

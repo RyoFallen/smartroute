@@ -24,40 +24,50 @@
 ### Task 1: Local Toolchain (JDK 17, Gradle, Android SDK)
 
 **Files:**
+
 - No repo files. Machine setup only.
 
 **Interfaces:**
+
 - Produces: working `java` (17), `gradle` (any 8.x, used once to generate the wrapper), Android SDK with platform 35 + emulator, `ANDROID_HOME` set.
 
 - [ ] **Step 1: Install JDK 17 and Gradle via winget**
 
 Run (PowerShell):
+
 ```powershell
 winget install --id EclipseAdoptium.Temurin.17.JDK --accept-package-agreements --accept-source-agreements
 winget install --id Gradle.Gradle --accept-package-agreements --accept-source-agreements
 ```
+
 Expected: both installs succeed. **Open a new terminal afterwards** so PATH updates apply.
 
 - [ ] **Step 2: Install Android Studio (provides SDK + emulator)**
 
 Run (PowerShell):
+
 ```powershell
 winget install --id Google.AndroidStudio --accept-package-agreements --accept-source-agreements
 ```
-Then launch Android Studio once → complete the setup wizard (Standard). In **SDK Manager**, ensure installed: *Android SDK Platform 35*, *Android SDK Build-Tools 35.x*, *Android Emulator*, *Android SDK Platform-Tools*. In **Device Manager**, create one AVD (e.g., Pixel 8, API 35). This is a manual GUI step — ask the user (Burak) to do it and confirm.
+
+Then launch Android Studio once → complete the setup wizard (Standard). In **SDK Manager**, ensure installed: _Android SDK Platform 35_, _Android SDK Build-Tools 35.x_, _Android Emulator_, _Android SDK Platform-Tools_. In **Device Manager**, create one AVD (e.g., Pixel 8, API 35). This is a manual GUI step — ask the user (Burak) to do it and confirm.
 
 - [ ] **Step 3: Set ANDROID_HOME**
 
 Run (PowerShell):
+
 ```powershell
 [Environment]::SetEnvironmentVariable("ANDROID_HOME", "$env:LOCALAPPDATA\Android\Sdk", "User")
 ```
+
 Open a new terminal, then verify all three tools:
+
 ```powershell
 java -version        # expect: openjdk version "17.x"
 gradle --version     # expect: Gradle 8.x
 Get-ChildItem $env:ANDROID_HOME\platforms   # expect: android-35
 ```
+
 Expected: all three succeed. Nothing to commit.
 
 ---
@@ -65,6 +75,7 @@ Expected: all three succeed. Nothing to commit.
 ### Task 2: Scaffold the KMP Project
 
 **Files:**
+
 - Create: `mobile/settings.gradle.kts`
 - Create: `mobile/build.gradle.kts`
 - Create: `mobile/gradle.properties`
@@ -78,6 +89,7 @@ Expected: all three succeed. Nothing to commit.
 - Create (generated): `mobile/gradlew`, `mobile/gradlew.bat`, `mobile/gradle/wrapper/*`
 
 **Interfaces:**
+
 - Produces: `@Composable fun App()` in `com.smartroute.traveler` (root UI, Tasks 4–5 build on it); Gradle tasks `:composeApp:assembleDebug`, `:composeApp:testDebugUnitTest`.
 
 - [ ] **Step 1: Create `mobile/.gitignore`**
@@ -314,25 +326,31 @@ fun MainViewController(): UIViewController = ComposeUIViewController { App() }
 - [ ] **Step 11: Generate the Gradle wrapper**
 
 Run (from `mobile/`):
+
 ```powershell
 gradle wrapper --gradle-version 8.11.1
 ```
+
 Expected: creates `gradlew`, `gradlew.bat`, `gradle/wrapper/gradle-wrapper.jar`, `gradle/wrapper/gradle-wrapper.properties`. From now on, always use `./gradlew` (never global `gradle`).
 
 - [ ] **Step 12: Build the Android APK**
 
 Run (from `mobile/`):
+
 ```powershell
 ./gradlew :composeApp:assembleDebug
 ```
+
 Expected: `BUILD SUCCESSFUL`. First run downloads dependencies (several minutes). A warning that iOS targets are disabled on this host is NORMAL on Windows.
 
 - [ ] **Step 13: Run on emulator (manual verification)**
 
 Start the AVD from Android Studio Device Manager, then:
+
 ```powershell
 ./gradlew :composeApp:installDebug
 ```
+
 Launch "SmartRoute Traveler" on the emulator. Expected: app opens showing centered text "SmartRoute Traveler". Ask the user to confirm.
 
 - [ ] **Step 14: Commit**
@@ -347,15 +365,18 @@ git commit -m "feat(mobile): bootstrap Kotlin/Compose Multiplatform project"
 ### Task 3: Shared Unit Test Setup (kotlin.test in commonTest)
 
 **Files:**
+
 - Create: `mobile/composeApp/src/commonMain/kotlin/com/smartroute/traveler/domain/Formatters.kt`
 - Test: `mobile/composeApp/src/commonTest/kotlin/com/smartroute/traveler/domain/FormattersTest.kt`
 
 **Interfaces:**
+
 - Produces: `fun formatPrice(amountMinorUnits: Long, currencyCode: String): String` in `com.smartroute.traveler.domain` — e.g. `formatPrice(84700, "USD")` → `"USD 847.00"`. Later phases reuse this for trip cost display.
 
 - [ ] **Step 1: Write the failing test**
 
 `mobile/composeApp/src/commonTest/kotlin/com/smartroute/traveler/domain/FormattersTest.kt`:
+
 ```kotlin
 package com.smartroute.traveler.domain
 
@@ -388,6 +409,7 @@ Expected: FAIL — compilation error, `formatPrice` unresolved.
 - [ ] **Step 3: Write minimal implementation**
 
 `mobile/composeApp/src/commonMain/kotlin/com/smartroute/traveler/domain/Formatters.kt`:
+
 ```kotlin
 package com.smartroute.traveler.domain
 
@@ -416,15 +438,18 @@ git commit -m "test(mobile): commonTest harness with price formatter"
 ### Task 4: ktlint
 
 **Files:**
+
 - Modify: `mobile/build.gradle.kts`
 - Modify: `mobile/gradle/libs.versions.toml` (plugin already declared in Task 2 — verify only)
 
 **Interfaces:**
+
 - Produces: Gradle tasks `ktlintCheck` / `ktlintFormat` across all modules. CI (Task 6) runs `ktlintCheck`.
 
 - [ ] **Step 1: Apply the ktlint plugin to all projects**
 
 Replace the full contents of `mobile/build.gradle.kts` with:
+
 ```kotlin
 plugins {
     alias(libs.plugins.androidApplication) apply false
@@ -436,25 +461,40 @@ plugins {
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
+    // Compose Multiplatform registers generated resource accessors (package
+    // smartroute_mobile.composeapp.generated.resources) as source dirs, and
+    // ktlint-gradle lints registered source dirs even under build/. Glob
+    // excludes do not work here (they match relative paths within each
+    // registered source root), so a predicate on the absolute path is used.
+    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+        filter {
+            exclude { entry -> entry.file.toString().contains("generated") }
+        }
+    }
 }
 ```
 
 - [ ] **Step 2: Run ktlint and fix violations**
 
 Run (from `mobile/`):
+
 ```powershell
 ./gradlew ktlintCheck
 ```
+
 If violations are reported, run `./gradlew ktlintFormat`, review the diff, and re-run `ktlintCheck`.
 Expected final state: `BUILD SUCCESSFUL`.
 
 Note: ktlint's default `function-naming` rule flags `@Composable` PascalCase functions. If `App`/`RouteMap` are flagged, create `mobile/.editorconfig`:
+
 ```ini
 root = true
 
 [*.{kt,kts}]
 ktlint_function_naming_ignore_when_annotated_with = Composable
 ```
+
 and re-run `ktlintCheck`.
 
 - [ ] **Step 3: Commit**
@@ -469,18 +509,21 @@ git commit -m "chore(mobile): ktlint with Composable naming exemption"
 ### Task 5: Map Interop Spike (expect/actual RouteMap, MapLibre on Android)
 
 **Files:**
+
 - Create: `mobile/composeApp/src/commonMain/kotlin/com/smartroute/traveler/ui/map/RouteMap.kt`
 - Create: `mobile/composeApp/src/androidMain/kotlin/com/smartroute/traveler/ui/map/RouteMap.android.kt`
 - Create: `mobile/composeApp/src/iosMain/kotlin/com/smartroute/traveler/ui/map/RouteMap.ios.kt`
 - Modify: `mobile/composeApp/src/commonMain/kotlin/com/smartroute/traveler/App.kt`
 
 **Interfaces:**
+
 - Consumes: `App()` from Task 2.
 - Produces: `@Composable expect fun RouteMap(modifier: Modifier)` in `com.smartroute.traveler.ui.map` — future phases pass route/marker data; the spike renders a map centered on Istanbul (41.0082, 28.9784), zoom 9.
 
 - [ ] **Step 1: Declare the expect composable**
 
 `mobile/composeApp/src/commonMain/kotlin/com/smartroute/traveler/ui/map/RouteMap.kt`:
+
 ```kotlin
 package com.smartroute.traveler.ui.map
 
@@ -498,6 +541,7 @@ expect fun RouteMap(modifier: Modifier)
 - [ ] **Step 2: Android actual via MapLibre + AndroidView**
 
 `mobile/composeApp/src/androidMain/kotlin/com/smartroute/traveler/ui/map/RouteMap.android.kt`:
+
 ```kotlin
 package com.smartroute.traveler.ui.map
 
@@ -561,6 +605,7 @@ actual fun RouteMap(modifier: Modifier) {
 MapLibre iOS requires CocoaPods/SPM integration that needs a Mac — out of scope until Mac access exists (recorded as residual risk). Placeholder keeps the iOS target compiling:
 
 `mobile/composeApp/src/iosMain/kotlin/com/smartroute/traveler/ui/map/RouteMap.ios.kt`:
+
 ```kotlin
 package com.smartroute.traveler.ui.map
 
@@ -586,6 +631,7 @@ actual fun RouteMap(modifier: Modifier) {
 - [ ] **Step 4: Wire the map into App()**
 
 Replace the full contents of `mobile/composeApp/src/commonMain/kotlin/com/smartroute/traveler/App.kt` with:
+
 ```kotlin
 package com.smartroute.traveler
 
@@ -623,9 +669,11 @@ fun App() {
 - [ ] **Step 5: Build and lint**
 
 Run (from `mobile/`):
+
 ```powershell
 ./gradlew ktlintCheck :composeApp:testDebugUnitTest :composeApp:assembleDebug
 ```
+
 Expected: `BUILD SUCCESSFUL`.
 
 - [ ] **Step 6: Verify on emulator (manual)**
@@ -633,6 +681,7 @@ Expected: `BUILD SUCCESSFUL`.
 ```powershell
 ./gradlew :composeApp:installDebug
 ```
+
 Expected on emulator: title "SmartRoute Traveler" at top, world map (MapLibre demo tiles) centered near Istanbul filling the rest of the screen. Panning/zooming works. Ask the user to confirm — this confirmation IS the spike result for Android.
 
 - [ ] **Step 7: Commit**
@@ -647,9 +696,11 @@ git commit -m "feat(mobile): map spike — expect/actual RouteMap with MapLibre 
 ### Task 6: Mobile CI (Android build + iOS framework link on macOS)
 
 **Files:**
+
 - Create: `.github/workflows/mobile-ci.yml`
 
 **Interfaces:**
+
 - Consumes: Gradle tasks from Tasks 2–5 (`ktlintCheck`, `:composeApp:testDebugUnitTest`, `:composeApp:assembleDebug`, `:composeApp:linkDebugFrameworkIosSimulatorArm64`).
 - Produces: CI signal that the iOS target compiles — the ONLY iOS verification available while development happens on Windows.
 
@@ -710,9 +761,11 @@ jobs:
 - [ ] **Step 2: Validate YAML locally**
 
 Run (from repo root):
+
 ```powershell
 npx --yes yaml-lint .github/workflows/mobile-ci.yml
 ```
+
 Expected: no errors. (If `yaml-lint` is unavailable, any YAML parse via `node -e "require('js-yaml')..."` or careful review suffices — the real validation is the CI run in Step 4.)
 
 - [ ] **Step 3: Commit**
@@ -725,10 +778,12 @@ git commit -m "ci: mobile workflow — Android build + iOS framework link on mac
 - [ ] **Step 4: Push and verify CI (with user's approval)**
 
 Ask the user before pushing. Then:
+
 ```powershell
 git push origin main
 gh run watch --repo RyoFallen/smartroute
 ```
+
 Expected: both `android` and `ios-framework` jobs green. The `ios-framework` job passing is the Phase 1 iOS deliverable. If `ios-framework` fails on Kotlin/Native provisioning, check the error — most common fix is bumping Xcode selection via `maxim-lobanov/setup-xcode` step; add only if needed.
 
 ---

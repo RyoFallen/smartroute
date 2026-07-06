@@ -1,9 +1,11 @@
 > **Repo alignment note (2026-07-06):** This is the thesis master spec (v2.0), written before it was decided to host the project in the existing `smartroute` repo. Where the spec and the shipped codebase disagree, the codebase wins:
+>
 > - Backend framework: **Fastify** (shipped, Plans 1–6), not Express
 > - Auth: **Clerk** (JWT verification via Clerk), not custom email/password + bcrypt/refresh-tokens (§9 describes the spec-ideal; Clerk provides the equivalent guarantees)
 > - Flight API: **Duffel** (shipped, Plan 4) — resolves the spec's "TBD" in §8.1
 > - Database schema: the shipped Prisma schema in `apps/backend/prisma` is the source of truth, not §5.2
 > - The mobile sections (§3, §4.2 `mobile/`, §10) describe the **new Kotlin/Compose Multiplatform app** that replaces `apps/mobile` (Expo)
+
 # SmartRoute Traveler - Complete Technical Specification
 
 > **Thesis Project** | Student: Burak Berk Yılmaz (97342) | Group: SD 2
@@ -39,26 +41,26 @@
 
 ### 1.2 Core Value Propositions
 
-| Value | Description |
-|-------|-------------|
-| **Cost Optimization** | Automatically determines the optimal city sequence to minimize total flight cost |
-| **Direct Flight Priority** | Weighted preference for direct flights to save time |
-| **Personalized Itineraries** | Interest-based attraction recommendations for each destination |
-| **Walking Route Optimization** | Efficient daily schedules with proximity-based clustering |
-| **Unified Platform** | Single app replaces multiple travel planning tools |
+| Value                          | Description                                                                      |
+| ------------------------------ | -------------------------------------------------------------------------------- |
+| **Cost Optimization**          | Automatically determines the optimal city sequence to minimize total flight cost |
+| **Direct Flight Priority**     | Weighted preference for direct flights to save time                              |
+| **Personalized Itineraries**   | Interest-based attraction recommendations for each destination                   |
+| **Walking Route Optimization** | Efficient daily schedules with proximity-based clustering                        |
+| **Unified Platform**           | Single app replaces multiple travel planning tools                               |
 
 ### 1.3 Key Decisions Summary
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
+| Decision         | Choice                         | Rationale                                                       |
+| ---------------- | ------------------------------ | --------------------------------------------------------------- |
 | Mobile Framework | Kotlin + Compose Multiplatform | Single Kotlin codebase for Android & iOS UI, native performance |
-| Backend | Node.js + Express + TypeScript | Fast development, good ecosystem (already shipped, kept as-is) |
-| Database | PostgreSQL | Relational data, JSONB for flexibility |
-| State Management | ViewModel + StateFlow | Standard KMP pattern, lifecycle-aware, testable |
-| Maps | Mapbox | Beautiful maps, generous free tier |
-| Optimization | Genetic Algorithm (provided) | Handles TSP-variant efficiently |
-| Authentication | Email/Password + JWT | Simple, sufficient for MVP |
-| Hosting | Railway | Easy deploy, free tier |
+| Backend          | Node.js + Express + TypeScript | Fast development, good ecosystem (already shipped, kept as-is)  |
+| Database         | PostgreSQL                     | Relational data, JSONB for flexibility                          |
+| State Management | ViewModel + StateFlow          | Standard KMP pattern, lifecycle-aware, testable                 |
+| Maps             | Mapbox                         | Beautiful maps, generous free tier                              |
+| Optimization     | Genetic Algorithm (provided)   | Handles TSP-variant efficiently                                 |
+| Authentication   | Email/Password + JWT           | Simple, sufficient for MVP                                      |
+| Hosting          | Railway                        | Easy deploy, free tier                                          |
 
 ---
 
@@ -67,6 +69,7 @@
 ### 2.1 Problem Statement
 
 Planning multi-city trips requires:
+
 - Manual comparison of flight prices across platforms
 - Determining optimal city order (combinatorial problem)
 - Researching attractions for each destination
@@ -77,46 +80,47 @@ Current solutions address these in isolation, creating a fragmented experience.
 ### 2.2 Solution
 
 SmartRoute Traveler integrates:
+
 1. **Route Optimization Engine** - Genetic algorithm finds cost-optimal city sequence
 2. **Recommendation System** - Interest-based attraction filtering and ranking
 3. **Itinerary Generator** - Daily schedules with walking route optimization
 
 ### 2.3 Target Users
 
-| Persona | Description | Needs |
-|---------|-------------|-------|
-| **Budget Backpacker** | 18-30, multi-city Eurotrips | Lowest cost, flexibility |
-| **Family Planner** | 30-50, organizing group trips | Efficiency, kid-friendly |
-| **Business Traveler** | Frequent flyer, time-sensitive | Direct flights, quick planning |
-| **Digital Nomad** | Location-independent, long-term travel | Multiple cities, work-friendly spots |
+| Persona               | Description                            | Needs                                |
+| --------------------- | -------------------------------------- | ------------------------------------ |
+| **Budget Backpacker** | 18-30, multi-city Eurotrips            | Lowest cost, flexibility             |
+| **Family Planner**    | 30-50, organizing group trips          | Efficiency, kid-friendly             |
+| **Business Traveler** | Frequent flyer, time-sensitive         | Direct flights, quick planning       |
+| **Digital Nomad**     | Location-independent, long-term travel | Multiple cities, work-friendly spots |
 
 ### 2.4 Success Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| Route Optimization Time | < 10 seconds | 95th percentile |
-| Cost Savings | > 15% vs. naive ordering | Average across benchmark scenarios |
-| Competitor Benchmark | Match or beat best competitor price in ≥ 60% of scenarios | Benchmark study (see §11.5) |
-| User Satisfaction | > 4.2 / 5.0 | In-app rating |
-| Itinerary Generation | < 5 seconds | Per city |
+| Metric                  | Target                                                    | Measurement                        |
+| ----------------------- | --------------------------------------------------------- | ---------------------------------- |
+| Route Optimization Time | < 10 seconds                                              | 95th percentile                    |
+| Cost Savings            | > 15% vs. naive ordering                                  | Average across benchmark scenarios |
+| Competitor Benchmark    | Match or beat best competitor price in ≥ 60% of scenarios | Benchmark study (see §11.5)        |
+| User Satisfaction       | > 4.2 / 5.0                                               | In-app rating                      |
+| Itinerary Generation    | < 5 seconds                                               | Per city                           |
 
 ### 2.5 Competitive Landscape
 
 The thesis evaluates SmartRoute against three established competitors. The comparison has two parts: a qualitative **feature comparison** (below) and a quantitative **cost benchmark** (methodology in §11.5).
 
-| Capability | SmartRoute | Kiwi.com (Nomad) | Skyscanner | Google Flights |
-|------------|:----------:|:----------------:|:----------:|:--------------:|
-| Multi-city flight search | ✅ | ✅ | ✅ (manual order) | ✅ (manual order) |
-| Automatic city-order optimization | ✅ (GA, multi-objective) | ✅ (Nomad) | ❌ | ❌ |
-| Optimization presets (budget/time/comfort) | ✅ | ❌ (price only) | ❌ | ❌ |
-| Direct-flight weighting | ✅ | Partial (filter only) | Filter only | Filter only |
-| Interest-based attraction recommendations | ✅ | ❌ | ❌ | ❌ |
-| Daily itinerary generation | ✅ | ❌ | ❌ | ❌ |
-| Walking-route optimization | ✅ | ❌ | ❌ | ❌ |
-| In-app booking | ❌ (V2) | ✅ | Redirect | Redirect |
-| Price alerts | ❌ (V2) | ✅ | ✅ | ✅ |
+| Capability                                 |        SmartRoute        |   Kiwi.com (Nomad)    |    Skyscanner     |  Google Flights   |
+| ------------------------------------------ | :----------------------: | :-------------------: | :---------------: | :---------------: |
+| Multi-city flight search                   |            ✅            |          ✅           | ✅ (manual order) | ✅ (manual order) |
+| Automatic city-order optimization          | ✅ (GA, multi-objective) |      ✅ (Nomad)       |        ❌         |        ❌         |
+| Optimization presets (budget/time/comfort) |            ✅            |    ❌ (price only)    |        ❌         |        ❌         |
+| Direct-flight weighting                    |            ✅            | Partial (filter only) |    Filter only    |    Filter only    |
+| Interest-based attraction recommendations  |            ✅            |          ❌           |        ❌         |        ❌         |
+| Daily itinerary generation                 |            ✅            |          ❌           |        ❌         |        ❌         |
+| Walking-route optimization                 |            ✅            |          ❌           |        ❌         |        ❌         |
+| In-app booking                             |         ❌ (V2)          |          ✅           |     Redirect      |     Redirect      |
+| Price alerts                               |         ❌ (V2)          |          ✅           |        ✅         |        ✅         |
 
-**Positioning:** Kiwi Nomad is the closest competitor on route optimization — the thesis must benchmark against it directly rather than ignore it. SmartRoute's defensible differentiation is the **end-to-end trip pipeline**: optimized route *plus* personalized per-city itineraries with walking routes, which no competitor combines, and multi-objective optimization (cost/directness/time presets) versus Nomad's price-only ordering.
+**Positioning:** Kiwi Nomad is the closest competitor on route optimization — the thesis must benchmark against it directly rather than ignore it. SmartRoute's defensible differentiation is the **end-to-end trip pipeline**: optimized route _plus_ personalized per-city itineraries with walking routes, which no competitor combines, and multi-objective optimization (cost/directness/time presets) versus Nomad's price-only ordering.
 
 ---
 
@@ -126,17 +130,17 @@ The thesis evaluates SmartRoute against three established competitors. The compa
 
 #### 3.1.1 Brand Identity
 
-| Element | Value |
-|---------|-------|
-| **App Name** | SmartRoute Traveler |
-| **Primary Color** | Teal #0D9488 |
-| **Secondary Color** | Slate #64748B |
-| **Background** | White #FFFFFF / Dark #0F172A |
-| **Typography** | Inter (all weights) |
-| **Icons** | Custom teal-tinted, rounded style |
-| **Corner Radius** | 12-16px |
-| **Shadows** | Subtle elevation |
-| **Animations** | Spring-based (Compose animation APIs) |
+| Element             | Value                                 |
+| ------------------- | ------------------------------------- |
+| **App Name**        | SmartRoute Traveler                   |
+| **Primary Color**   | Teal #0D9488                          |
+| **Secondary Color** | Slate #64748B                         |
+| **Background**      | White #FFFFFF / Dark #0F172A          |
+| **Typography**      | Inter (all weights)                   |
+| **Icons**           | Custom teal-tinted, rounded style     |
+| **Corner Radius**   | 12-16px                               |
+| **Shadows**         | Subtle elevation                      |
+| **Animations**      | Spring-based (Compose animation APIs) |
 
 #### 3.1.2 Color Palette
 
@@ -164,14 +168,14 @@ Semantic:
 
 #### 3.1.3 Typography Scale
 
-| Name | Size | Weight | Use |
-|------|------|--------|-----|
-| h1 | 32px | Bold | Screen titles |
-| h2 | 24px | SemiBold | Section headers |
-| h3 | 20px | SemiBold | Card titles |
-| body | 16px | Regular | Body text |
-| caption | 14px | Regular | Secondary text |
-| small | 12px | Medium | Labels, timestamps |
+| Name    | Size | Weight   | Use                |
+| ------- | ---- | -------- | ------------------ |
+| h1      | 32px | Bold     | Screen titles      |
+| h2      | 24px | SemiBold | Section headers    |
+| h3      | 20px | SemiBold | Card titles        |
+| body    | 16px | Regular  | Body text          |
+| caption | 14px | Regular  | Secondary text     |
+| small   | 12px | Medium   | Labels, timestamps |
 
 ### 3.2 User Flows
 
@@ -336,31 +340,31 @@ Home Screen
 
 #### 3.3.1 Interest Categories (15)
 
-| # | Category | Icon | Example Attractions |
-|---|----------|------|---------------------|
-| 1 | Museums & Galleries | 🏛️ | Louvre, British Museum |
-| 2 | Historical Sites | 🏰 | Colosseum, Acropolis |
-| 3 | Nature & Parks | 🌳 | Central Park, Gardens |
-| 4 | Beaches & Water | 🏖️ | Barceloneta, Copacabana |
-| 5 | Food & Dining | 🍽️ | Local restaurants, food tours |
-| 6 | Nightlife & Bars | 🍸 | Clubs, rooftop bars |
-| 7 | Shopping | 🛍️ | Markets, boutiques |
-| 8 | Art & Architecture | 🎨 | Sagrada Familia, Gaudi |
-| 9 | Adventure & Sports | ⛷️ | Hiking, water sports |
-| 10 | Religious Sites | ⛪ | Cathedrals, temples |
-| 11 | Local Culture | 🎭 | Festivals, traditions |
-| 12 | Photography Spots | 📸 | Viewpoints, iconic locations |
-| 13 | Family Activities | 👨‍👩‍👧 | Theme parks, zoos |
-| 14 | Wellness & Spa | 🧘 | Spas, thermal baths |
-| 15 | Live Entertainment | 🎵 | Concerts, theaters |
+| #   | Category            | Icon | Example Attractions           |
+| --- | ------------------- | ---- | ----------------------------- |
+| 1   | Museums & Galleries | 🏛️   | Louvre, British Museum        |
+| 2   | Historical Sites    | 🏰   | Colosseum, Acropolis          |
+| 3   | Nature & Parks      | 🌳   | Central Park, Gardens         |
+| 4   | Beaches & Water     | 🏖️   | Barceloneta, Copacabana       |
+| 5   | Food & Dining       | 🍽️   | Local restaurants, food tours |
+| 6   | Nightlife & Bars    | 🍸   | Clubs, rooftop bars           |
+| 7   | Shopping            | 🛍️   | Markets, boutiques            |
+| 8   | Art & Architecture  | 🎨   | Sagrada Familia, Gaudi        |
+| 9   | Adventure & Sports  | ⛷️   | Hiking, water sports          |
+| 10  | Religious Sites     | ⛪   | Cathedrals, temples           |
+| 11  | Local Culture       | 🎭   | Festivals, traditions         |
+| 12  | Photography Spots   | 📸   | Viewpoints, iconic locations  |
+| 13  | Family Activities   | 👨‍👩‍👧   | Theme parks, zoos             |
+| 14  | Wellness & Spa      | 🧘   | Spas, thermal baths           |
+| 15  | Live Entertainment  | 🎵   | Concerts, theaters            |
 
 #### 3.3.2 Swipe Mechanics
 
-| Gesture | Meaning | Database Value |
-|---------|---------|----------------|
-| Swipe Left | Dislike | -1 |
-| Swipe Right | Like | +1 |
-| Skip (tap) | Neutral | 0 |
+| Gesture     | Meaning | Database Value |
+| ----------- | ------- | -------------- |
+| Swipe Left  | Dislike | -1             |
+| Swipe Right | Like    | +1             |
+| Skip (tap)  | Neutral | 0              |
 
 ### 3.4 Navigation Architecture
 
@@ -376,48 +380,49 @@ Home Screen
 
 #### 3.4.1 Tab Structure
 
-| Tab | Screens | Purpose |
-|-----|---------|---------|
-| **Home** | Home, New Trip, Trip Config, Route Results, Trip Overview | Create and manage current trip |
-| **My Trips** | Trip List, Trip Detail, City Itinerary, Attraction Detail | View saved trips |
-| **Explore** | Destinations, Destination Detail | Discover and get inspired |
-| **Profile** | Settings, Edit Profile, Interests, Preferences | Account management |
+| Tab          | Screens                                                   | Purpose                        |
+| ------------ | --------------------------------------------------------- | ------------------------------ |
+| **Home**     | Home, New Trip, Trip Config, Route Results, Trip Overview | Create and manage current trip |
+| **My Trips** | Trip List, Trip Detail, City Itinerary, Attraction Detail | View saved trips               |
+| **Explore**  | Destinations, Destination Detail                          | Discover and get inspired      |
+| **Profile**  | Settings, Edit Profile, Interests, Preferences            | Account management             |
 
 ### 3.5 Loading & Empty States
 
 #### 3.5.1 Skeleton Screens
 
 All list/card views show skeleton placeholders while loading:
+
 - Gray shimmer animation
 - Match final layout shape
 - 300ms minimum display (avoid flash)
 
 #### 3.5.2 Empty States
 
-| Screen | Illustration | Message | CTA |
-|--------|--------------|---------|-----|
-| My Trips (empty) | Traveler with map | "No trips yet" | "Create Your First Trip" |
-| City search (no results) | Magnifying glass | "No cities found" | "Try a different search" |
-| Attractions (empty) | Compass | "No attractions match" | "Adjust your interests" |
+| Screen                   | Illustration      | Message                | CTA                      |
+| ------------------------ | ----------------- | ---------------------- | ------------------------ |
+| My Trips (empty)         | Traveler with map | "No trips yet"         | "Create Your First Trip" |
+| City search (no results) | Magnifying glass  | "No cities found"      | "Try a different search" |
+| Attractions (empty)      | Compass           | "No attractions match" | "Adjust your interests"  |
 
 ### 3.6 Error Handling UX
 
-| Error Type | Display Method | Example |
-|------------|----------------|---------|
-| Form validation | Inline below field | "Email is required" |
-| Network error | Toast notification | "Connection lost. Retrying..." |
-| API error | Toast with action | "Failed to load. [Retry]" |
-| Critical error | Modal dialog | "Session expired. [Login Again]" |
+| Error Type      | Display Method     | Example                          |
+| --------------- | ------------------ | -------------------------------- |
+| Form validation | Inline below field | "Email is required"              |
+| Network error   | Toast notification | "Connection lost. Retrying..."   |
+| API error       | Toast with action  | "Failed to load. [Retry]"        |
+| Critical error  | Modal dialog       | "Session expired. [Login Again]" |
 
 ### 3.7 Haptic Feedback
 
-| Action | Haptic Type |
-|--------|-------------|
-| Button press | Light impact |
-| Trip saved | Success notification |
-| Swipe interest card | Light impact |
-| Error occurred | Error notification |
-| Pull to refresh | Light impact |
+| Action              | Haptic Type          |
+| ------------------- | -------------------- |
+| Button press        | Light impact         |
+| Trip saved          | Success notification |
+| Swipe interest card | Light impact         |
+| Error occurred      | Error notification   |
+| Pull to refresh     | Light impact         |
 
 ---
 
@@ -534,38 +539,38 @@ smartroute-traveler/
 
 ### 4.3 Technology Stack
 
-| Layer | Technology | Version | Purpose |
-|-------|------------|---------|---------|
-| **Mobile** | Kotlin | 2.1+ | Language (shared Android/iOS) |
-| | Compose Multiplatform | 1.7+ | Shared UI framework |
-| | Kotlin Multiplatform | - | Shared logic, expect/actual |
-| | Lifecycle ViewModel (KMP) | 2.8+ | State management (StateFlow) |
-| | Ktor Client | 3.x | HTTP client |
-| | kotlinx.serialization | 1.7+ | JSON serialization |
-| | Compose Navigation (JetBrains) | 2.8+ | Navigation |
-| | Koin | 4.x | Dependency injection |
-| | Mapbox Native SDKs | 11.x | Maps (via expect/actual wrappers) |
-| | multiplatform-settings | 1.x | Token storage (Keychain/EncryptedPrefs) |
-| | kotlinx-datetime | 0.6+ | Date/time handling |
-| | Compose Resources | - | Internationalization (en, tr) |
-| **Backend** | Node.js | 20 LTS | Runtime |
-| | Express | 4.x | Web framework |
-| | TypeScript | 5.x | Type safety |
-| | Prisma | 5.x | ORM |
-| | JWT | - | Authentication |
-| | bcrypt | 5.x | Password hashing |
-| | Zod | 3.x | Validation |
-| | express-rate-limit | 7.x | Rate limiting |
-| **Database** | PostgreSQL | 15+ | Primary database |
-| **Testing** | Jest | 29.x | Backend unit/integration tests |
-| | Supertest | 6.x | API testing |
-| | kotlin.test + Turbine | - | Mobile unit tests, Flow testing |
-| | Compose UI Test | - | Mobile component tests |
-| **DevOps** | GitHub Actions | - | CI/CD (macOS runner for iOS) |
-| | Gradle + fastlane | - | Mobile builds (AAB + IPA) |
-| | Railway | - | Backend hosting |
-| | Sentry (Kotlin Multiplatform) | - | Error monitoring |
-| | Firebase Analytics (GitLive) | - | Usage analytics |
+| Layer        | Technology                     | Version | Purpose                                 |
+| ------------ | ------------------------------ | ------- | --------------------------------------- |
+| **Mobile**   | Kotlin                         | 2.1+    | Language (shared Android/iOS)           |
+|              | Compose Multiplatform          | 1.7+    | Shared UI framework                     |
+|              | Kotlin Multiplatform           | -       | Shared logic, expect/actual             |
+|              | Lifecycle ViewModel (KMP)      | 2.8+    | State management (StateFlow)            |
+|              | Ktor Client                    | 3.x     | HTTP client                             |
+|              | kotlinx.serialization          | 1.7+    | JSON serialization                      |
+|              | Compose Navigation (JetBrains) | 2.8+    | Navigation                              |
+|              | Koin                           | 4.x     | Dependency injection                    |
+|              | Mapbox Native SDKs             | 11.x    | Maps (via expect/actual wrappers)       |
+|              | multiplatform-settings         | 1.x     | Token storage (Keychain/EncryptedPrefs) |
+|              | kotlinx-datetime               | 0.6+    | Date/time handling                      |
+|              | Compose Resources              | -       | Internationalization (en, tr)           |
+| **Backend**  | Node.js                        | 20 LTS  | Runtime                                 |
+|              | Express                        | 4.x     | Web framework                           |
+|              | TypeScript                     | 5.x     | Type safety                             |
+|              | Prisma                         | 5.x     | ORM                                     |
+|              | JWT                            | -       | Authentication                          |
+|              | bcrypt                         | 5.x     | Password hashing                        |
+|              | Zod                            | 3.x     | Validation                              |
+|              | express-rate-limit             | 7.x     | Rate limiting                           |
+| **Database** | PostgreSQL                     | 15+     | Primary database                        |
+| **Testing**  | Jest                           | 29.x    | Backend unit/integration tests          |
+|              | Supertest                      | 6.x     | API testing                             |
+|              | kotlin.test + Turbine          | -       | Mobile unit tests, Flow testing         |
+|              | Compose UI Test                | -       | Mobile component tests                  |
+| **DevOps**   | GitHub Actions                 | -       | CI/CD (macOS runner for iOS)            |
+|              | Gradle + fastlane              | -       | Mobile builds (AAB + IPA)               |
+|              | Railway                        | -       | Backend hosting                         |
+|              | Sentry (Kotlin Multiplatform)  | -       | Error monitoring                        |
+|              | Firebase Analytics (GitLive)   | -       | Usage analytics                         |
 
 ### 4.4 Monorepo Configuration
 
@@ -616,7 +621,7 @@ packages:
 │ name             │       │                  │       │ description      │
 │ wake_up_time     │       └──────────────────┘       └──────────────────┘
 │ intensity        │
-│ language         │                                   
+│ language         │
 │ created_at       │       ┌──────────────────┐       ┌──────────────────┐
 │ updated_at       │       │   trip_cities    │       │ city_itineraries │
 └──────────────────┘       ├──────────────────┤       ├──────────────────┤
@@ -626,7 +631,7 @@ packages:
          ▼                 │ city_name        │       │ walking_route    │
 ┌──────────────────┐       │ country          │       └──────────────────┘
 │      trips       │       │ order_index      │
-├──────────────────┤       │ arrival_date     │       
+├──────────────────┤       │ arrival_date     │
 │ id (PK)          │──────<│ departure_date   │       ┌──────────────────┐
 │ user_id (FK)     │       │ days_count       │       │  cached_flights  │
 │ name             │       │ flight_price     │       ├──────────────────┤
@@ -833,21 +838,76 @@ model CachedFlight {
 
 ```typescript
 const interestCategories = [
-  { id: 1, name: "Museums & Galleries", icon: "museum", description: "Art museums, history museums, galleries" },
-  { id: 2, name: "Historical Sites", icon: "landmark", description: "Ancient ruins, castles, monuments" },
-  { id: 3, name: "Nature & Parks", icon: "tree", description: "Parks, gardens, natural landscapes" },
-  { id: 4, name: "Beaches & Water", icon: "umbrella-beach", description: "Beaches, lakes, water activities" },
-  { id: 5, name: "Food & Dining", icon: "utensils", description: "Restaurants, food tours, local cuisine" },
-  { id: 6, name: "Nightlife & Bars", icon: "glass-martini", description: "Bars, clubs, night entertainment" },
-  { id: 7, name: "Shopping", icon: "shopping-bag", description: "Markets, malls, boutiques" },
-  { id: 8, name: "Art & Architecture", icon: "palette", description: "Unique buildings, street art, design" },
-  { id: 9, name: "Adventure & Sports", icon: "hiking", description: "Hiking, sports, outdoor activities" },
-  { id: 10, name: "Religious Sites", icon: "church", description: "Churches, temples, mosques" },
-  { id: 11, name: "Local Culture", icon: "masks-theater", description: "Festivals, traditions, local life" },
-  { id: 12, name: "Photography Spots", icon: "camera", description: "Viewpoints, iconic locations" },
-  { id: 13, name: "Family Activities", icon: "child", description: "Theme parks, zoos, kid-friendly" },
-  { id: 14, name: "Wellness & Spa", icon: "spa", description: "Spas, thermal baths, relaxation" },
-  { id: 15, name: "Live Entertainment", icon: "music", description: "Concerts, theater, shows" },
+  {
+    id: 1,
+    name: 'Museums & Galleries',
+    icon: 'museum',
+    description: 'Art museums, history museums, galleries',
+  },
+  {
+    id: 2,
+    name: 'Historical Sites',
+    icon: 'landmark',
+    description: 'Ancient ruins, castles, monuments',
+  },
+  {
+    id: 3,
+    name: 'Nature & Parks',
+    icon: 'tree',
+    description: 'Parks, gardens, natural landscapes',
+  },
+  {
+    id: 4,
+    name: 'Beaches & Water',
+    icon: 'umbrella-beach',
+    description: 'Beaches, lakes, water activities',
+  },
+  {
+    id: 5,
+    name: 'Food & Dining',
+    icon: 'utensils',
+    description: 'Restaurants, food tours, local cuisine',
+  },
+  {
+    id: 6,
+    name: 'Nightlife & Bars',
+    icon: 'glass-martini',
+    description: 'Bars, clubs, night entertainment',
+  },
+  { id: 7, name: 'Shopping', icon: 'shopping-bag', description: 'Markets, malls, boutiques' },
+  {
+    id: 8,
+    name: 'Art & Architecture',
+    icon: 'palette',
+    description: 'Unique buildings, street art, design',
+  },
+  {
+    id: 9,
+    name: 'Adventure & Sports',
+    icon: 'hiking',
+    description: 'Hiking, sports, outdoor activities',
+  },
+  { id: 10, name: 'Religious Sites', icon: 'church', description: 'Churches, temples, mosques' },
+  {
+    id: 11,
+    name: 'Local Culture',
+    icon: 'masks-theater',
+    description: 'Festivals, traditions, local life',
+  },
+  {
+    id: 12,
+    name: 'Photography Spots',
+    icon: 'camera',
+    description: 'Viewpoints, iconic locations',
+  },
+  {
+    id: 13,
+    name: 'Family Activities',
+    icon: 'child',
+    description: 'Theme parks, zoos, kid-friendly',
+  },
+  { id: 14, name: 'Wellness & Spa', icon: 'spa', description: 'Spas, thermal baths, relaxation' },
+  { id: 15, name: 'Live Entertainment', icon: 'music', description: 'Concerts, theater, shows' },
 ];
 ```
 
@@ -857,11 +917,11 @@ const interestCategories = [
 
 ### 6.1 API Overview
 
-| Base URL | Production: `https://api.smartroute.app/v1` |
-|----------|---------------------------------------------|
-| Format | JSON |
-| Auth | Bearer JWT |
-| Rate Limit | 100 requests/minute per user |
+| Base URL   | Production: `https://api.smartroute.app/v1` |
+| ---------- | ------------------------------------------- |
+| Format     | JSON                                        |
+| Auth       | Bearer JWT                                  |
+| Rate Limit | 100 requests/minute per user                |
 
 ### 6.2 Authentication Endpoints
 
@@ -870,6 +930,7 @@ const interestCategories = [
 Create a new user account.
 
 **Request:**
+
 ```json
 {
   "email": "user@example.com",
@@ -879,6 +940,7 @@ Create a new user account.
 ```
 
 **Response (201):**
+
 ```json
 {
   "user": {
@@ -896,6 +958,7 @@ Create a new user account.
 Authenticate existing user.
 
 **Request:**
+
 ```json
 {
   "email": "user@example.com",
@@ -904,6 +967,7 @@ Authenticate existing user.
 ```
 
 **Response (200):**
+
 ```json
 {
   "user": {
@@ -921,6 +985,7 @@ Authenticate existing user.
 Get new access token using refresh token.
 
 **Request:**
+
 ```json
 {
   "refreshToken": "eyJhbG..."
@@ -928,10 +993,11 @@ Get new access token using refresh token.
 ```
 
 **Response (200):**
+
 ```json
 {
   "accessToken": "eyJhbG...",
-  "refreshToken": "eyJhbG..."  // New refresh token (sliding expiry)
+  "refreshToken": "eyJhbG..." // New refresh token (sliding expiry)
 }
 ```
 
@@ -942,6 +1008,7 @@ Invalidate refresh token.
 **Headers:** `Authorization: Bearer <accessToken>`
 
 **Response (200):**
+
 ```json
 {
   "message": "Logged out successfully"
@@ -953,6 +1020,7 @@ Invalidate refresh token.
 Request password reset.
 
 **Request:**
+
 ```json
 {
   "email": "user@example.com"
@@ -960,6 +1028,7 @@ Request password reset.
 ```
 
 **Response (200):**
+
 ```json
 {
   "message": "Reset instructions sent to email"
@@ -971,6 +1040,7 @@ Request password reset.
 Reset password with code.
 
 **Request:**
+
 ```json
 {
   "email": "user@example.com",
@@ -988,6 +1058,7 @@ Get current user profile.
 **Headers:** `Authorization: Bearer <accessToken>`
 
 **Response (200):**
+
 ```json
 {
   "id": "uuid",
@@ -1009,6 +1080,7 @@ Get current user profile.
 Update user profile.
 
 **Request:**
+
 ```json
 {
   "name": "John Smith",
@@ -1023,6 +1095,7 @@ Update user profile.
 Update user interests.
 
 **Request:**
+
 ```json
 {
   "interests": [
@@ -1038,6 +1111,7 @@ Update user interests.
 Delete user account (GDPR).
 
 **Response (200):**
+
 ```json
 {
   "message": "Account deleted successfully"
@@ -1051,6 +1125,7 @@ Delete user account (GDPR).
 Create a new trip (auto-saved as draft).
 
 **Request:**
+
 ```json
 {
   "cities": ["PAR", "ROM", "BCN"],
@@ -1067,6 +1142,7 @@ Create a new trip (auto-saved as draft).
 ```
 
 **Response (201):**
+
 ```json
 {
   "id": "trip-uuid",
@@ -1082,14 +1158,15 @@ Create a new trip (auto-saved as draft).
 Run route optimization.
 
 **Response (200):**
+
 ```json
 {
   "routes": [
     {
       "rank": 1,
       "sequence": ["PAR", "BCN", "ROM"],
-      "totalCost": 847.00,
-      "savingsVsOriginal": 234.00,
+      "totalCost": 847.0,
+      "savingsVsOriginal": 234.0,
       "totalTravelTime": "6h 45m",
       "directFlights": 3,
       "legs": [
@@ -1097,7 +1174,7 @@ Run route optimization.
           "from": "PAR",
           "to": "BCN",
           "date": "2026-03-15",
-          "price": 127.00,
+          "price": 127.0,
           "airline": "Air France",
           "flightNumber": "AF1234",
           "departureTime": "10:30",
@@ -1109,12 +1186,12 @@ Run route optimization.
     {
       "rank": 2,
       "sequence": ["PAR", "ROM", "BCN"],
-      "totalCost": 892.00,
-      "savingsVsOriginal": 189.00,
+      "totalCost": 892.0,
+      "savingsVsOriginal": 189.0
       // ...
     },
     {
-      "rank": 3,
+      "rank": 3
       // ...
     }
   ]
@@ -1126,6 +1203,7 @@ Run route optimization.
 Select one of the optimized routes.
 
 **Request:**
+
 ```json
 {
   "routeRank": 1
@@ -1133,6 +1211,7 @@ Select one of the optimized routes.
 ```
 
 **Response (200):**
+
 ```json
 {
   "id": "trip-uuid",
@@ -1156,6 +1235,7 @@ Select one of the optimized routes.
 Generate daily itineraries for all cities.
 
 **Response (200):**
+
 ```json
 {
   "itineraries": [
@@ -1195,11 +1275,13 @@ Generate daily itineraries for all cities.
 Get user's trips.
 
 **Query Parameters:**
+
 - `status`: Filter by status (DRAFT, OPTIMIZED, SAVED, COMPLETED)
 - `limit`: Number of results (default: 20)
 - `offset`: Pagination offset
 
 **Response (200):**
+
 ```json
 {
   "trips": [
@@ -1208,7 +1290,7 @@ Get user's trips.
       "name": "Paris-Rome-Barcelona Trip",
       "startDate": "2026-03-15",
       "endDate": "2026-03-22",
-      "totalCost": 847.00,
+      "totalCost": 847.0,
       "status": "SAVED",
       "cities": ["Paris", "Rome", "Barcelona"],
       "imageUrl": "https://unsplash.com/..."
@@ -1249,10 +1331,12 @@ Export trip to iCal format.
 Search cities.
 
 **Query Parameters:**
+
 - `q`: Search query
 - `limit`: Results limit (default: 10)
 
 **Response (200):**
+
 ```json
 {
   "cities": [
@@ -1278,10 +1362,12 @@ Get popular destinations.
 Get attractions for a city (filtered by user interests).
 
 **Query Parameters:**
+
 - `interests`: Comma-separated category IDs (optional, uses user's if not provided)
 - `limit`: Results limit
 
 **Response (200):**
+
 ```json
 {
   "attractions": [
@@ -1312,11 +1398,12 @@ Get attractions for a city (filtered by user interests).
 Submit attraction feedback (thumbs up/down).
 
 **Request:**
+
 ```json
 {
   "attractionId": "place-123",
   "tripId": "trip-uuid",
-  "feedback": "up"  // or "down"
+  "feedback": "up" // or "down"
 }
 ```
 
@@ -1331,22 +1418,20 @@ Get all interest categories.
   "error": {
     "code": "VALIDATION_ERROR",
     "message": "Invalid email format",
-    "details": [
-      { "field": "email", "message": "Must be a valid email address" }
-    ]
+    "details": [{ "field": "email", "message": "Must be a valid email address" }]
   }
 }
 ```
 
-| Status Code | Error Code | Description |
-|-------------|------------|-------------|
-| 400 | VALIDATION_ERROR | Invalid request data |
-| 401 | UNAUTHORIZED | Missing or invalid token |
-| 403 | FORBIDDEN | Insufficient permissions |
-| 404 | NOT_FOUND | Resource not found |
-| 409 | CONFLICT | Resource already exists |
-| 429 | RATE_LIMITED | Too many requests |
-| 500 | INTERNAL_ERROR | Server error |
+| Status Code | Error Code       | Description              |
+| ----------- | ---------------- | ------------------------ |
+| 400         | VALIDATION_ERROR | Invalid request data     |
+| 401         | UNAUTHORIZED     | Missing or invalid token |
+| 403         | FORBIDDEN        | Insufficient permissions |
+| 404         | NOT_FOUND        | Resource not found       |
+| 409         | CONFLICT         | Resource already exists  |
+| 429         | RATE_LIMITED     | Too many requests        |
+| 500         | INTERNAL_ERROR   | Server error             |
 
 ---
 
@@ -1357,6 +1442,7 @@ Get all interest categories.
 #### 7.1.1 Overview
 
 The route optimization problem is modeled as a variant of the Traveling Salesman Problem (TSP) with:
+
 - Fixed start city (required)
 - Optional fixed end city
 - Weighted multi-objective optimization
@@ -1364,29 +1450,29 @@ The route optimization problem is modeled as a variant of the Traveling Salesman
 #### 7.1.2 Fitness Function
 
 ```
-fitness(route) = w1 * normalize(totalCost) 
-              + w2 * normalize(directFlightCount) 
+fitness(route) = w1 * normalize(totalCost)
+              + w2 * normalize(directFlightCount)
               + w3 * normalize(totalTravelTime)
 ```
 
 **Weights (Presets):**
 
-| Preset | Cost (w1) | Direct (w2) | Time (w3) |
-|--------|-----------|-------------|-----------|
-| Budget Traveler | 0.7 | 0.1 | 0.2 |
-| Time Saver | 0.3 | 0.4 | 0.3 |
-| Comfort First | 0.3 | 0.5 | 0.2 |
-| Balanced (Default) | 0.5 | 0.3 | 0.2 |
+| Preset             | Cost (w1) | Direct (w2) | Time (w3) |
+| ------------------ | --------- | ----------- | --------- |
+| Budget Traveler    | 0.7       | 0.1         | 0.2       |
+| Time Saver         | 0.3       | 0.4         | 0.3       |
+| Comfort First      | 0.3       | 0.5         | 0.2       |
+| Balanced (Default) | 0.5       | 0.3         | 0.2       |
 
 #### 7.1.3 Algorithm Parameters
 
-| Parameter | Default | Notes |
-|-----------|---------|-------|
-| Population Size | TBD | To be tuned |
-| Generations | TBD | To be tuned |
-| Mutation Rate | TBD | To be tuned |
-| Crossover Rate | TBD | To be tuned |
-| Timeout | 30 seconds | Return best-so-far if exceeded |
+| Parameter       | Default    | Notes                          |
+| --------------- | ---------- | ------------------------------ |
+| Population Size | TBD        | To be tuned                    |
+| Generations     | TBD        | To be tuned                    |
+| Mutation Rate   | TBD        | To be tuned                    |
+| Crossover Rate  | TBD        | To be tuned                    |
+| Timeout         | 30 seconds | Return best-so-far if exceeded |
 
 #### 7.1.4 Constraints
 
@@ -1403,6 +1489,7 @@ score(attraction) = interestMatch * popularity
 ```
 
 Where:
+
 - `interestMatch` = 1 if category matches user's liked interests, 0.5 for neutral, 0 for disliked
 - `popularity` = normalized rating (0-1)
 
@@ -1446,10 +1533,10 @@ For each day:
 #### 7.3.3 Attractions Per Day
 
 | Intensity | Attractions/Day | Active Hours |
-|-----------|-----------------|--------------|
-| Relaxed | 3-4 | 5-6 hours |
-| Moderate | 5-6 | 7-8 hours |
-| Packed | 7-8 | 10-12 hours |
+| --------- | --------------- | ------------ |
+| Relaxed   | 3-4             | 5-6 hours    |
+| Moderate  | 5-6             | 7-8 hours    |
+| Packed    | 7-8             | 10-12 hours  |
 
 ---
 
@@ -1458,6 +1545,7 @@ For each day:
 ### 8.1 Flight API (TBD)
 
 **Decision pending.** Options:
+
 - Amadeus API (recommended)
 - Skyscanner API (RapidAPI)
 - Mock data for thesis demo
@@ -1466,9 +1554,9 @@ For each day:
 
 ```typescript
 interface FlightSearchParams {
-  origin: string;       // IATA code
-  destination: string;  // IATA code
-  date: string;         // YYYY-MM-DD
+  origin: string; // IATA code
+  destination: string; // IATA code
+  date: string; // YYYY-MM-DD
   adults: number;
   children: number;
   infants: number;
@@ -1483,7 +1571,7 @@ interface FlightOffer {
   flightNumber: string;
   departureTime: string;
   arrivalTime: string;
-  duration: number;  // minutes
+  duration: number; // minutes
   isDirect: boolean;
   stops: number;
 }
@@ -1492,6 +1580,7 @@ interface FlightOffer {
 ### 8.2 Places API (TBD)
 
 **Decision pending.** Options:
+
 - Google Places API (recommended)
 - Foursquare API
 - OpenTripMap (free)
@@ -1513,7 +1602,7 @@ interface Place {
   reviewCount: number;
   location: { lat: number; lng: number };
   imageUrl?: string;
-  typicalDuration?: number;  // minutes
+  typicalDuration?: number; // minutes
   openingHours?: Record<string, string>;
 }
 ```
@@ -1521,16 +1610,19 @@ interface Place {
 ### 8.3 Mapbox
 
 **Used for:**
+
 - Route visualization (curved lines)
 - City markers
 - Walking route display
 - Interactive maps
 
 **Configuration:**
+
 - Style: Custom teal-tinted
 - Free tier: 50,000 map loads/month
 
 **KMP Integration:**
+
 - No Compose Multiplatform artifact exists; native SDKs are embedded via `expect`/`actual`:
   - Android: Mapbox Android SDK wrapped in `AndroidView`
   - iOS: Mapbox iOS SDK wrapped in `UIKitView` (Kotlin/Native cinterop or Swift interop via `iosApp`)
@@ -1539,6 +1631,7 @@ interface Place {
 ### 8.4 Google Directions API
 
 **Used for:**
+
 - Walking route optimization
 - Time estimation between attractions
 - Transit suggestions
@@ -1546,25 +1639,30 @@ interface Place {
 ### 8.5 Unsplash API
 
 **Used for:**
+
 - Destination images
 - Trip card backgrounds
 
 **Configuration:**
+
 - Free tier: 50 requests/hour
 - Cache images to reduce API calls
 
 ### 8.6 Push Notifications (FCM + APNs)
 
 **Used for:**
+
 - Trip reminders (X days before departure)
 
 **Implementation:**
+
 - Android: Firebase Cloud Messaging (`androidMain`)
 - iOS: APNs via FCM iOS SDK (`iosMain` / `iosApp` bridge)
 
 ### 8.7 Firebase Analytics
 
 **Used for:**
+
 - Basic usage analytics
 - Screen views
 - Feature usage
@@ -1574,6 +1672,7 @@ interface Place {
 ### 8.8 Sentry
 
 **Used for:**
+
 - Error tracking
 - Crash reporting
 - Performance monitoring
@@ -1622,12 +1721,13 @@ Token Refresh (Sliding Expiry):
 
 ### 9.2 JWT Configuration
 
-| Token | Lifetime | Storage | Purpose |
-|-------|----------|---------|---------|
-| Access Token | 24 hours | Memory / secure settings | API authentication |
+| Token         | Lifetime          | Storage                                                                          | Purpose              |
+| ------------- | ----------------- | -------------------------------------------------------------------------------- | -------------------- |
+| Access Token  | 24 hours          | Memory / secure settings                                                         | API authentication   |
 | Refresh Token | 15 days (sliding) | Keychain (iOS) / EncryptedSharedPreferences (Android) via multiplatform-settings | Get new access token |
 
 **JWT Payload (Access Token):**
+
 ```json
 {
   "sub": "user-uuid",
@@ -1639,30 +1739,30 @@ Token Refresh (Sliding Expiry):
 
 ### 9.3 Password Security
 
-| Aspect | Implementation |
-|--------|----------------|
-| Hashing | bcrypt (12 rounds) |
-| Min Length | 8 characters |
+| Aspect       | Implementation              |
+| ------------ | --------------------------- |
+| Hashing      | bcrypt (12 rounds)          |
+| Min Length   | 8 characters                |
 | Requirements | At least 1 letter, 1 number |
 
 ### 9.4 Rate Limiting
 
-| Endpoint | Limit | Window |
-|----------|-------|--------|
-| /auth/login | 5 requests | 15 minutes |
-| /auth/register | 3 requests | 1 hour |
-| /auth/forgot-password | 3 requests | 1 hour |
-| All other endpoints | 100 requests | 1 minute |
+| Endpoint              | Limit        | Window     |
+| --------------------- | ------------ | ---------- |
+| /auth/login           | 5 requests   | 15 minutes |
+| /auth/register        | 3 requests   | 1 hour     |
+| /auth/forgot-password | 3 requests   | 1 hour     |
+| All other endpoints   | 100 requests | 1 minute   |
 
 ### 9.5 Data Security
 
-| Data | Protection |
-|------|------------|
-| Passwords | bcrypt hash, never stored plain |
-| JWT Secrets | Environment variables |
-| Database | TLS connection |
-| API Traffic | HTTPS only |
-| Sensitive fields | Excluded from logs |
+| Data             | Protection                      |
+| ---------------- | ------------------------------- |
+| Passwords        | bcrypt hash, never stored plain |
+| JWT Secrets      | Environment variables           |
+| Database         | TLS connection                  |
+| API Traffic      | HTTPS only                      |
+| Sensitive fields | Excluded from logs              |
 
 ### 9.6 GDPR Compliance
 
@@ -1841,6 +1941,7 @@ class UserPrefsViewModel(
 ### 10.5 Internationalization
 
 **Supported Languages:**
+
 - English (en) - Default
 - Turkish (tr)
 
@@ -1864,18 +1965,18 @@ Text(stringResource(Res.string.create_first_trip))
 
 All components are composables in `commonMain/ui/components/`:
 
-| Composable | Parameters | Description |
-|------------|------------|-------------|
-| AppButton | variant, size, loading, enabled, onClick | Primary action button |
-| AppTextField | label, error, isPassword, onValueChange | Text input with label |
-| AppCard | onClick, elevated, content | Tappable container |
-| SkeletonBox | width, height, shape | Shimmer loading placeholder |
-| AppSnackbar | type, message, duration | Notification toast (SnackbarHost) |
-| EmptyState | illustration, title, ctaLabel, onCta | Empty list state |
-| SwipeCard | onSwipeLeft, onSwipeRight, onSkip | Interest selection (anchoredDraggable) |
-| RouteMap | route, markers, modifier | Mapbox wrapper (expect/actual) |
-| CityChip | city, onRemove | Selected city chip |
-| AttractionCard | attraction, onClick | Attraction list item |
+| Composable     | Parameters                               | Description                            |
+| -------------- | ---------------------------------------- | -------------------------------------- |
+| AppButton      | variant, size, loading, enabled, onClick | Primary action button                  |
+| AppTextField   | label, error, isPassword, onValueChange  | Text input with label                  |
+| AppCard        | onClick, elevated, content               | Tappable container                     |
+| SkeletonBox    | width, height, shape                     | Shimmer loading placeholder            |
+| AppSnackbar    | type, message, duration                  | Notification toast (SnackbarHost)      |
+| EmptyState     | illustration, title, ctaLabel, onCta     | Empty list state                       |
+| SwipeCard      | onSwipeLeft, onSwipeRight, onSkip        | Interest selection (anchoredDraggable) |
+| RouteMap       | route, markers, modifier                 | Mapbox wrapper (expect/actual)         |
+| CityChip       | city, onRemove                           | Selected city chip                     |
+| AttractionCard | attraction, onClick                      | Attraction list item                   |
 
 ---
 
@@ -1901,18 +2002,19 @@ All components are composables in `commonMain/ui/components/`:
 **Framework:** Jest + Supertest
 
 **Coverage Targets:**
+
 - Services: 80%
 - Controllers: 70%
 - Utilities: 90%
 
 **Test Categories:**
 
-| Category | Example |
-|----------|---------|
-| Unit | Genetic algorithm fitness function |
-| Unit | Recommendation scoring |
-| Unit | JWT token generation/validation |
-| Integration | POST /auth/register creates user |
+| Category    | Example                             |
+| ----------- | ----------------------------------- |
+| Unit        | Genetic algorithm fitness function  |
+| Unit        | Recommendation scoring              |
+| Unit        | JWT token generation/validation     |
+| Integration | POST /auth/register creates user    |
 | Integration | POST /trips/optimize returns routes |
 | Integration | GET /trips/:id returns correct data |
 
@@ -1921,20 +2023,21 @@ All components are composables in `commonMain/ui/components/`:
 **Frameworks:** kotlin.test (unit) + Turbine (Flow/StateFlow assertions) + Compose UI Test (components)
 
 **Coverage Targets:**
+
 - Composables: 70%
 - ViewModels: 80%
 - Utils: 90%
 
 **Test Categories:**
 
-| Category | Example |
-|----------|---------|
-| Unit | formatCurrency utility |
-| Unit | date formatting (kotlinx-datetime) |
-| Unit | AuthViewModel emits loading→success states (Turbine) |
-| Component | AppButton renders correctly |
-| Component | SwipeCard fires callbacks |
-| Integration | Login flow stores token (mocked Ktor engine) |
+| Category    | Example                                              |
+| ----------- | ---------------------------------------------------- |
+| Unit        | formatCurrency utility                               |
+| Unit        | date formatting (kotlinx-datetime)                   |
+| Unit        | AuthViewModel emits loading→success states (Turbine) |
+| Component   | AppButton renders correctly                          |
+| Component   | SwipeCard fires callbacks                            |
+| Integration | Login flow stores token (mocked Ktor engine)         |
 
 > Ktor's `MockEngine` allows API-level integration tests entirely in `commonTest` without a running server.
 
@@ -1958,23 +2061,23 @@ The headline quantitative result of the thesis: does SmartRoute find cheaper mul
 
 #### 11.5.1 Benchmark Design
 
-| Element | Definition |
-|---------|------------|
-| Scenarios | 20 multi-city trips: 3–6 cities, Europe-weighted (matches seed cities), departure 2–8 weeks out |
-| SmartRoute measurement | Optimized route total price (best of top-3 routes) |
-| Kiwi Nomad measurement | Nomad result for same cities/dates/passenger config |
-| Skyscanner / Google Flights measurement | Multi-city search using (a) the user's naive city order and (b) SmartRoute's optimized order — isolates the value of ordering from the value of inventory |
-| Controls | All four platforms queried the **same day within a 2-hour window** (prices are volatile); economy class; same passenger count; currency normalized to USD at day's rate |
-| Repetitions | Each scenario captured 3 times on different days; report per-scenario median |
+| Element                                 | Definition                                                                                                                                                              |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scenarios                               | 20 multi-city trips: 3–6 cities, Europe-weighted (matches seed cities), departure 2–8 weeks out                                                                         |
+| SmartRoute measurement                  | Optimized route total price (best of top-3 routes)                                                                                                                      |
+| Kiwi Nomad measurement                  | Nomad result for same cities/dates/passenger config                                                                                                                     |
+| Skyscanner / Google Flights measurement | Multi-city search using (a) the user's naive city order and (b) SmartRoute's optimized order — isolates the value of ordering from the value of inventory               |
+| Controls                                | All four platforms queried the **same day within a 2-hour window** (prices are volatile); economy class; same passenger count; currency normalized to USD at day's rate |
+| Repetitions                             | Each scenario captured 3 times on different days; report per-scenario median                                                                                            |
 
 #### 11.5.2 Reported Metrics
 
-| Metric | Description |
-|--------|-------------|
-| Win rate | % of scenarios where SmartRoute ≤ cheapest competitor |
-| Median savings | % difference vs. each competitor, per scenario |
-| Ordering value | Skyscanner/Google price with optimized order vs. naive order — quantifies the GA's contribution independent of flight inventory |
-| Optimization time | SmartRoute wall-clock time per scenario (target < 10 s) |
+| Metric            | Description                                                                                                                     |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Win rate          | % of scenarios where SmartRoute ≤ cheapest competitor                                                                           |
+| Median savings    | % difference vs. each competitor, per scenario                                                                                  |
+| Ordering value    | Skyscanner/Google price with optimized order vs. naive order — quantifies the GA's contribution independent of flight inventory |
+| Optimization time | SmartRoute wall-clock time per scenario (target < 10 s)                                                                         |
 
 #### 11.5.3 Threats to Validity (address in thesis)
 
@@ -2020,22 +2123,24 @@ The headline quantitative result of the thesis: does SmartRoute find cheaper mul
 ### 12.2 Railway Configuration
 
 **Backend Service:**
+
 - Node.js 20 LTS
 - Auto-deploy from GitHub main branch
 - Environment variables in Railway dashboard
 
 **Database Service:**
+
 - PostgreSQL 15
 - Auto-backups enabled
 - Connection via internal network
 
 ### 12.3 Mobile Build Configuration
 
-| Artifact | Tooling | Notes |
-|----------|---------|-------|
-| Android AAB | `./gradlew :composeApp:bundleRelease` | Signed with upload keystore, Play Console upload |
-| iOS IPA | Xcode / `fastlane gym` | Requires macOS + Apple Developer account |
-| Store submission | fastlane `supply` (Play) / `deliver` (App Store) | Replaces EAS Submit |
+| Artifact         | Tooling                                          | Notes                                            |
+| ---------------- | ------------------------------------------------ | ------------------------------------------------ |
+| Android AAB      | `./gradlew :composeApp:bundleRelease`            | Signed with upload keystore, Play Console upload |
+| iOS IPA          | Xcode / `fastlane gym`                           | Requires macOS + Apple Developer account         |
+| Store submission | fastlane `supply` (Play) / `deliver` (App Store) | Replaces EAS Submit                              |
 
 ```ruby
 # mobile/fastlane/Fastfile (excerpt)
@@ -2121,7 +2226,7 @@ jobs:
 
   build-mobile-ios:
     needs: [lint, test]
-    runs-on: macos-latest   # iOS builds require macOS
+    runs-on: macos-latest # iOS builds require macOS
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
@@ -2136,6 +2241,7 @@ jobs:
 ### 12.5 Environment Variables
 
 **Backend (.env):**
+
 ```
 DATABASE_URL=postgresql://...
 JWT_ACCESS_SECRET=...
@@ -2148,11 +2254,13 @@ SENTRY_DSN=...
 ```
 
 **Mobile (BuildKonfig — compile-time constants, no .env at runtime):**
+
 ```
 API_URL=https://api.smartroute.app
 MAPBOX_TOKEN=...
 SENTRY_DSN=...
 ```
+
 Values are supplied via `gradle.properties` / CI secrets and generated into a `BuildKonfig` object accessible from `commonMain`.
 
 ---
@@ -2161,26 +2269,27 @@ Values are supplied via `gradle.properties` / CI secrets and generated into a `B
 
 ### Phase Overview
 
-| Phase | Focus | Duration Estimate |
-|-------|-------|-------------------|
-| 1 | Project Setup & Foundation | 2 weeks |
-| 2 | Authentication System | 1.5 weeks |
-| 3 | User Profile & Interests | 1 week |
-| 4 | Route Optimization Engine | 2 weeks |
-| 5 | Flight Data Integration | 1.5 weeks |
-| 6 | Attraction Recommendations | 1.5 weeks |
-| 7 | City Itinerary Generation | 2 weeks |
-| 8 | Trip Planning UI | 3 weeks |
-| 9 | Trip Management | 1 week |
-| 10 | Testing & QA | 2 weeks |
-| 11 | Documentation & Deployment | 1.5 weeks |
-| **Total** | | **~19 weeks** |
+| Phase     | Focus                      | Duration Estimate |
+| --------- | -------------------------- | ----------------- |
+| 1         | Project Setup & Foundation | 2 weeks           |
+| 2         | Authentication System      | 1.5 weeks         |
+| 3         | User Profile & Interests   | 1 week            |
+| 4         | Route Optimization Engine  | 2 weeks           |
+| 5         | Flight Data Integration    | 1.5 weeks         |
+| 6         | Attraction Recommendations | 1.5 weeks         |
+| 7         | City Itinerary Generation  | 2 weeks           |
+| 8         | Trip Planning UI           | 3 weeks           |
+| 9         | Trip Management            | 1 week            |
+| 10        | Testing & QA               | 2 weeks           |
+| 11        | Documentation & Deployment | 1.5 weeks         |
+| **Total** |                            | **~19 weeks**     |
 
 > **Deadline check:** ~19 weeks from July 2026 lands mid-November, leaving a ~2-week buffer before the **early December 2026** delivery. The buffer is intentionally reserved for the KMP/Compose learning curve and the Mapbox interop spike — do not spend it on scope additions.
 
 ### Phase 1: Project Setup & Foundation
 
 **Deliverables:**
+
 - [ ] Backend workspace (Turborepo + pnpm) — already in place
 - [ ] Kotlin Multiplatform / Compose Multiplatform project initialized (`mobile/`)
 - [ ] iOS app builds and runs from `iosApp` Xcode wrapper
@@ -2195,6 +2304,7 @@ Values are supplied via `gradle.properties` / CI secrets and generated into a `B
 ### Phase 2: Authentication System
 
 **Deliverables:**
+
 - [ ] User registration endpoint
 - [ ] Login endpoint with JWT generation
 - [ ] Refresh token rotation
@@ -2208,6 +2318,7 @@ Values are supplied via `gradle.properties` / CI secrets and generated into a `B
 ### Phase 3: User Profile & Interests
 
 **Deliverables:**
+
 - [ ] Interest categories seed data
 - [ ] Swipe card component
 - [ ] Interest selection screen (onboarding)
@@ -2220,6 +2331,7 @@ Values are supplied via `gradle.properties` / CI secrets and generated into a `B
 ### Phase 4: Route Optimization Engine
 
 **Deliverables:**
+
 - [ ] Integrate provided Genetic Algorithm
 - [ ] Flight data service interface (abstract)
 - [ ] Mock flight data provider
@@ -2234,6 +2346,7 @@ Values are supplied via `gradle.properties` / CI secrets and generated into a `B
 ### Phase 5: Flight Data Integration
 
 **Deliverables:**
+
 - [ ] Select and configure Flight API
 - [ ] API client with rate limiting
 - [ ] Flight search endpoint
@@ -2246,6 +2359,7 @@ Values are supplied via `gradle.properties` / CI secrets and generated into a `B
 ### Phase 6: Attraction Recommendations
 
 **Deliverables:**
+
 - [ ] Select and configure Places API
 - [ ] Category mapping (API → interests)
 - [ ] Attraction search endpoint
@@ -2258,6 +2372,7 @@ Values are supplied via `gradle.properties` / CI secrets and generated into a `B
 ### Phase 7: City Itinerary Generation
 
 **Deliverables:**
+
 - [ ] Itinerary data model
 - [ ] Proximity clustering algorithm
 - [ ] Daily schedule generator
@@ -2271,6 +2386,7 @@ Values are supplied via `gradle.properties` / CI secrets and generated into a `B
 ### Phase 8: Trip Planning UI (Mobile)
 
 **Deliverables:**
+
 - [ ] Onboarding screens (3)
 - [ ] Home screen with quick actions
 - [ ] City search/selection
@@ -2287,6 +2403,7 @@ Values are supplied via `gradle.properties` / CI secrets and generated into a `B
 ### Phase 9: Trip Management
 
 **Deliverables:**
+
 - [ ] Auto-save as draft
 - [ ] My Trips list screen
 - [ ] Trip card with image
@@ -2301,6 +2418,7 @@ Values are supplied via `gradle.properties` / CI secrets and generated into a `B
 ### Phase 10: Testing & QA
 
 **Deliverables:**
+
 - [ ] Unit tests for optimizer
 - [ ] Unit tests for recommendation
 - [ ] API integration tests
@@ -2314,6 +2432,7 @@ Values are supplied via `gradle.properties` / CI secrets and generated into a `B
 ### Phase 11: Documentation & Deployment
 
 **Deliverables:**
+
 - [ ] API documentation (Swagger)
 - [ ] README files
 - [ ] Setup guides
@@ -2331,32 +2450,32 @@ Values are supplied via `gradle.properties` / CI secrets and generated into a `B
 
 ### 14.1 Technical Risks
 
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|------------|------------|
-| Flight API rate limits | High | Medium | Aggressive caching, mock data fallback |
-| GA performance issues | Medium | Medium | Timeout mechanism, parameter tuning |
-| Places API data quality | Medium | Low | Manual curation for popular cities |
-| Real-time collab complexity | High | N/A | **Dropped for V1** |
-| Mapbox/Compose MP interop | Medium | Medium | Phase 1 spike; expect/actual wrappers; MapLibre fallback |
-| Kotlin/Native iOS build issues | Medium | Low | Keep iosApp wrapper thin; pin Kotlin/CMP versions |
+| Risk                           | Impact | Likelihood | Mitigation                                               |
+| ------------------------------ | ------ | ---------- | -------------------------------------------------------- |
+| Flight API rate limits         | High   | Medium     | Aggressive caching, mock data fallback                   |
+| GA performance issues          | Medium | Medium     | Timeout mechanism, parameter tuning                      |
+| Places API data quality        | Medium | Low        | Manual curation for popular cities                       |
+| Real-time collab complexity    | High   | N/A        | **Dropped for V1**                                       |
+| Mapbox/Compose MP interop      | Medium | Medium     | Phase 1 spike; expect/actual wrappers; MapLibre fallback |
+| Kotlin/Native iOS build issues | Medium | Low        | Keep iosApp wrapper thin; pin Kotlin/CMP versions        |
 
 ### 14.2 Schedule Risks
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Feature creep | High | Strict MVP scope, say no to new features |
+| Risk                       | Impact | Mitigation                                                                          |
+| -------------------------- | ------ | ----------------------------------------------------------------------------------- |
+| Feature creep              | High   | Strict MVP scope, say no to new features                                            |
 | KMP/Compose learning curve | Medium | 2-week buffer before Dec deadline; lean on Android-first iteration, test iOS weekly |
-| API integration delays | Medium | Start with mocks, integrate incrementally |
-| Underestimated complexity | Medium | Buffer time in schedule |
-| External dependency issues | Medium | Have fallback options ready |
+| API integration delays     | Medium | Start with mocks, integrate incrementally                                           |
+| Underestimated complexity  | Medium | Buffer time in schedule                                                             |
+| External dependency issues | Medium | Have fallback options ready                                                         |
 
 ### 14.3 Business Risks
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| API costs exceed budget | Medium | Monitor usage, implement limits |
-| Low user adoption | Low (thesis) | Focus on demo quality |
-| Competitor launches similar | Low | Unique algorithm is differentiator |
+| Risk                        | Impact       | Mitigation                         |
+| --------------------------- | ------------ | ---------------------------------- |
+| API costs exceed budget     | Medium       | Monitor usage, implement limits    |
+| Low user adoption           | Low (thesis) | Focus on demo quality              |
+| Competitor launches similar | Low          | Unique algorithm is differentiator |
 
 ---
 
@@ -2364,33 +2483,33 @@ Values are supplied via `gradle.properties` / CI secrets and generated into a `B
 
 **Deferred for post-thesis:**
 
-| Feature | Priority | Complexity |
-|---------|----------|------------|
-| Real-time collaborative editing | High | High |
-| Hotel recommendations | Medium | Medium |
-| Full budget tracking | Low | Medium |
-| Weather integration | Low | Low |
-| In-app flight booking | High | Very High |
-| Accessibility filters | Medium | Medium |
-| Multi-modal transport (trains) | Medium | High |
-| Social features (share trips publicly) | Low | Medium |
-| AI chatbot trip planning | High | High |
-| Offline mode | Medium | High |
+| Feature                                | Priority | Complexity |
+| -------------------------------------- | -------- | ---------- |
+| Real-time collaborative editing        | High     | High       |
+| Hotel recommendations                  | Medium   | Medium     |
+| Full budget tracking                   | Low      | Medium     |
+| Weather integration                    | Low      | Low        |
+| In-app flight booking                  | High     | Very High  |
+| Accessibility filters                  | Medium   | Medium     |
+| Multi-modal transport (trains)         | Medium   | High       |
+| Social features (share trips publicly) | Low      | Medium     |
+| AI chatbot trip planning               | High     | High       |
+| Offline mode                           | Medium   | High       |
 
 ---
 
 ## Appendix A: Glossary
 
-| Term | Definition |
-|------|------------|
-| GA | Genetic Algorithm |
-| TSP | Traveling Salesman Problem |
+| Term | Definition                                              |
+| ---- | ------------------------------------------------------- |
+| GA   | Genetic Algorithm                                       |
+| TSP  | Traveling Salesman Problem                              |
 | IATA | International Air Transport Association (airport codes) |
-| POI | Point of Interest (attraction) |
-| JWT | JSON Web Token |
-| KMP | Kotlin Multiplatform |
-| CMP | Compose Multiplatform |
-| AAB | Android App Bundle |
+| POI  | Point of Interest (attraction)                          |
+| JWT  | JSON Web Token                                          |
+| KMP  | Kotlin Multiplatform                                    |
+| CMP  | Compose Multiplatform                                   |
+| AAB  | Android App Bundle                                      |
 
 ---
 

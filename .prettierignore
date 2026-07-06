@@ -5,3 +5,4 @@ build
 coverage
 pnpm-lock.yaml
 apps/backend/prisma/migrations
+.superpowers
