@@ -16,6 +16,7 @@ subprojects {
     // paths and do not match generated source dirs registered this way, so a
     // predicate on the absolute file path is used instead.
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+        version.set("1.5.0")
         filter {
             exclude { entry -> entry.file.toString().contains("generated") }
         }
