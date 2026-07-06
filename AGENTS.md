@@ -1,0 +1,56 @@
+# SmartRoute — Agent Context
+
+Thesis project (deadline: **early December 2026**). Multi-city trip optimizer: backend finds the cheapest city visiting order with real flight prices; mobile app plans per-city itineraries. Solo developer (RyoFallen); trunk-based development on `main`.
+
+## Authoritative documents
+
+- Product/tech spec: `docs/superpowers/specs/2026-07-06-smartroute-traveler-thesis-spec.md` (v2.0 — read the repo-alignment note at the top: where spec and code disagree, code wins)
+- Executed & pending plans: `docs/superpowers/plans/`
+- Thesis evaluation: competitor benchmark vs Kiwi Nomad / Skyscanner / Google Flights (spec §2.5, §11.5)
+
+## Stack & layout
+
+- `mobile/` — **Kotlin + Compose Multiplatform** app (Gradle build, NOT in the pnpm workspace). Replaces the legacy Expo app.
+- `apps/backend/` — Node 22 + **Fastify** + Prisma + Postgres 16, Clerk auth, Duffel flight provider (mock provider in CI/by default)
+- `apps/mobile/` — legacy Expo app; keep working until KMP reaches feature parity, then retire. Don't invest in it.
+- `packages/shared/` — zod schemas/types (backend-side only)
+
+## Current state (2026-07-06)
+
+- Backend: Plans 1–6 shipped (optimize, trips CRUD, Duffel, must-go attractions endpoint `GET /trips/:id/plan`)
+- Mobile KMP: **Phase 1 complete** — scaffold, commonTest harness, ktlint, map spike (MapLibre renders via expect/actual `RouteMap`), CI green (Android job + iOS framework link on macOS)
+- **Next:** Phase 2 = auth + Ktor client against the existing Clerk/Fastify backend. On macOS: create the `iosApp` Xcode wrapper + MapLibre iOS actual (deferred from Phase 1; see plan's Residual Risks)
+
+## Machine division of labor
+
+- **Windows:** Android only. Kotlin/Native Apple targets DO NOT compile — never run `:composeApp:linkDebugFrameworkIos*` locally; the `Mobile CI` macOS job is the iOS compile check. Set `JAVA_HOME` explicitly in shells if not inherited.
+- **macOS:** can do both targets. iOS wrapper work happens here.
+- Android SDK discovery: `ANDROID_HOME` env var or `mobile/local.properties` (`sdk.dir=...`, gitignored).
+
+## Commands
+
+Backend (repo root): `pnpm install`, `docker compose up -d`, `pnpm --filter @smartroute/backend dev`, `pnpm lint` / `pnpm format:check` / `pnpm typecheck` / `pnpm test`
+
+Mobile (from `mobile/`):
+
+```
+./gradlew :composeApp:assembleDebug          # Android APK
+./gradlew :composeApp:testDebugUnitTest      # shared unit tests
+./gradlew ktlintCheck                        # lint
+./gradlew :composeApp:installDebug           # install on emulator/device
+```
+
+## Hard rules
+
+- Commit messages: conventional commits (`feat(mobile):`, `fix:`, `docs:`, `ci:`). **No tooling attribution, no co-author trailers, no generation notes** — author is RyoFallen only.
+- `docs/**/*.md` must be Prettier-formatted or backend CI fails (`pnpm format:check`).
+- Don't modify `.github/workflows/ci.yml` (backend) for mobile concerns; mobile CI is `mobile-ci.yml` (path-filtered).
+- Prices in shared code are minor units (`Long`); format via `formatPrice` in `commonMain/domain/Formatters.kt`.
+
+## Non-obvious config (learned the hard way — don't "fix" these)
+
+- `mobile/build.gradle.kts`: ktlint engine is pinned to **1.5.0** — required for the `.editorconfig` `ktlint_function_naming_ignore_when_annotated_with = Composable` exemption to work. Generated Compose resources are excluded via a **predicate** filter (`contains("/build/generated/")`); glob excludes silently fail for registered generated source roots.
+- `iosMain/MainViewController.kt`: the entry point must stay PascalCase `MainViewController()` (Swift calls `MainViewControllerKt.MainViewController()`); it carries a ktlint `@Suppress` on purpose.
+- Map: MapLibre (`demotiles` style, no token) was chosen for the spike; Mapbox swap is an open styling decision (spec §8.3). `RouteMap` is `expect`/`actual`; evolve it toward a state-holder parameter when adding polylines/markers, don't accrete positional params.
+- CI: `gradle/actions/setup-gradle@v4` validates the committed Gradle wrapper JAR. `mobile/gradlew` must keep its executable bit (`100755`).
+- Duffel test mode returns only the synthetic "Duffel Airways" carrier; currency mapper prefers USD, falls back to cheapest — a real FX layer is a known follow-up.
