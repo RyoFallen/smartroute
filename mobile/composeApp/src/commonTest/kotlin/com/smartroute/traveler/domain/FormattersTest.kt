@@ -18,4 +18,9 @@ class FormattersTest {
     fun formatsZero() {
         assertEquals("USD 0.00", formatPrice(0, "USD"))
     }
+
+    @Test
+    fun formatsNegativeAmount() {
+        assertEquals("USD -8.05", formatPrice(-805, "USD"))
+    }
 }

@@ -8,4 +8,4 @@ import androidx.compose.ui.Modifier
  * Later phases add route polylines and markers as parameters.
  */
 @Composable
-expect fun RouteMap(modifier: Modifier)
+expect fun RouteMap(modifier: Modifier = Modifier)

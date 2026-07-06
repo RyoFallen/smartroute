@@ -24,6 +24,8 @@ actual fun RouteMap(modifier: Modifier) {
         remember {
             MapLibre.getInstance(context)
             MapView(context).apply {
+                // MapView contract: forward onCreate; no saved state at construction
+                onCreate(null)
                 getMapAsync { map ->
                     map.setStyle(DEMO_STYLE_URL)
                     map.cameraPosition =

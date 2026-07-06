@@ -18,7 +18,7 @@ subprojects {
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
         version.set("1.5.0")
         filter {
-            exclude { entry -> entry.file.toString().contains("generated") }
+            exclude { entry -> entry.file.toString().replace('\\', '/').contains("/build/generated/") }
         }
     }
 }
