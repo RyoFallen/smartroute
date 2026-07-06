@@ -92,6 +92,8 @@ cd mobile
 ./gradlew :composeApp:installDebug         # install on running emulator/device
 ```
 
+Gradle locates the Android SDK via `ANDROID_HOME` or `mobile/local.properties` (`sdk.dir=...`) — on a fresh clone, set one of them or `assembleDebug` fails with "SDK location not found".
+
 Windows note: iOS targets cannot compile locally — the `Mobile CI` workflow's macOS job (`ios-framework`) is the iOS compile check.
 
 ## Mobile setup (legacy Expo app)

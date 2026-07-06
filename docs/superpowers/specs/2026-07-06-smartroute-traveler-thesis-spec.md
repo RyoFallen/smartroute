@@ -2288,18 +2288,18 @@ Values are supplied via `gradle.properties` / CI secrets and generated into a `B
 
 ### Phase 1: Project Setup & Foundation
 
-**Deliverables:**
+**Deliverables:** _(status as of 2026-07-06 — Phase 1 executed; see `docs/superpowers/plans/2026-07-06-kmp-bootstrap-map-spike.md`)_
 
-- [ ] Backend workspace (Turborepo + pnpm) — already in place
-- [ ] Kotlin Multiplatform / Compose Multiplatform project initialized (`mobile/`)
-- [ ] iOS app builds and runs from `iosApp` Xcode wrapper
-- [ ] **Mapbox interop spike** (expect/actual map on both platforms; MapLibre fallback decision)
-- [ ] Node.js Express backend initialized
-- [ ] PostgreSQL database with Prisma schema
-- [ ] Docker Compose for local development
-- [ ] ktlint/detekt + ESLint/Prettier configuration
-- [ ] Git repository with branching strategy
-- [ ] Basic CI pipeline (lint + test, incl. macOS iOS job)
+- [x] Backend workspace (Turborepo + pnpm) — already in place
+- [x] Kotlin Multiplatform / Compose Multiplatform project initialized (`mobile/`)
+- [ ] iOS app builds and runs from `iosApp` Xcode wrapper — **deferred until Mac access** (Windows host); interim iOS deliverable delivered instead: Kotlin framework links on macOS CI
+- [x] Map interop spike (expect/actual map) — **executed with MapLibre** (no API token needed); Mapbox swap remains a later styling decision per §8.3. Android rendering verified on emulator; iOS actual is a placeholder until Mac access
+- [x] Backend initialized — **Fastify** (shipped pre-pivot, Plans 1–6), not Express as originally drafted; kept per repo-alignment note at top of this document
+- [x] PostgreSQL database with Prisma schema (pre-existing)
+- [x] Docker Compose for local development (pre-existing)
+- [x] Lint configuration — **ktlint only** (engine 1.5.0; detekt dropped as unnecessary for solo scope) + existing ESLint/Prettier
+- [x] Git repository with branching strategy (pre-existing; trunk-based on `main`)
+- [x] Basic CI pipeline — `mobile-ci.yml`: Android build/test/lint on ubuntu + iOS framework link on macOS, both green
 
 ### Phase 2: Authentication System
 
