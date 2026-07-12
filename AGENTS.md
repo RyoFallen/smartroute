@@ -20,7 +20,8 @@ Thesis project (deadline: **early December 2026**). Multi-city trip optimizer: b
 - Backend: Plans 1–6 shipped (optimize, trips CRUD, Duffel, must-go attractions endpoint `GET /trips/:id/plan`)
 - Mobile KMP: **Phase 2 complete** — Clerk email-code auth driven via the Frontend API in commonMain (no native Clerk SDKs; see plan's Design Decisions), Ktor `ApiClient` with bearer auto-refresh, `TokenStore` (Keychain/SharedPreferences via multiplatform-settings), sign-in screen + auth gating in `App.kt`. Plan: `docs/superpowers/plans/2026-07-12-kmp-phase2-auth-ktor.md`
 - Auth verified end-to-end on the Android emulator against the live Clerk dev instance (2026-07-12): email-code sign-in, client-JWT rotation, session JWT accepted by the backend. Clerk keys: publishable in `AppConfig.kt` (committed), secret in gitignored `apps/backend/.env`
-- **Next:** create the `iosApp` Xcode wrapper + MapLibre iOS actual (deferred from Phase 1), then Phase 3 (user profile & interests)
+- iOS (2026-07-12): `iosApp` Xcode wrapper shipped (`mobile/iosApp/`, XcodeGen `project.yml` + committed `.xcodeproj`) with MapLibre iOS 6.27.0 via SPM, injected through `MapViewBridge` (ADR-0001 — MapLibre stays out of the Kotlin build). App verified launching on the iOS 26.5 simulator (sign-in screen renders); map render behind sign-in, check at next live session.
+- **Next:** Phase 3 (user profile & interests)
 
 ## Machine division of labor
 
@@ -40,6 +41,8 @@ Mobile (from `mobile/`):
 ./gradlew ktlintCheck                        # lint
 ./gradlew :composeApp:installDebug           # install on emulator/device
 ```
+
+iOS (macOS only, from `mobile/iosApp/`): `xcodebuild -project iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build` — the "Compile Kotlin Framework" phase runs Gradle itself. After editing `project.yml`, regenerate with `xcodegen generate`.
 
 ## Hard rules
 

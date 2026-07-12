@@ -1,0 +1,40 @@
+name: iosApp
+options:
+  bundleIdPrefix: com.smartroute
+  deploymentTarget:
+    iOS: '16.0'
+settings:
+  base:
+    ENABLE_USER_SCRIPT_SANDBOXING: 'NO'
+packages:
+  MapLibre:
+    url: https://github.com/maplibre/maplibre-gl-native-distribution
+    from: 6.0.0
+targets:
+  iosApp:
+    type: application
+    platform: iOS
+    sources:
+      - iosApp
+    dependencies:
+      - package: MapLibre
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.smartroute.traveler
+        PRODUCT_NAME: SmartRoute
+        INFOPLIST_FILE: iosApp/Info.plist
+        FRAMEWORK_SEARCH_PATHS: '$(inherited) $(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)'
+        OTHER_LDFLAGS: '$(inherited) -framework ComposeApp'
+        TARGETED_DEVICE_FAMILY: '1'
+    preBuildScripts:
+      - name: Compile Kotlin Framework
+        basedOnDependencyAnalysis: false
+        script: |
+          if [ "YES" = "$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED" ]; then
+            echo "Skipping Gradle build task invocation in IDE."
+            exit 0
+          fi
+          # Xcode build phases don't inherit the shell profile; JDK 21 is keg-only Homebrew.
+          export JAVA_HOME="${JAVA_HOME:-/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home}"
+          cd "$SRCROOT/.."
+          ./gradlew :composeApp:embedAndSignAppleFrameworkForXcode
