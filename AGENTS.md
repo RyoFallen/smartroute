@@ -20,7 +20,7 @@ Thesis project (deadline: **early December 2026**). Multi-city trip optimizer: b
 - Backend: Plans 1–6 shipped (optimize, trips CRUD, Duffel, must-go attractions endpoint `GET /trips/:id/plan`)
 - Mobile KMP: **Phase 2 complete** — Clerk email-code auth driven via the Frontend API in commonMain (no native Clerk SDKs; see plan's Design Decisions), Ktor `ApiClient` with bearer auto-refresh, `TokenStore` (Keychain/SharedPreferences via multiplatform-settings), sign-in screen + auth gating in `App.kt`. Plan: `docs/superpowers/plans/2026-07-12-kmp-phase2-auth-ktor.md`
 - Auth verified end-to-end on the Android emulator against the live Clerk dev instance (2026-07-12): email-code sign-in, client-JWT rotation, session JWT accepted by the backend. Clerk keys: publishable in `AppConfig.kt` (committed), secret in gitignored `apps/backend/.env`
-- iOS (2026-07-12): `iosApp` Xcode wrapper shipped (`mobile/iosApp/`, XcodeGen `project.yml` + committed `.xcodeproj`) with MapLibre iOS 6.27.0 via SPM, injected through `MapViewBridge` (ADR-0001 — MapLibre stays out of the Kotlin build). App verified launching on the iOS 26.5 simulator (sign-in screen renders); map render behind sign-in, check at next live session.
+- iOS (2026-07-12): `iosApp` Xcode wrapper shipped (`mobile/iosApp/`, XcodeGen `project.yml` + committed `.xcodeproj`) with MapLibre iOS 6.27.0 via SPM, injected through `MapViewBridge` (ADR-0001 — MapLibre stays out of the Kotlin build). Verified end-to-end on the iOS 26.5 simulator: sign-in via Clerk email code and MapLibre map rendering after auth.
 - **Next:** Phase 3 (user profile & interests)
 
 ## Machine division of labor
