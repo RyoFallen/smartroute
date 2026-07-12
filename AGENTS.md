@@ -55,3 +55,17 @@ Mobile (from `mobile/`):
 - Map: MapLibre (`demotiles` style, no token) was chosen for the spike; Mapbox swap is an open styling decision (spec §8.3). `RouteMap` is `expect`/`actual`; evolve it toward a state-holder parameter when adding polylines/markers, don't accrete positional params.
 - CI: `gradle/actions/setup-gradle@v4` validates the committed Gradle wrapper JAR. `mobile/gradlew` must keep its executable bit (`100755`).
 - Duffel test mode returns only the synthetic "Duffel Airways" carrier; currency mapper prefers USD, falls back to cheapest — a real FX layer is a known follow-up.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues on `RyoFallen/smartroute`, via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default vocabulary — the five canonical role names used as-is (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context — one `CONTEXT.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
