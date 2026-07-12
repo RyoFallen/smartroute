@@ -5,3 +5,4 @@ export * from './routes.js';
 export * from './optimize.js';
 export * from './trips.js';
 export * from './attractions.js';
+export * from './interests.js';
