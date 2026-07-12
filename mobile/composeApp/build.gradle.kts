@@ -40,6 +40,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.multiplatform.settings)
             implementation(libs.jetbrains.lifecycle.viewmodel.compose)
+            implementation(libs.jetbrains.navigation.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
