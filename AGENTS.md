@@ -15,11 +15,12 @@ Thesis project (deadline: **early December 2026**). Multi-city trip optimizer: b
 - `apps/mobile/` — legacy Expo app; keep working until KMP reaches feature parity, then retire. Don't invest in it.
 - `packages/shared/` — zod schemas/types (backend-side only)
 
-## Current state (2026-07-06)
+## Current state (2026-07-12)
 
 - Backend: Plans 1–6 shipped (optimize, trips CRUD, Duffel, must-go attractions endpoint `GET /trips/:id/plan`)
-- Mobile KMP: **Phase 1 complete** — scaffold, commonTest harness, ktlint, map spike (MapLibre renders via expect/actual `RouteMap`), CI green (Android job + iOS framework link on macOS)
-- **Next:** Phase 2 = auth + Ktor client against the existing Clerk/Fastify backend. On macOS: create the `iosApp` Xcode wrapper + MapLibre iOS actual (deferred from Phase 1; see plan's Residual Risks)
+- Mobile KMP: **Phase 2 complete** — Clerk email-code auth driven via the Frontend API in commonMain (no native Clerk SDKs; see plan's Design Decisions), Ktor `ApiClient` with bearer auto-refresh, `TokenStore` (Keychain/SharedPreferences via multiplatform-settings), sign-in screen + auth gating in `App.kt`. Plan: `docs/superpowers/plans/2026-07-12-kmp-phase2-auth-ktor.md`
+- To run the app against a real Clerk instance: fill `AppConfig.CLERK_PUBLISHABLE_KEY` (commonMain `config/AppConfig.kt`) and set `CLERK_SECRET_KEY`/`CLERK_PUBLISHABLE_KEY` in `apps/backend/.env`. FAPI native-app conventions are unverified against a live instance — first live run may need fixes in `ClerkAuthClient.kt` only
+- **Next:** create the `iosApp` Xcode wrapper + MapLibre iOS actual (deferred from Phase 1), then Phase 3 (user profile & interests)
 
 ## Machine division of labor
 
