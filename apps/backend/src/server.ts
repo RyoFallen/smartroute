@@ -3,6 +3,7 @@ import type { FastifyInstance } from 'fastify';
 import { healthRoute } from './routes/health.route.js';
 import { optimizeRoute } from './routes/optimize.route.js';
 import { tripsRoute } from './routes/trips.route.js';
+import { usersRoute } from './routes/users.route.js';
 import { errorHandlerPlugin } from './plugins/error-handler.js';
 import { prismaPlugin } from './plugins/prisma.js';
 import { authPlugin } from './plugins/auth.js';
@@ -21,6 +22,7 @@ export async function buildServer(opts: BuildOptions = {}): Promise<FastifyInsta
     await app.register(flightsPlugin);
     await app.register(optimizeRoute);
     await app.register(tripsRoute);
+    await app.register(usersRoute);
   }
   await app.register(healthRoute);
   return app;

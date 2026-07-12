@@ -10,6 +10,8 @@ beforeAll(() => {
 
 beforeEach(async () => {
   await prisma.$transaction([
+    prisma.interest.deleteMany(),
+    prisma.userProfile.deleteMany(),
     prisma.trip.deleteMany(),
     prisma.flightPriceCache.deleteMany(),
     prisma.attraction.deleteMany(),
