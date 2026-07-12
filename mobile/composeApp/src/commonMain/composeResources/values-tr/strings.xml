@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_title">SmartRoute Traveler</string>
+    <string name="sign_in_title">SmartRoute</string>
+    <string name="sign_in_subtitle">Gezini planlamak için giriş yap</string>
+    <string name="sign_in_email_label">sen@ornek.com</string>
+    <string name="sign_in_send_code">Kod gönder</string>
+    <string name="sign_in_sending">Gönderiliyor…</string>
+    <string name="sign_in_code_label">6 haneli kod</string>
+    <string name="sign_in_verify">Doğrula</string>
+    <string name="sign_in_verifying">Doğrulanıyor…</string>
+    <string name="auth_error_email_required">E-posta adresini gir</string>
+    <string name="auth_error_code_required">6 haneli kodu gir</string>
+    <string name="auth_error_start_over">Baştan başlayıp yeni bir kod iste</string>
+    <string name="auth_error_send_failed">Kod gönderilemedi</string>
+    <string name="auth_error_verify_failed">Doğrulama başarısız oldu</string>
+    <string name="sign_out">Çıkış yap</string>
+    <string name="tab_home">Ana Sayfa</string>
+    <string name="tab_my_trips">Gezilerim</string>
+    <string name="tab_explore">Keşfet</string>
+    <string name="tab_profile">Profil</string>
+    <string name="coming_soon">Çok yakında</string>
+    <string name="language">Dil</string>
+    <string name="language_english">English</string>
+    <string name="language_turkish">Türkçe</string>
+    <string name="missing_config">Clerk publishable key yapılandırılmamış.\nUygulamayı çalıştırmak için AppConfig.CLERK_PUBLISHABLE_KEY değerini ayarla.</string>
+</resources>

@@ -14,6 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.smartroute.traveler.ui.map.RouteMap
+import org.jetbrains.compose.resources.stringResource
+import smartroute_mobile.composeapp.generated.resources.Res
+import smartroute_mobile.composeapp.generated.resources.app_title
+import smartroute_mobile.composeapp.generated.resources.sign_out
 
 @Composable
 fun HomeScreen(onSignOut: () -> Unit) {
@@ -24,12 +28,12 @@ fun HomeScreen(onSignOut: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "SmartRoute Traveler",
+                text = stringResource(Res.string.app_title),
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(vertical = 16.dp),
             )
             TextButton(onClick = onSignOut) {
-                Text("Sign out")
+                Text(stringResource(Res.string.sign_out))
             }
         }
         RouteMap(

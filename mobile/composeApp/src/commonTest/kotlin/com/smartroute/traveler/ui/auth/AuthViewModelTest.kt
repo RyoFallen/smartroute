@@ -106,7 +106,7 @@ class AuthViewModelTest {
             val vm = viewModel { error("no network") }
             vm.sendCode("   ")
             assertEquals(
-                AuthUiState.SignedOut(error = "Enter your email address"),
+                AuthUiState.SignedOut(error = AuthError.EmailRequired),
                 vm.state.value,
             )
         }
@@ -125,7 +125,7 @@ class AuthViewModelTest {
             vm.sendCode("nobody@example.com")
             val state = vm.state.first { it is AuthUiState.SignedOut && it.error != null }
             assertEquals(
-                AuthUiState.SignedOut(error = "Couldn't find your account."),
+                AuthUiState.SignedOut(error = AuthError.Server("Couldn't find your account.")),
                 state,
             )
         }

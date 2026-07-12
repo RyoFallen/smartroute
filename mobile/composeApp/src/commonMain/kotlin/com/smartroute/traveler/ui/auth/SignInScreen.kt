@@ -18,6 +18,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
+import smartroute_mobile.composeapp.generated.resources.Res
+import smartroute_mobile.composeapp.generated.resources.auth_error_code_required
+import smartroute_mobile.composeapp.generated.resources.auth_error_email_required
+import smartroute_mobile.composeapp.generated.resources.auth_error_send_failed
+import smartroute_mobile.composeapp.generated.resources.auth_error_start_over
+import smartroute_mobile.composeapp.generated.resources.auth_error_verify_failed
+import smartroute_mobile.composeapp.generated.resources.sign_in_code_label
+import smartroute_mobile.composeapp.generated.resources.sign_in_email_label
+import smartroute_mobile.composeapp.generated.resources.sign_in_send_code
+import smartroute_mobile.composeapp.generated.resources.sign_in_sending
+import smartroute_mobile.composeapp.generated.resources.sign_in_subtitle
+import smartroute_mobile.composeapp.generated.resources.sign_in_title
+import smartroute_mobile.composeapp.generated.resources.sign_in_verify
+import smartroute_mobile.composeapp.generated.resources.sign_in_verifying
 
 @Composable
 fun SignInScreen(
@@ -36,12 +51,12 @@ fun SignInScreen(
                 .padding(24.dp),
     ) {
         Text(
-            text = "SmartRoute",
+            text = stringResource(Res.string.sign_in_title),
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.primary,
         )
         Text(
-            text = "Sign in to plan your trip",
+            text = stringResource(Res.string.sign_in_subtitle),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -51,7 +66,7 @@ fun SignInScreen(
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text("you@example.com") },
+                    label = { Text(stringResource(Res.string.sign_in_email_label)) },
                     singleLine = true,
                     enabled = !state.busy,
                     modifier = Modifier.fillMaxWidth(),
@@ -62,14 +77,18 @@ fun SignInScreen(
                     enabled = !state.busy,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(if (state.busy) "Sending…" else "Send code")
+                    Text(
+                        stringResource(
+                            if (state.busy) Res.string.sign_in_sending else Res.string.sign_in_send_code,
+                        ),
+                    )
                 }
             }
             SignInStage.CODE -> {
                 OutlinedTextField(
                     value = code,
                     onValueChange = { code = it },
-                    label = { Text("6-digit code") },
+                    label = { Text(stringResource(Res.string.sign_in_code_label)) },
                     singleLine = true,
                     enabled = !state.busy,
                     modifier = Modifier.fillMaxWidth(),
@@ -80,17 +99,32 @@ fun SignInScreen(
                     enabled = !state.busy,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(if (state.busy) "Verifying…" else "Verify")
+                    Text(
+                        stringResource(
+                            if (state.busy) Res.string.sign_in_verifying else Res.string.sign_in_verify,
+                        ),
+                    )
                 }
             }
         }
-        state.error?.let {
+        state.error?.let { error ->
             Spacer(Modifier.height(12.dp))
             Text(
-                text = it,
+                text = errorText(error),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
     }
 }
+
+@Composable
+private fun errorText(error: AuthError): String =
+    when (error) {
+        AuthError.EmailRequired -> stringResource(Res.string.auth_error_email_required)
+        AuthError.CodeRequired -> stringResource(Res.string.auth_error_code_required)
+        AuthError.StartOver -> stringResource(Res.string.auth_error_start_over)
+        AuthError.SendFailed -> stringResource(Res.string.auth_error_send_failed)
+        AuthError.VerifyFailed -> stringResource(Res.string.auth_error_verify_failed)
+        is AuthError.Server -> error.message
+    }

@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_title">SmartRoute Traveler</string>
+    <string name="sign_in_title">SmartRoute</string>
+    <string name="sign_in_subtitle">Sign in to plan your trip</string>
+    <string name="sign_in_email_label">you@example.com</string>
+    <string name="sign_in_send_code">Send code</string>
+    <string name="sign_in_sending">Sending…</string>
+    <string name="sign_in_code_label">6-digit code</string>
+    <string name="sign_in_verify">Verify</string>
+    <string name="sign_in_verifying">Verifying…</string>
+    <string name="auth_error_email_required">Enter your email address</string>
+    <string name="auth_error_code_required">Enter the 6-digit code</string>
+    <string name="auth_error_start_over">Start over and request a new code</string>
+    <string name="auth_error_send_failed">Could not send the code</string>
+    <string name="auth_error_verify_failed">Verification failed</string>
+    <string name="sign_out">Sign out</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_my_trips">My Trips</string>
+    <string name="tab_explore">Explore</string>
+    <string name="tab_profile">Profile</string>
+    <string name="coming_soon">Coming soon</string>
+    <string name="language">Language</string>
+    <string name="language_english">English</string>
+    <string name="language_turkish">Türkçe</string>
+    <string name="missing_config">Clerk publishable key is not configured.\nSet AppConfig.CLERK_PUBLISHABLE_KEY to run the app.</string>
+</resources>

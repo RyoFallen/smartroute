@@ -9,11 +9,28 @@ import kotlinx.coroutines.launch
 
 enum class SignInStage { EMAIL, CODE }
 
+/** UI resolves these to localized strings; [Server] carries Clerk's own text. */
+sealed interface AuthError {
+    data object EmailRequired : AuthError
+
+    data object CodeRequired : AuthError
+
+    data object StartOver : AuthError
+
+    data object SendFailed : AuthError
+
+    data object VerifyFailed : AuthError
+
+    data class Server(
+        val message: String,
+    ) : AuthError
+}
+
 sealed interface AuthUiState {
     data class SignedOut(
         val stage: SignInStage = SignInStage.EMAIL,
         val busy: Boolean = false,
-        val error: String? = null,
+        val error: AuthError? = null,
     ) : AuthUiState
 
     data object SignedIn : AuthUiState
@@ -34,7 +51,7 @@ class AuthViewModel(
         val current = _state.value as? AuthUiState.SignedOut ?: return
         val trimmed = email.trim()
         if (trimmed.isEmpty()) {
-            _state.value = current.copy(error = "Enter your email address")
+            _state.value = current.copy(error = AuthError.EmailRequired)
             return
         }
         _state.value = current.copy(busy = true, error = null)
@@ -46,7 +63,7 @@ class AuthViewModel(
                 _state.value =
                     AuthUiState.SignedOut(
                         stage = SignInStage.EMAIL,
-                        error = e.message ?: "Could not send the code",
+                        error = e.message?.let(AuthError::Server) ?: AuthError.SendFailed,
                     )
             }
         }
@@ -56,11 +73,11 @@ class AuthViewModel(
         val current = _state.value as? AuthUiState.SignedOut ?: return
         val attemptId = signInId
         if (attemptId == null) {
-            _state.value = AuthUiState.SignedOut(error = "Start over and request a new code")
+            _state.value = AuthUiState.SignedOut(error = AuthError.StartOver)
             return
         }
         if (code.isBlank()) {
-            _state.value = current.copy(error = "Enter the 6-digit code")
+            _state.value = current.copy(error = AuthError.CodeRequired)
             return
         }
         _state.value = current.copy(busy = true, error = null)
@@ -73,7 +90,7 @@ class AuthViewModel(
                 _state.value =
                     AuthUiState.SignedOut(
                         stage = SignInStage.CODE,
-                        error = e.message ?: "Verification failed",
+                        error = e.message?.let(AuthError::Server) ?: AuthError.VerifyFailed,
                     )
             }
         }

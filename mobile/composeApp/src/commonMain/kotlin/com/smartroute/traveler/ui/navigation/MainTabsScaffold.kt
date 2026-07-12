@@ -22,13 +22,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.smartroute.traveler.data.storage.AppLanguage
 import com.smartroute.traveler.ui.home.HomeScreen
+import com.smartroute.traveler.ui.profile.LanguageScreen
+import com.smartroute.traveler.ui.profile.ProfileScreen
 import kotlinx.serialization.Serializable
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
+import smartroute_mobile.composeapp.generated.resources.Res
+import smartroute_mobile.composeapp.generated.resources.coming_soon
+import smartroute_mobile.composeapp.generated.resources.tab_explore
+import smartroute_mobile.composeapp.generated.resources.tab_home
+import smartroute_mobile.composeapp.generated.resources.tab_my_trips
+import smartroute_mobile.composeapp.generated.resources.tab_profile
 import kotlin.reflect.KClass
 
 @Serializable
@@ -41,25 +54,35 @@ object MyTripsRoute
 object ExploreRoute
 
 @Serializable
+object ProfileGraphRoute
+
+@Serializable
 object ProfileRoute
+
+@Serializable
+object LanguageRoute
 
 private class TabItem(
     val route: Any,
     val routeClass: KClass<*>,
-    val label: String,
+    val label: StringResource,
     val icon: ImageVector,
 )
 
 private val tabs =
     listOf(
-        TabItem(HomeRoute, HomeRoute::class, "Home", Icons.Filled.Home),
-        TabItem(MyTripsRoute, MyTripsRoute::class, "My Trips", Icons.Filled.Place),
-        TabItem(ExploreRoute, ExploreRoute::class, "Explore", Icons.Filled.Search),
-        TabItem(ProfileRoute, ProfileRoute::class, "Profile", Icons.Filled.Person),
+        TabItem(HomeRoute, HomeRoute::class, Res.string.tab_home, Icons.Filled.Home),
+        TabItem(MyTripsRoute, MyTripsRoute::class, Res.string.tab_my_trips, Icons.Filled.Place),
+        TabItem(ExploreRoute, ExploreRoute::class, Res.string.tab_explore, Icons.Filled.Search),
+        TabItem(ProfileGraphRoute, ProfileGraphRoute::class, Res.string.tab_profile, Icons.Filled.Person),
     )
 
 @Composable
-fun MainTabsScaffold(onSignOut: () -> Unit) {
+fun MainTabsScaffold(
+    language: AppLanguage?,
+    onLanguageSelected: (AppLanguage) -> Unit,
+    onSignOut: () -> Unit,
+) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
@@ -68,8 +91,10 @@ fun MainTabsScaffold(onSignOut: () -> Unit) {
         bottomBar = {
             NavigationBar {
                 tabs.forEach { tab ->
+                    val label = stringResource(tab.label)
                     NavigationBarItem(
-                        selected = currentDestination?.hasRoute(tab.routeClass) == true,
+                        selected =
+                            currentDestination?.hierarchy?.any { it.hasRoute(tab.routeClass) } == true,
                         onClick = {
                             navController.navigate(tab.route) {
                                 popUpTo(navController.graph.findStartDestination().id) {
@@ -79,8 +104,8 @@ fun MainTabsScaffold(onSignOut: () -> Unit) {
                                 restoreState = true
                             }
                         },
-                        icon = { Icon(tab.icon, contentDescription = tab.label) },
-                        label = { Text(tab.label) },
+                        icon = { Icon(tab.icon, contentDescription = label) },
+                        label = { Text(label) },
                     )
                 }
             }
@@ -92,9 +117,20 @@ fun MainTabsScaffold(onSignOut: () -> Unit) {
             modifier = Modifier.fillMaxSize().padding(innerPadding),
         ) {
             composable<HomeRoute> { HomeScreen(onSignOut = onSignOut) }
-            composable<MyTripsRoute> { StubScreen(title = "My Trips") }
-            composable<ExploreRoute> { StubScreen(title = "Explore") }
-            composable<ProfileRoute> { StubScreen(title = "Profile") }
+            composable<MyTripsRoute> { StubScreen(title = stringResource(Res.string.tab_my_trips)) }
+            composable<ExploreRoute> { StubScreen(title = stringResource(Res.string.tab_explore)) }
+            navigation<ProfileGraphRoute>(startDestination = ProfileRoute) {
+                composable<ProfileRoute> {
+                    ProfileScreen(onLanguageClick = { navController.navigate(LanguageRoute) })
+                }
+                composable<LanguageRoute> {
+                    LanguageScreen(
+                        selected = language,
+                        onSelect = onLanguageSelected,
+                        onBack = { navController.popBackStack() },
+                    )
+                }
+            }
         }
     }
 }
@@ -108,7 +144,7 @@ private fun StubScreen(title: String) {
     ) {
         Text(text = title, style = MaterialTheme.typography.headlineSmall)
         Text(
-            text = "Coming soon",
+            text = stringResource(Res.string.coming_soon),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 8.dp),
         )
