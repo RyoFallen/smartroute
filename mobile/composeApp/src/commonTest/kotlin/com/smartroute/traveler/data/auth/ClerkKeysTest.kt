@@ -26,6 +26,15 @@ class ClerkKeysTest {
     }
 
     @Test
+    fun `decodes real-format unpadded key`() {
+        // Clerk strips base64 padding from publishable keys.
+        assertEquals(
+            "https://new-quetzal-43.clerk.accounts.dev",
+            ClerkKeys.frontendApiUrl("pk_test_bmV3LXF1ZXR6YWwtNDMuY2xlcmsuYWNjb3VudHMuZGV2JA"),
+        )
+    }
+
+    @Test
     fun `rejects non publishable key`() {
         assertFailsWith<IllegalArgumentException> { ClerkKeys.frontendApiUrl("sk_test_abc") }
     }

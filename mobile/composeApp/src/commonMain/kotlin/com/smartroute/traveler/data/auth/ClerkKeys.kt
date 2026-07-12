@@ -17,7 +17,12 @@ object ClerkKeys {
         require(encoded != publishableKey && encoded.isNotBlank()) {
             "Not a Clerk publishable key: expected pk_test_… or pk_live_…"
         }
-        val decoded = Base64.decode(encoded).decodeToString()
+        // Clerk keys carry unpadded base64; accept both padded and unpadded.
+        val decoded =
+            Base64
+                .withPadding(Base64.PaddingOption.PRESENT_OPTIONAL)
+                .decode(encoded)
+                .decodeToString()
         require(decoded.endsWith("$")) { "Malformed Clerk publishable key payload" }
         return "https://${decoded.dropLast(1)}"
     }
