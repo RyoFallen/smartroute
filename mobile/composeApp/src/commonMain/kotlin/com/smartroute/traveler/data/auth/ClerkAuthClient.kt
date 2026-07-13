@@ -46,6 +46,8 @@ class ClerkAuthClient(
     val isSignedIn: Boolean
         get() = tokenStore.hasSession
 
+    private var pendingEmail: String? = null
+
     /** Creates a sign-in for [email] and sends the OTP. Returns the sign-in attempt id. */
     suspend fun startEmailCodeSignIn(email: String): String {
         val signIn =
@@ -67,6 +69,7 @@ class ClerkAuthClient(
                 append("email_address_id", factor.emailAddressId!!)
             },
         )
+        pendingEmail = email
         return signIn.id
     }
 
@@ -88,6 +91,7 @@ class ClerkAuthClient(
             throw ClerkAuthException("sign_in_incomplete", "Sign-in incomplete (status: ${signIn.status})")
         }
         tokenStore.sessionId = sessionId
+        tokenStore.email = pendingEmail
     }
 
     /** Fetches a fresh short-lived session JWT for backend `Authorization: Bearer` use. */

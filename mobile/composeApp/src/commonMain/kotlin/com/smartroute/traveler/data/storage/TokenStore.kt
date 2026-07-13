@@ -4,6 +4,7 @@ import com.russhwolf.settings.Settings
 
 private const val KEY_CLIENT_JWT = "clerk_client_jwt"
 private const val KEY_SESSION_ID = "clerk_session_id"
+private const val KEY_EMAIL = "clerk_email"
 
 class TokenStore(
     private val settings: Settings,
@@ -20,11 +21,19 @@ class TokenStore(
             if (value == null) settings.remove(KEY_SESSION_ID) else settings.putString(KEY_SESSION_ID, value)
         }
 
+    /** The email the current session was verified with; shown read-only in the Profile hub. */
+    var email: String?
+        get() = settings.getStringOrNull(KEY_EMAIL)
+        set(value) {
+            if (value == null) settings.remove(KEY_EMAIL) else settings.putString(KEY_EMAIL, value)
+        }
+
     val hasSession: Boolean
         get() = clientJwt != null && sessionId != null
 
     fun clear() {
         settings.remove(KEY_CLIENT_JWT)
         settings.remove(KEY_SESSION_ID)
+        settings.remove(KEY_EMAIL)
     }
 }

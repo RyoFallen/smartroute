@@ -97,6 +97,7 @@ private fun OnboardingGate(
     when (state) {
         is OnboardingUiState.Complete ->
             MainTabsScaffold(
+                email = AppGraph.tokenStore.email,
                 language = language,
                 onLanguageSelected = onLanguageSelected,
                 onSignOut = onSignOut,

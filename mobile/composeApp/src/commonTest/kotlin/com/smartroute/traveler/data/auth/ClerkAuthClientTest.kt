@@ -83,6 +83,7 @@ class ClerkAuthClientTest {
             auth.attemptCode(signInId, "424242")
             assertEquals("sess_7", store.sessionId)
             assertEquals("client-jwt-2", store.clientJwt)
+            assertEquals("burak@example.com", store.email)
             assertTrue(auth.isSignedIn)
 
             // Native conventions: _is_native on every call, client JWT replayed once stored.

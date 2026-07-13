@@ -16,18 +16,43 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import smartroute_mobile.composeapp.generated.resources.Res
 import smartroute_mobile.composeapp.generated.resources.language
+import smartroute_mobile.composeapp.generated.resources.preferences
+import smartroute_mobile.composeapp.generated.resources.profile_signed_in_as
+import smartroute_mobile.composeapp.generated.resources.sign_out
 import smartroute_mobile.composeapp.generated.resources.tab_profile
 
-/** The Profile settings hub. Later tickets add interests, preferences, and account rows. */
+/** The Profile settings hub (spec: email read-only, Preferences, Language,
+ * Sign out; Interests and Delete account arrive with their tickets). */
 @Composable
-fun ProfileScreen(onLanguageClick: () -> Unit) {
+fun ProfileScreen(
+    email: String?,
+    onPreferencesClick: () -> Unit,
+    onLanguageClick: () -> Unit,
+    onSignOut: () -> Unit,
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
             text = stringResource(Res.string.tab_profile),
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(16.dp),
         )
+        email?.let {
+            Text(
+                text = stringResource(Res.string.profile_signed_in_as),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+            Text(
+                text = it,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+        }
+        HorizontalDivider(modifier = Modifier.padding(16.dp))
+        SettingsRow(label = stringResource(Res.string.preferences), onClick = onPreferencesClick)
         SettingsRow(label = stringResource(Res.string.language), onClick = onLanguageClick)
+        SettingsRow(label = stringResource(Res.string.sign_out), onClick = onSignOut)
     }
 }
 
@@ -36,6 +61,7 @@ internal fun SettingsRow(
     label: String,
     onClick: () -> Unit,
     value: String? = null,
+    emphasis: Boolean = false,
 ) {
     Row(
         modifier =
@@ -48,6 +74,7 @@ internal fun SettingsRow(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
+            color = if (emphasis) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f),
         )
         value?.let {

@@ -52,6 +52,11 @@ class ApiClient(
     suspend fun putInterests(interests: List<InterestEntryDto>): ProfileEnvelopeDto =
         put("/users/me/interests", ReplaceInterestsRequestDto(interests))
 
+    suspend fun putPreferences(
+        intensity: String,
+        wakeUpTime: String,
+    ): ProfileEnvelopeDto = put("/users/me", UpdatePreferencesRequestDto(intensity, wakeUpTime))
+
     private suspend inline fun <reified T> get(path: String): T {
         val response = http.get("$baseUrl$path")
         if (!response.status.isSuccess()) throw response.toApiError()

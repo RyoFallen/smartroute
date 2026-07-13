@@ -16,11 +16,14 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -29,9 +32,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.smartroute.traveler.AppGraph
 import com.smartroute.traveler.data.storage.AppLanguage
 import com.smartroute.traveler.ui.home.HomeScreen
 import com.smartroute.traveler.ui.profile.LanguageScreen
+import com.smartroute.traveler.ui.profile.PreferencesScreen
+import com.smartroute.traveler.ui.profile.PreferencesViewModel
 import com.smartroute.traveler.ui.profile.ProfileScreen
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
@@ -62,6 +68,9 @@ object ProfileRoute
 @Serializable
 object LanguageRoute
 
+@Serializable
+object PreferencesRoute
+
 private class TabItem(
     val route: Any,
     val routeClass: KClass<*>,
@@ -79,6 +88,7 @@ private val tabs =
 
 @Composable
 fun MainTabsScaffold(
+    email: String?,
     language: AppLanguage?,
     onLanguageSelected: (AppLanguage) -> Unit,
     onSignOut: () -> Unit,
@@ -116,12 +126,30 @@ fun MainTabsScaffold(
             startDestination = HomeRoute,
             modifier = Modifier.fillMaxSize().padding(innerPadding),
         ) {
-            composable<HomeRoute> { HomeScreen(onSignOut = onSignOut) }
+            composable<HomeRoute> { HomeScreen() }
             composable<MyTripsRoute> { StubScreen(title = stringResource(Res.string.tab_my_trips)) }
             composable<ExploreRoute> { StubScreen(title = stringResource(Res.string.tab_explore)) }
             navigation<ProfileGraphRoute>(startDestination = ProfileRoute) {
                 composable<ProfileRoute> {
-                    ProfileScreen(onLanguageClick = { navController.navigate(LanguageRoute) })
+                    ProfileScreen(
+                        email = email,
+                        onPreferencesClick = { navController.navigate(PreferencesRoute) },
+                        onLanguageClick = { navController.navigate(LanguageRoute) },
+                        onSignOut = onSignOut,
+                    )
+                }
+                composable<PreferencesRoute> {
+                    val viewModel = viewModel { PreferencesViewModel(AppGraph.apiClient) }
+                    val prefState by viewModel.state.collectAsState()
+                    LaunchedEffect(Unit) { viewModel.load() }
+                    PreferencesScreen(
+                        state = prefState,
+                        onIntensityChange = viewModel::setIntensity,
+                        onWakeUpTimeChange = viewModel::setWakeUpTime,
+                        onSave = viewModel::save,
+                        onRetryLoad = viewModel::load,
+                        onBack = { navController.popBackStack() },
+                    )
                 }
                 composable<LanguageRoute> {
                     LanguageScreen(
