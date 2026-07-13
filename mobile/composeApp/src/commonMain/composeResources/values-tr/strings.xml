@@ -30,6 +30,12 @@
     <string name="rating_like">Beğen</string>
     <string name="rating_neutral">Nötr</string>
     <string name="rating_dislike">Beğenme</string>
+    <string name="delete_account">Hesabı sil</string>
+    <string name="delete_account_message">Bu işlem profilini, ilgi alanlarını, gezilerini ve giriş kimliğini kalıcı olarak siler. Geri alınamaz.</string>
+    <string name="delete_account_confirm">Sil</string>
+    <string name="deleting">Siliniyor…</string>
+    <string name="delete_account_error">Hesabın silinemedi</string>
+    <string name="cancel">İptal</string>
     <string name="preferences">Tercihler</string>
     <string name="preferences_intensity">Gezi temposu</string>
     <string name="intensity_relaxed">Sakin</string>

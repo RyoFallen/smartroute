@@ -35,6 +35,9 @@ import androidx.navigation.compose.rememberNavController
 import com.smartroute.traveler.AppGraph
 import com.smartroute.traveler.data.storage.AppLanguage
 import com.smartroute.traveler.ui.home.HomeScreen
+import com.smartroute.traveler.ui.profile.DeleteAccountDialog
+import com.smartroute.traveler.ui.profile.DeleteAccountUiState
+import com.smartroute.traveler.ui.profile.DeleteAccountViewModel
 import com.smartroute.traveler.ui.profile.InterestsScreen
 import com.smartroute.traveler.ui.profile.InterestsViewModel
 import com.smartroute.traveler.ui.profile.LanguageScreen
@@ -136,13 +139,26 @@ fun MainTabsScaffold(
             composable<ExploreRoute> { StubScreen(title = stringResource(Res.string.tab_explore)) }
             navigation<ProfileGraphRoute>(startDestination = ProfileRoute) {
                 composable<ProfileRoute> {
+                    val deleteViewModel =
+                        viewModel { DeleteAccountViewModel(AppGraph.apiClient, AppGraph.tokenStore) }
+                    val deleteState by deleteViewModel.state.collectAsState()
                     ProfileScreen(
                         email = email,
                         onInterestsClick = { navController.navigate(InterestsRoute) },
                         onPreferencesClick = { navController.navigate(PreferencesRoute) },
                         onLanguageClick = { navController.navigate(LanguageRoute) },
                         onSignOut = onSignOut,
+                        onDeleteAccountClick = deleteViewModel::requestDelete,
                     )
+                    DeleteAccountDialog(
+                        state = deleteState,
+                        onConfirm = deleteViewModel::confirm,
+                        onCancel = deleteViewModel::cancel,
+                    )
+                    if (deleteState is DeleteAccountUiState.Deleted) {
+                        // Tokens are already cleared; this flips auth state to the sign-in screen.
+                        LaunchedEffect(Unit) { onSignOut() }
+                    }
                 }
                 composable<InterestsRoute> {
                     val viewModel = viewModel { InterestsViewModel(AppGraph.apiClient) }

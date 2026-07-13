@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import smartroute_mobile.composeapp.generated.resources.Res
+import smartroute_mobile.composeapp.generated.resources.delete_account
 import smartroute_mobile.composeapp.generated.resources.interests
 import smartroute_mobile.composeapp.generated.resources.language
 import smartroute_mobile.composeapp.generated.resources.preferences
@@ -31,6 +32,7 @@ fun ProfileScreen(
     onPreferencesClick: () -> Unit,
     onLanguageClick: () -> Unit,
     onSignOut: () -> Unit,
+    onDeleteAccountClick: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
@@ -56,6 +58,11 @@ fun ProfileScreen(
         SettingsRow(label = stringResource(Res.string.preferences), onClick = onPreferencesClick)
         SettingsRow(label = stringResource(Res.string.language), onClick = onLanguageClick)
         SettingsRow(label = stringResource(Res.string.sign_out), onClick = onSignOut)
+        SettingsRow(
+            label = stringResource(Res.string.delete_account),
+            onClick = onDeleteAccountClick,
+            emphasis = true,
+        )
     }
 }
 

@@ -30,6 +30,12 @@
     <string name="rating_like">Like</string>
     <string name="rating_neutral">Neutral</string>
     <string name="rating_dislike">Dislike</string>
+    <string name="delete_account">Delete account</string>
+    <string name="delete_account_message">This permanently deletes your profile, interests, trips, and sign-in identity. This cannot be undone.</string>
+    <string name="delete_account_confirm">Delete</string>
+    <string name="deleting">Deleting…</string>
+    <string name="delete_account_error">Could not delete your account</string>
+    <string name="cancel">Cancel</string>
     <string name="preferences">Preferences</string>
     <string name="preferences_intensity">Trip intensity</string>
     <string name="intensity_relaxed">Relaxed</string>

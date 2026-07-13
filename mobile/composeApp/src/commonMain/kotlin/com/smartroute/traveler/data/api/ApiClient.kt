@@ -7,6 +7,7 @@ import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
@@ -56,6 +57,12 @@ class ApiClient(
         intensity: String,
         wakeUpTime: String,
     ): ProfileEnvelopeDto = put("/users/me", UpdatePreferencesRequestDto(intensity, wakeUpTime))
+
+    /** GDPR erasure — the backend wipes local rows then the Clerk identity. */
+    suspend fun deleteAccount() {
+        val response = http.delete("$baseUrl/users/me")
+        if (!response.status.isSuccess()) throw response.toApiError()
+    }
 
     private suspend inline fun <reified T> get(path: String): T {
         val response = http.get("$baseUrl$path")
