@@ -15,13 +15,14 @@ Thesis project (deadline: **early December 2026**). Multi-city trip optimizer: b
 - `apps/mobile/` — legacy Expo app; keep working until KMP reaches feature parity, then retire. Don't invest in it.
 - `packages/shared/` — zod schemas/types (backend-side only)
 
-## Current state (2026-07-12)
+## Current state (2026-07-13)
 
 - Backend: Plans 1–6 shipped (optimize, trips CRUD, Duffel, must-go attractions endpoint `GET /trips/:id/plan`)
 - Mobile KMP: **Phase 2 complete** — Clerk email-code auth driven via the Frontend API in commonMain (no native Clerk SDKs; see plan's Design Decisions), Ktor `ApiClient` with bearer auto-refresh, `TokenStore` (Keychain/SharedPreferences via multiplatform-settings), sign-in screen + auth gating in `App.kt`. Plan: `docs/superpowers/plans/2026-07-12-kmp-phase2-auth-ktor.md`
 - Auth verified end-to-end on the Android emulator against the live Clerk dev instance (2026-07-12): email-code sign-in, client-JWT rotation, session JWT accepted by the backend. Clerk keys: publishable in `AppConfig.kt` (committed), secret in gitignored `apps/backend/.env`
 - iOS (2026-07-12): `iosApp` Xcode wrapper shipped (`mobile/iosApp/`, XcodeGen `project.yml` + committed `.xcodeproj`) with MapLibre iOS 6.27.0 via SPM, injected through `MapViewBridge` (ADR-0001 — MapLibre stays out of the Kotlin build). Verified end-to-end on the iOS 26.5 simulator: sign-in via Clerk email code and MapLibre map rendering after auth.
-- **Next:** Phase 3 (user profile & interests)
+- **Phase 3 implemented (2026-07-13, issues #1–#10):** backend `GET/PUT /users/me`, `PUT /users/me/interests` (full replace), GDPR `DELETE /users/me` (local wipe then Clerk deletion), `UserProfile`/`Interest` Prisma models per ADR-0002; shared `InterestCategory` vocabulary (15 slugs, zod + Kotlin mirror, slug-stability tests pin both) and `ATTRACTION_TO_INTEREST_CATEGORY` map; mobile 4-tab scaffold (navigation-compose, type-safe routes), onboarding gate (`profile: null` → swipe deck) + swipe deck with haptics, Profile hub (email, Interests editor, Preferences, Language, sign out, delete account), EN/TR localization via Compose resources with in-app switch (`LocalAppLocale` + `key()` pattern; language stored device-locally). Manual emulator/simulator verification (swipe feel, haptics, back handling, EN/TR rendering, live Clerk delete) still pending — see open issue checklists.
+- **Next:** Phase 3 manual verification, then Phase 4 (route optimization)
 
 ## Machine division of labor
 
