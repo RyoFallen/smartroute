@@ -1,11 +1,13 @@
 import fp from 'fastify-plugin';
 import { createClerkClient } from '@clerk/backend';
+import type { ClerkClient } from '@clerk/backend';
 import type { FastifyRequest, FastifyReply, preHandlerHookHandler } from 'fastify';
 import { ApiError } from '../lib/ApiError.js';
 
 declare module 'fastify' {
   interface FastifyInstance {
     requireAuth: preHandlerHookHandler;
+    clerk: ClerkClient;
   }
   interface FastifyRequest {
     userId: string;
@@ -44,5 +46,6 @@ export const authPlugin = fp(async (app) => {
   };
 
   app.decorate('requireAuth', requireAuth);
+  app.decorate('clerk', clerk);
   app.decorateRequest('userId', '');
 });

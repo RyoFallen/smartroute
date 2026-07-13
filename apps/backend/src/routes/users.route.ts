@@ -21,4 +21,9 @@ export async function usersRoute(app: FastifyInstance): Promise<void> {
     );
     return { profile };
   });
+
+  app.delete('/users/me', { preHandler: [app.requireAuth] }, async (req, reply) => {
+    await new UserService(app.prisma).deleteAccount(req.userId, app.clerk);
+    return reply.status(204).send();
+  });
 }

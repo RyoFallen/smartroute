@@ -1,3 +1,4 @@
+import type { ClerkClient } from '@clerk/backend';
 import type { PrismaClient } from '@prisma/client';
 import type {
   GetMeResponse,
@@ -51,5 +52,20 @@ export class UserService {
     ]);
     const me = await this.getMe(userId);
     return me.profile as UserProfile;
+  }
+
+  /**
+   * GDPR erasure. The local wipe is transactional and runs before the Clerk
+   * call, so a failure can never leave the Clerk identity gone while personal
+   * data remains. If Clerk fails afterwards, a retry wipes nothing locally
+   * and calls Clerk again.
+   */
+  async deleteAccount(userId: string, clerk: ClerkClient): Promise<void> {
+    await this.db.$transaction([
+      this.db.interest.deleteMany({ where: { userId } }),
+      this.db.userProfile.deleteMany({ where: { userId } }),
+      this.db.trip.deleteMany({ where: { userId } }),
+    ]);
+    await clerk.users.deleteUser(userId);
   }
 }
