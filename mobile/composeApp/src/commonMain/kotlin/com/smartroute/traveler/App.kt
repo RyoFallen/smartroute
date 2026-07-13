@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -25,6 +26,9 @@ import com.smartroute.traveler.ui.auth.AuthViewModel
 import com.smartroute.traveler.ui.auth.SignInScreen
 import com.smartroute.traveler.ui.i18n.LocalAppLocale
 import com.smartroute.traveler.ui.navigation.MainTabsScaffold
+import com.smartroute.traveler.ui.onboarding.OnboardingScreen
+import com.smartroute.traveler.ui.onboarding.OnboardingUiState
+import com.smartroute.traveler.ui.onboarding.OnboardingViewModel
 import org.jetbrains.compose.resources.stringResource
 import smartroute_mobile.composeapp.generated.resources.Res
 import smartroute_mobile.composeapp.generated.resources.missing_config
@@ -63,7 +67,7 @@ private fun AuthenticatedApp(
     val state by viewModel.state.collectAsState()
     when (val current = state) {
         is AuthUiState.SignedIn ->
-            MainTabsScaffold(
+            OnboardingGate(
                 language = language,
                 onLanguageSelected = onLanguageSelected,
                 onSignOut = viewModel::signOut,
@@ -73,6 +77,37 @@ private fun AuthenticatedApp(
                 state = current,
                 onSendCode = viewModel::sendCode,
                 onVerify = viewModel::verify,
+            )
+    }
+}
+
+/**
+ * Routes a signed-in user by server state: `profile: null` → swipe deck,
+ * profile present → tabs, fetch failure → retry (never a wrong screen).
+ */
+@Composable
+private fun OnboardingGate(
+    language: AppLanguage?,
+    onLanguageSelected: (AppLanguage) -> Unit,
+    onSignOut: () -> Unit,
+) {
+    val viewModel = viewModel { OnboardingViewModel(AppGraph.apiClient) }
+    val state by viewModel.state.collectAsState()
+    LaunchedEffect(Unit) { viewModel.refresh() }
+    when (state) {
+        is OnboardingUiState.Complete ->
+            MainTabsScaffold(
+                language = language,
+                onLanguageSelected = onLanguageSelected,
+                onSignOut = onSignOut,
+            )
+        else ->
+            OnboardingScreen(
+                state = state,
+                onRate = viewModel::rateCurrent,
+                onSkipAll = viewModel::skipAll,
+                onRetryLoad = viewModel::refresh,
+                onRetrySubmit = viewModel::retrySubmit,
             )
     }
 }

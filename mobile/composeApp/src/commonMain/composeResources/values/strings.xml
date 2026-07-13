@@ -23,4 +23,25 @@
     <string name="language_english">English</string>
     <string name="language_turkish">Türkçe</string>
     <string name="missing_config">Clerk publishable key is not configured.\nSet AppConfig.CLERK_PUBLISHABLE_KEY to run the app.</string>
+    <string name="retry">Retry</string>
+    <string name="onboarding_title">What do you enjoy?</string>
+    <string name="onboarding_hint">Swipe right to like, left to dislike, tap to skip</string>
+    <string name="onboarding_skip_all">Skip for now</string>
+    <string name="onboarding_error_load">Could not load your profile</string>
+    <string name="onboarding_error_save">Could not save your interests</string>
+    <string name="interest_museums_galleries">Museums &amp; Galleries</string>
+    <string name="interest_historical_sites">Historical Sites</string>
+    <string name="interest_nature_parks">Nature &amp; Parks</string>
+    <string name="interest_beaches_water">Beaches &amp; Water</string>
+    <string name="interest_food_dining">Food &amp; Dining</string>
+    <string name="interest_nightlife_bars">Nightlife &amp; Bars</string>
+    <string name="interest_shopping">Shopping</string>
+    <string name="interest_art_architecture">Art &amp; Architecture</string>
+    <string name="interest_adventure_sports">Adventure &amp; Sports</string>
+    <string name="interest_religious_sites">Religious Sites</string>
+    <string name="interest_local_culture">Local Culture</string>
+    <string name="interest_photography_spots">Photography Spots</string>
+    <string name="interest_family_activities">Family Activities</string>
+    <string name="interest_wellness_spa">Wellness &amp; Spa</string>
+    <string name="interest_live_entertainment">Live Entertainment</string>
 </resources>

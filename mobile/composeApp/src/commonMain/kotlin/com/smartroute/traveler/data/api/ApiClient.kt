@@ -8,8 +8,12 @@ import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -43,8 +47,26 @@ class ApiClient(
 
     suspend fun getTrips(): List<TripSummary> = get("/trips")
 
+    suspend fun getMe(): ProfileEnvelopeDto = get("/users/me")
+
+    suspend fun putInterests(interests: List<InterestEntryDto>): ProfileEnvelopeDto =
+        put("/users/me/interests", ReplaceInterestsRequestDto(interests))
+
     private suspend inline fun <reified T> get(path: String): T {
         val response = http.get("$baseUrl$path")
+        if (!response.status.isSuccess()) throw response.toApiError()
+        return response.body()
+    }
+
+    private suspend inline fun <reified B, reified T> put(
+        path: String,
+        body: B,
+    ): T {
+        val response =
+            http.put("$baseUrl$path") {
+                contentType(ContentType.Application.Json)
+                setBody(body)
+            }
         if (!response.status.isSuccess()) throw response.toApiError()
         return response.body()
     }

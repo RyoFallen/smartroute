@@ -23,4 +23,25 @@
     <string name="language_english">English</string>
     <string name="language_turkish">Türkçe</string>
     <string name="missing_config">Clerk publishable key yapılandırılmamış.\nUygulamayı çalıştırmak için AppConfig.CLERK_PUBLISHABLE_KEY değerini ayarla.</string>
+    <string name="retry">Tekrar dene</string>
+    <string name="onboarding_title">Nelerden hoşlanırsın?</string>
+    <string name="onboarding_hint">Beğenmek için sağa, beğenmemek için sola kaydır; atlamak için dokun</string>
+    <string name="onboarding_skip_all">Şimdilik atla</string>
+    <string name="onboarding_error_load">Profilin yüklenemedi</string>
+    <string name="onboarding_error_save">İlgi alanların kaydedilemedi</string>
+    <string name="interest_museums_galleries">Müzeler ve Galeriler</string>
+    <string name="interest_historical_sites">Tarihi Yerler</string>
+    <string name="interest_nature_parks">Doğa ve Parklar</string>
+    <string name="interest_beaches_water">Plajlar ve Su</string>
+    <string name="interest_food_dining">Yeme ve İçme</string>
+    <string name="interest_nightlife_bars">Gece Hayatı ve Barlar</string>
+    <string name="interest_shopping">Alışveriş</string>
+    <string name="interest_art_architecture">Sanat ve Mimari</string>
+    <string name="interest_adventure_sports">Macera ve Spor</string>
+    <string name="interest_religious_sites">Dini Mekanlar</string>
+    <string name="interest_local_culture">Yerel Kültür</string>
+    <string name="interest_photography_spots">Fotoğraf Noktaları</string>
+    <string name="interest_family_activities">Aile Etkinlikleri</string>
+    <string name="interest_wellness_spa">Sağlık ve Spa</string>
+    <string name="interest_live_entertainment">Canlı Eğlence</string>
 </resources>
