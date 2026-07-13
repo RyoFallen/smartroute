@@ -2,7 +2,6 @@ package com.smartroute.traveler.ui.profile
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,12 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -27,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.smartroute.traveler.domain.InterestCategory
 import com.smartroute.traveler.ui.components.RetryErrorState
+import com.smartroute.traveler.ui.components.SubScreenHeader
 import com.smartroute.traveler.ui.i18n.labelRes
 import org.jetbrains.compose.resources.stringResource
 import smartroute_mobile.composeapp.generated.resources.Res
@@ -52,18 +48,7 @@ fun InterestsScreen(
     onBack: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-            }
-            Text(
-                text = stringResource(Res.string.interests),
-                style = MaterialTheme.typography.headlineSmall,
-            )
-        }
+        SubScreenHeader(title = stringResource(Res.string.interests), onBack = onBack)
         when (state) {
             is InterestsUiState.Loading ->
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

@@ -3,6 +3,7 @@ package com.smartroute.traveler.ui.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smartroute.traveler.data.api.ApiClient
+import com.smartroute.traveler.data.api.UpdatePreferencesRequestDto
 import com.smartroute.traveler.domain.TripIntensity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -65,7 +66,9 @@ class PreferencesViewModel(
         viewModelScope.launch {
             _state.value =
                 try {
-                    api.putPreferences(editing.intensity.wire, editing.wakeUpTime)
+                    api.putPreferences(
+                        UpdatePreferencesRequestDto(editing.intensity.wire, editing.wakeUpTime),
+                    )
                     editing.copy(saving = false, saved = true)
                 } catch (_: Exception) {
                     editing.copy(saving = false, saveFailed = true)

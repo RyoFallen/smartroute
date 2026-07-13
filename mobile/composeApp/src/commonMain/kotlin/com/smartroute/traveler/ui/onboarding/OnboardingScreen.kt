@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +32,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.smartroute.traveler.domain.InterestCategory
+import com.smartroute.traveler.ui.components.RetryErrorState
 import com.smartroute.traveler.ui.i18n.labelRes
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -57,7 +57,7 @@ fun OnboardingScreen(
             is OnboardingUiState.Loading, OnboardingUiState.Complete ->
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             is OnboardingUiState.LoadFailed ->
-                ErrorState(
+                RetryErrorState(
                     message = stringResource(Res.string.onboarding_error_load),
                     onRetry = onRetryLoad,
                 )
@@ -68,24 +68,6 @@ fun OnboardingScreen(
                     onSkipAll = onSkipAll,
                     onRetrySubmit = onRetrySubmit,
                 )
-        }
-    }
-}
-
-@Composable
-private fun ErrorState(
-    message: String,
-    onRetry: () -> Unit,
-) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(text = message, style = MaterialTheme.typography.bodyLarge)
-        Spacer(Modifier.height(12.dp))
-        Button(onClick = onRetry) {
-            Text(stringResource(Res.string.retry))
         }
     }
 }

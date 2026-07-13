@@ -53,10 +53,7 @@ class ApiClient(
     suspend fun putInterests(interests: List<InterestEntryDto>): ProfileEnvelopeDto =
         put("/users/me/interests", ReplaceInterestsRequestDto(interests))
 
-    suspend fun putPreferences(
-        intensity: String,
-        wakeUpTime: String,
-    ): ProfileEnvelopeDto = put("/users/me", UpdatePreferencesRequestDto(intensity, wakeUpTime))
+    suspend fun putPreferences(preferences: UpdatePreferencesRequestDto): ProfileEnvelopeDto = put("/users/me", preferences)
 
     /** GDPR erasure — the backend wipes local rows then the Clerk identity. */
     suspend fun deleteAccount() {

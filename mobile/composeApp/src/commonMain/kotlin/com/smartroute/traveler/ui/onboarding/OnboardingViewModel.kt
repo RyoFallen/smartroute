@@ -3,7 +3,7 @@ package com.smartroute.traveler.ui.onboarding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smartroute.traveler.data.api.ApiClient
-import com.smartroute.traveler.data.api.InterestEntryDto
+import com.smartroute.traveler.data.api.fullInterestSet
 import com.smartroute.traveler.domain.InterestCategory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -84,9 +84,7 @@ class OnboardingViewModel(
         viewModelScope.launch {
             _state.value =
                 try {
-                    api.putInterests(
-                        InterestCategory.entries.map { InterestEntryDto(it.slug, ratings[it] ?: 0) },
-                    )
+                    api.putInterests(fullInterestSet(ratings))
                     OnboardingUiState.Complete
                 } catch (_: Exception) {
                     deck.copy(submitting = false, submitFailed = true)

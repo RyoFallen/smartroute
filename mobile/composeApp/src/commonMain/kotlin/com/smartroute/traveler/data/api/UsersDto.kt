@@ -1,5 +1,6 @@
 package com.smartroute.traveler.data.api
 
+import com.smartroute.traveler.domain.InterestCategory
 import kotlinx.serialization.Serializable
 
 // Mirrors the shared user schemas (packages/shared/src/users.ts).
@@ -27,6 +28,10 @@ data class ProfileEnvelopeDto(
 data class ReplaceInterestsRequestDto(
     val interests: List<InterestEntryDto>,
 )
+
+/** The complete 15-entry payload for the full-replace endpoint; unrated categories are neutral. */
+fun fullInterestSet(ratings: Map<InterestCategory, Int>): List<InterestEntryDto> =
+    InterestCategory.entries.map { InterestEntryDto(it.slug, ratings[it] ?: 0) }
 
 @Serializable
 data class UpdatePreferencesRequestDto(

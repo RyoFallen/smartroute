@@ -37,9 +37,7 @@ export class UserService {
       create: { userId, intensity: input.intensity, wakeUpTime: input.wakeUpTime },
       update: { intensity: input.intensity, wakeUpTime: input.wakeUpTime },
     });
-    const me = await this.getMe(userId);
-    // upsert above guarantees the row exists
-    return me.profile as UserProfile;
+    return this.requireProfile(userId);
   }
 
   async replaceInterests(userId: string, interests: InterestEntry[]): Promise<UserProfile> {
@@ -50,6 +48,11 @@ export class UserService {
         data: interests.map((i) => ({ userId, category: i.category, rating: i.rating })),
       }),
     ]);
+    return this.requireProfile(userId);
+  }
+
+  /** Re-read after a write that guarantees the profile row exists. */
+  private async requireProfile(userId: string): Promise<UserProfile> {
     const me = await this.getMe(userId);
     return me.profile as UserProfile;
   }

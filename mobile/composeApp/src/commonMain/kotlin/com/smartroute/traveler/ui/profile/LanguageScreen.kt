@@ -6,10 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -18,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.smartroute.traveler.data.storage.AppLanguage
+import com.smartroute.traveler.ui.components.SubScreenHeader
 import org.jetbrains.compose.resources.stringResource
 import smartroute_mobile.composeapp.generated.resources.Res
 import smartroute_mobile.composeapp.generated.resources.language
@@ -31,18 +28,7 @@ fun LanguageScreen(
     onBack: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-            }
-            Text(
-                text = stringResource(Res.string.language),
-                style = MaterialTheme.typography.headlineSmall,
-            )
-        }
+        SubScreenHeader(title = stringResource(Res.string.language), onBack = onBack)
         LanguageOption(
             label = stringResource(Res.string.language_english),
             selected = selected == AppLanguage.EN,
