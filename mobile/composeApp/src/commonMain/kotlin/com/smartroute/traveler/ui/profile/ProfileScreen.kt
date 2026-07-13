@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import smartroute_mobile.composeapp.generated.resources.Res
+import smartroute_mobile.composeapp.generated.resources.interests
 import smartroute_mobile.composeapp.generated.resources.language
 import smartroute_mobile.composeapp.generated.resources.preferences
 import smartroute_mobile.composeapp.generated.resources.profile_signed_in_as
@@ -26,6 +27,7 @@ import smartroute_mobile.composeapp.generated.resources.tab_profile
 @Composable
 fun ProfileScreen(
     email: String?,
+    onInterestsClick: () -> Unit,
     onPreferencesClick: () -> Unit,
     onLanguageClick: () -> Unit,
     onSignOut: () -> Unit,
@@ -50,6 +52,7 @@ fun ProfileScreen(
             )
         }
         HorizontalDivider(modifier = Modifier.padding(16.dp))
+        SettingsRow(label = stringResource(Res.string.interests), onClick = onInterestsClick)
         SettingsRow(label = stringResource(Res.string.preferences), onClick = onPreferencesClick)
         SettingsRow(label = stringResource(Res.string.language), onClick = onLanguageClick)
         SettingsRow(label = stringResource(Res.string.sign_out), onClick = onSignOut)

@@ -35,6 +35,8 @@ import androidx.navigation.compose.rememberNavController
 import com.smartroute.traveler.AppGraph
 import com.smartroute.traveler.data.storage.AppLanguage
 import com.smartroute.traveler.ui.home.HomeScreen
+import com.smartroute.traveler.ui.profile.InterestsScreen
+import com.smartroute.traveler.ui.profile.InterestsViewModel
 import com.smartroute.traveler.ui.profile.LanguageScreen
 import com.smartroute.traveler.ui.profile.PreferencesScreen
 import com.smartroute.traveler.ui.profile.PreferencesViewModel
@@ -70,6 +72,9 @@ object LanguageRoute
 
 @Serializable
 object PreferencesRoute
+
+@Serializable
+object InterestsRoute
 
 private class TabItem(
     val route: Any,
@@ -133,9 +138,22 @@ fun MainTabsScaffold(
                 composable<ProfileRoute> {
                     ProfileScreen(
                         email = email,
+                        onInterestsClick = { navController.navigate(InterestsRoute) },
                         onPreferencesClick = { navController.navigate(PreferencesRoute) },
                         onLanguageClick = { navController.navigate(LanguageRoute) },
                         onSignOut = onSignOut,
+                    )
+                }
+                composable<InterestsRoute> {
+                    val viewModel = viewModel { InterestsViewModel(AppGraph.apiClient) }
+                    val interestsState by viewModel.state.collectAsState()
+                    LaunchedEffect(Unit) { viewModel.load() }
+                    InterestsScreen(
+                        state = interestsState,
+                        onRate = viewModel::setRating,
+                        onSave = viewModel::save,
+                        onRetryLoad = viewModel::load,
+                        onBack = { navController.popBackStack() },
                     )
                 }
                 composable<PreferencesRoute> {

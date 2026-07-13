@@ -25,6 +25,11 @@
     <string name="missing_config">Clerk publishable key yapılandırılmamış.\nUygulamayı çalıştırmak için AppConfig.CLERK_PUBLISHABLE_KEY değerini ayarla.</string>
     <string name="retry">Tekrar dene</string>
     <string name="profile_signed_in_as">Giriş yapılan hesap</string>
+    <string name="interests">İlgi Alanları</string>
+    <string name="interests_error_load">İlgi alanların yüklenemedi</string>
+    <string name="rating_like">Beğen</string>
+    <string name="rating_neutral">Nötr</string>
+    <string name="rating_dislike">Beğenme</string>
     <string name="preferences">Tercihler</string>
     <string name="preferences_intensity">Gezi temposu</string>
     <string name="intensity_relaxed">Sakin</string>
