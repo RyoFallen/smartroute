@@ -15,3 +15,7 @@ _Avoid_: category (unqualified)
 **Interest**:
 A traveler's rating of one InterestCategory: like (+1), neutral (0), or dislike (−1).
 _Avoid_: preference (that word is reserved for trip-pacing settings)
+
+**OptimizePreset**:
+The traveler-facing optimizer preset on `POST /optimize` (`budget`, `time`, `comfort`, `balanced`) that selects the weight row of the GA's multi-objective fitness (cost / directness / travel time).
+_Avoid_: preference (reserved for trip-pacing settings), profile
