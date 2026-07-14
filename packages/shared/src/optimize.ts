@@ -2,6 +2,9 @@ import { z } from 'zod';
 import { CabinClass, Iata } from './flights.js';
 import { RouteOption } from './routes.js';
 
+export const OptimizePreset = z.enum(['budget', 'time', 'comfort', 'balanced']);
+export type OptimizePreset = z.infer<typeof OptimizePreset>;
+
 export const OptimizeRequest = z
   .object({
     cities: z.array(Iata).min(2).max(8),

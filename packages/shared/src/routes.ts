@@ -8,7 +8,6 @@ export const Score = z.object({
   totalCostCents: z.number().int().nonnegative(),
   totalDurationMin: z.number().int().nonnegative(),
   totalStops: z.number().int().nonnegative(),
-  composite: z.number(),
 });
 export type Score = z.infer<typeof Score>;
 
