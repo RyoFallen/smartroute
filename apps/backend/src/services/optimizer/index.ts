@@ -1,5 +1,4 @@
 import type {
-  CabinClass,
   OptimizeRequest,
   OptimizeResponse,
   RouteLabel,
@@ -11,7 +10,7 @@ import type { FlightService } from '../flights/index.js';
 import type { PriceResult } from '../flights/provider.js';
 import { keyOf } from '../flights/cache.js';
 import { PRESET_WEIGHTS } from './fitness.js';
-import { runGa, type GaCandidate, type GaOptions } from './ga.js';
+import { orderingKey, runGa, type GaCandidate, type GaOptions } from './ga.js';
 import { scoreOrdering } from './score.js';
 import { collectPriceTriples } from './triples.js';
 
@@ -26,14 +25,7 @@ export class OptimizerService {
     const { prices, partial, staleCache } = await this.flights.getPrices(triples);
 
     const evaluate = (ordering: string[]): Score | null => {
-      const legs = legsFor(
-        ordering,
-        req.perCityDays,
-        req.cities,
-        req.departDate,
-        req.cabinClass,
-        prices,
-      );
+      const legs = legsFor(ordering, req, prices);
       if (legs.length !== ordering.length - 1) return null;
       if (req.directOnly && legs.some((l) => l.stops > 0)) return null;
       return scoreOrdering(legs);
@@ -74,17 +66,10 @@ export class OptimizerService {
     const seen = new Set<string>();
     const options: RouteOption[] = [];
     for (const { label, pick } of labeled) {
-      const key = pick.ordering.join('>');
+      const key = orderingKey(pick.ordering);
       if (seen.has(key)) continue;
       seen.add(key);
-      const legs = legsFor(
-        pick.ordering,
-        req.perCityDays,
-        req.cities,
-        req.departDate,
-        req.cabinClass,
-        prices,
-      );
+      const legs = legsFor(pick.ordering, req, prices);
       options.push({
         label,
         order: pick.ordering,
@@ -104,23 +89,22 @@ export class OptimizerService {
 
 function legsFor(
   ordering: string[],
-  perCityDays: number[],
-  cities: string[],
-  departDate: string,
-  cabinClass: CabinClass,
+  req: Pick<OptimizeRequest, 'perCityDays' | 'cities' | 'departDate' | 'cabinClass'>,
   prices: Map<string, PriceResult>,
 ): PriceResult[] {
   const out: PriceResult[] = [];
-  let date = new Date(departDate);
+  let date = new Date(req.departDate);
   for (let i = 0; i < ordering.length - 1; i++) {
     const origin = ordering[i]!;
     const destination = ordering[i + 1]!;
     const departDateStr = date.toISOString().slice(0, 10);
-    const r = prices.get(keyOf({ origin, destination, departDate: departDateStr, cabinClass }));
+    const r = prices.get(
+      keyOf({ origin, destination, departDate: departDateStr, cabinClass: req.cabinClass }),
+    );
     if (!r) return out;
     out.push(r);
-    const idx = cities.indexOf(origin);
-    const stay = perCityDays[idx] ?? 1;
+    const idx = req.cities.indexOf(origin);
+    const stay = req.perCityDays[idx] ?? 1;
     date = new Date(date.getTime() + stay * 86400_000);
   }
   return out;

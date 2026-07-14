@@ -43,6 +43,11 @@ export interface GaCandidate {
   score: Score;
 }
 
+/** Canonical identity of a city ordering, used for dedupe and comparison. */
+export function orderingKey(ordering: string[]): string {
+  return ordering.join('>');
+}
+
 export interface GaResult {
   /** Archive-wide fitness winner under one consistent normalization batch; null if nothing feasible. */
   best: GaCandidate | null;
@@ -70,7 +75,7 @@ export function runGa(input: GaInput, opts: GaOptions = {}): GaResult {
   const archive = new Map<string, GaCandidate | null>();
   const evaluateGenome = (genome: string[]): GaCandidate | null => {
     const ordering = [...head, ...genome, ...tail];
-    const key = ordering.join('>');
+    const key = orderingKey(ordering);
     let hit = archive.get(key);
     if (hit === undefined) {
       const score = input.evaluate(ordering);
@@ -121,7 +126,7 @@ export function runGa(input: GaInput, opts: GaOptions = {}): GaResult {
 
     // Best-so-far judged over the whole archive in one normalization batch.
     const best = archiveBest(archive, input.weights);
-    const key = best ? best.ordering.join('>') : null;
+    const key = best ? orderingKey(best.ordering) : null;
     if (key !== bestKey) {
       bestKey = key;
       stagnation = 0;
