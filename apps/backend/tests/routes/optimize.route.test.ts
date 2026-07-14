@@ -38,22 +38,50 @@ describe('POST /optimize', () => {
     expect(res.json().error.code).toBe('INVALID_INPUT');
   });
 
-  it('returns options on valid input', async () => {
+  const legacyPayload = {
+    cities: ['JFK', 'CDG', 'FCO'],
+    perCityDays: [2, 2, 2],
+    departDate: '2026-06-01',
+    travelers: 1,
+    cabinClass: 'ECONOMY',
+    directOnly: false,
+  };
+
+  it('returns options on a presetless legacy request, leading with recommended', async () => {
     const app = await buildServer({ withDb: true });
     const res = await app.inject({
       method: 'POST',
       url: '/optimize',
       headers: { authorization: 'Bearer good', 'content-type': 'application/json' },
-      payload: {
-        cities: ['JFK', 'CDG', 'FCO'],
-        perCityDays: [2, 2, 2],
-        departDate: '2026-06-01',
-        travelers: 1,
-        cabinClass: 'ECONOMY',
-        directOnly: false,
-      },
+      payload: legacyPayload,
     });
     expect(res.statusCode).toBe(200);
-    expect(res.json().options.length).toBeGreaterThan(0);
+    const body = res.json();
+    expect(body.options.length).toBeGreaterThan(0);
+    expect(body.options[0].label).toBe('recommended');
+  });
+
+  it('accepts an explicit preset', async () => {
+    const app = await buildServer({ withDb: true });
+    const res = await app.inject({
+      method: 'POST',
+      url: '/optimize',
+      headers: { authorization: 'Bearer good', 'content-type': 'application/json' },
+      payload: { ...legacyPayload, preset: 'budget' },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json().options[0].label).toBe('recommended');
+  });
+
+  it('400s on an unknown preset', async () => {
+    const app = await buildServer({ withDb: true });
+    const res = await app.inject({
+      method: 'POST',
+      url: '/optimize',
+      headers: { authorization: 'Bearer good', 'content-type': 'application/json' },
+      payload: { ...legacyPayload, preset: 'luxury' },
+    });
+    expect(res.statusCode).toBe(400);
+    expect(res.json().error.code).toBe('INVALID_INPUT');
   });
 });

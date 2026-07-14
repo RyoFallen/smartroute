@@ -15,6 +15,7 @@ export const OptimizeRequest = z
     travelers: z.number().int().min(1).max(9),
     cabinClass: CabinClass,
     directOnly: z.boolean().default(false),
+    preset: OptimizePreset.default('balanced'),
   })
   .refine((v) => v.perCityDays.length === v.cities.length, {
     message: 'perCityDays length must match cities length',

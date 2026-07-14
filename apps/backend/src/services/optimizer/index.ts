@@ -5,33 +5,27 @@ import type {
   RouteLabel,
   RouteOption,
   FlightLeg,
+  Score,
 } from '@smartroute/shared';
 import type { FlightService } from '../flights/index.js';
-import type { PriceQuery, PriceResult } from '../flights/provider.js';
+import type { PriceResult } from '../flights/provider.js';
 import { keyOf } from '../flights/cache.js';
-import { enumerateOrderings } from './enumerate.js';
+import { PRESET_WEIGHTS } from './fitness.js';
+import { runGa, type GaCandidate, type GaOptions } from './ga.js';
 import { scoreOrdering } from './score.js';
+import { collectPriceTriples } from './triples.js';
 
 export class OptimizerService {
-  constructor(private readonly flights: FlightService) {}
+  constructor(
+    private readonly flights: FlightService,
+    private readonly ga: GaOptions = {},
+  ) {}
 
   async optimize(req: OptimizeRequest): Promise<OptimizeResponse> {
-    const orderings = enumerateOrderings(req.cities, {
-      startCity: req.startCity,
-      endCity: req.endCity,
-    });
-    const triples = collectTriples(
-      orderings,
-      req.perCityDays,
-      req.cities,
-      req.departDate,
-      req.cabinClass,
-    );
-
+    const triples = collectPriceTriples(req);
     const { prices, partial, staleCache } = await this.flights.getPrices(triples);
 
-    const candidates: Array<{ ordering: string[]; legs: PriceResult[] }> = [];
-    for (const ordering of orderings) {
+    const evaluate = (ordering: string[]): Score | null => {
       const legs = legsFor(
         ordering,
         req.perCityDays,
@@ -40,12 +34,23 @@ export class OptimizerService {
         req.cabinClass,
         prices,
       );
-      if (legs.length !== ordering.length - 1) continue;
-      if (req.directOnly && legs.some((l) => l.stops > 0)) continue;
-      candidates.push({ ordering, legs });
-    }
+      if (legs.length !== ordering.length - 1) return null;
+      if (req.directOnly && legs.some((l) => l.stops > 0)) return null;
+      return scoreOrdering(legs);
+    };
 
-    if (candidates.length === 0) {
+    const result = runGa(
+      {
+        cities: req.cities,
+        startCity: req.startCity,
+        endCity: req.endCity,
+        weights: PRESET_WEIGHTS[req.preset],
+        evaluate,
+      },
+      this.ga,
+    );
+
+    if (!result.best) {
       return {
         options: [],
         reason: req.directOnly
@@ -56,17 +61,14 @@ export class OptimizerService {
       };
     }
 
-    const cheapest = pickBy(candidates, (c) => sumProp(c.legs, 'priceCents'));
-    const fastest = pickBy(candidates, (c) => sumProp(c.legs, 'durationMin'));
-    const direct = pickBy(
-      candidates,
-      (c) => sumProp(c.legs, 'stops') * 1e9 + sumProp(c.legs, 'priceCents'),
-    );
-
-    const labeled: Array<{ label: RouteLabel; pick: (typeof candidates)[number] }> = [
-      { label: 'cheapest', pick: cheapest },
-      { label: 'fastest', pick: fastest },
-      { label: 'most_direct', pick: direct },
+    const labeled: Array<{ label: RouteLabel; pick: GaCandidate }> = [
+      { label: 'recommended', pick: result.best },
+      { label: 'cheapest', pick: pickBy(result.evaluated, (c) => c.score.totalCostCents) },
+      { label: 'fastest', pick: pickBy(result.evaluated, (c) => c.score.totalDurationMin) },
+      {
+        label: 'most_direct',
+        pick: pickBy(result.evaluated, (c) => c.score.totalStops * 1e9 + c.score.totalCostCents),
+      },
     ];
 
     const seen = new Set<string>();
@@ -75,13 +77,20 @@ export class OptimizerService {
       const key = pick.ordering.join('>');
       if (seen.has(key)) continue;
       seen.add(key);
-      const totals = scoreOrdering(pick.legs);
+      const legs = legsFor(
+        pick.ordering,
+        req.perCityDays,
+        req.cities,
+        req.departDate,
+        req.cabinClass,
+        prices,
+      );
       options.push({
         label,
         order: pick.ordering,
-        flights: pick.legs.map(toFlightLeg),
-        totalPriceCents: totals.totalCostCents,
-        totalDurationMin: totals.totalDurationMin,
+        flights: legs.map(toFlightLeg),
+        totalPriceCents: pick.score.totalCostCents,
+        totalDurationMin: pick.score.totalDurationMin,
       });
     }
 
@@ -91,34 +100,6 @@ export class OptimizerService {
       ...(staleCache && { staleCache }),
     };
   }
-}
-
-function collectTriples(
-  orderings: string[][],
-  perCityDays: number[],
-  cities: string[],
-  departDate: string,
-  cabinClass: CabinClass,
-): PriceQuery[] {
-  const seen = new Set<string>();
-  const out: PriceQuery[] = [];
-  for (const ordering of orderings) {
-    let date = new Date(departDate);
-    for (let i = 0; i < ordering.length - 1; i++) {
-      const origin = ordering[i]!;
-      const destination = ordering[i + 1]!;
-      const departDateStr = date.toISOString().slice(0, 10);
-      const k = `${origin}|${destination}|${departDateStr}|${cabinClass}`;
-      if (!seen.has(k)) {
-        seen.add(k);
-        out.push({ origin, destination, departDate: departDateStr, cabinClass });
-      }
-      const idx = cities.indexOf(origin);
-      const stay = perCityDays[idx] ?? 1;
-      date = new Date(date.getTime() + stay * 86400_000);
-    }
-  }
-  return out;
 }
 
 function legsFor(
@@ -143,10 +124,6 @@ function legsFor(
     date = new Date(date.getTime() + stay * 86400_000);
   }
   return out;
-}
-
-function sumProp(legs: PriceResult[], prop: 'priceCents' | 'durationMin' | 'stops'): number {
-  return legs.reduce((s, l) => s + l[prop], 0);
 }
 
 function pickBy<T>(arr: T[], score: (t: T) => number): T {

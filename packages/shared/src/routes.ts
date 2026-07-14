@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { FlightLeg, Iata } from './flights.js';
 
-export const RouteLabel = z.enum(['cheapest', 'fastest', 'most_direct']);
+export const RouteLabel = z.enum(['recommended', 'cheapest', 'fastest', 'most_direct']);
 export type RouteLabel = z.infer<typeof RouteLabel>;
 
 export const Score = z.object({

@@ -36,6 +36,7 @@ export function PlannerScreen() {
       travelers: 1,
       cabinClass: 'ECONOMY',
       directOnly,
+      preset: 'balanced',
     });
   }
 
