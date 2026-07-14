@@ -3,10 +3,12 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Cleartext needed: the dev backend is plain http on the emulator loopback (10.0.2.2). -->
     <application
         android:label="SmartRoute Traveler"
         android:theme="@android:style/Theme.Material.Light.NoActionBar"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"
