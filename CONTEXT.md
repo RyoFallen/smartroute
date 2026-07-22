@@ -19,3 +19,13 @@ _Avoid_: preference (that word is reserved for trip-pacing settings)
 **OptimizePreset**:
 The traveler-facing optimizer preset on `POST /optimize` (`budget`, `time`, `comfort`, `balanced`) that selects the weight row of the GA's multi-objective fitness (cost / directness / travel time).
 _Avoid_: preference (reserved for trip-pacing settings), profile
+
+### Trip pacing
+
+**TripIntensity**:
+The traveler's stored profile setting for how densely an itinerary should be scheduled (`RELAXED`, `MODERATE`, `PACKED`). Set once on the profile; applies to every trip.
+_Avoid_: pace, density
+
+**CityStay**:
+The number of days a traveler plans to spend in one city of a multi-city trip (`perCityDays` on `POST /optimize`, one entry per city). Drives the optimizer's flight-date math and the trip planner's per-city duration input.
+_Avoid_: duration, days (unqualified)
