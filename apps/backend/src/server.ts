@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import type { FastifyInstance } from 'fastify';
+import { citiesRoute } from './routes/cities.route.js';
 import { healthRoute } from './routes/health.route.js';
 import { optimizeRoute } from './routes/optimize.route.js';
 import { tripsRoute } from './routes/trips.route.js';
@@ -23,6 +24,7 @@ export async function buildServer(opts: BuildOptions = {}): Promise<FastifyInsta
     await app.register(optimizeRoute);
     await app.register(tripsRoute);
     await app.register(usersRoute);
+    await app.register(citiesRoute);
   }
   await app.register(healthRoute);
   return app;

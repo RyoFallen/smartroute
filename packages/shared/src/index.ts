@@ -7,3 +7,4 @@ export * from './trips.js';
 export * from './attractions.js';
 export * from './interests.js';
 export * from './users.js';
+export * from './cities.js';
