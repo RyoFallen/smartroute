@@ -53,6 +53,17 @@
     <string name="trip_detail_flights">Flights</string>
     <string name="trip_detail_travelers">traveler(s)</string>
     <string name="trip_detail_stops">stop(s)</string>
+    <string name="plan_trip">Plan trip</string>
+    <string name="trip_plan_error_load">Could not load this trip\'s plan</string>
+    <string name="trip_plan_no_guide">No guide for this city yet.</string>
+    <string name="trip_plan_open_in_maps">Open in maps</string>
+    <string name="attraction_category_landmark">Landmark</string>
+    <string name="attraction_category_museum">Museum</string>
+    <string name="attraction_category_religious">Religious</string>
+    <string name="attraction_category_park">Park</string>
+    <string name="attraction_category_viewpoint">Viewpoint</string>
+    <string name="attraction_category_historical">Historical</string>
+    <string name="attraction_category_market">Market</string>
     <string name="onboarding_title">What do you enjoy?</string>
     <string name="onboarding_hint">Swipe right to like, left to dislike, tap to skip</string>
     <string name="onboarding_skip_all">Skip for now</string>

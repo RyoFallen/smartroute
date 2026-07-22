@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +25,7 @@ import com.smartroute.traveler.ui.components.RetryErrorState
 import com.smartroute.traveler.ui.components.SubScreenHeader
 import org.jetbrains.compose.resources.stringResource
 import smartroute_mobile.composeapp.generated.resources.Res
+import smartroute_mobile.composeapp.generated.resources.plan_trip
 import smartroute_mobile.composeapp.generated.resources.trip_detail_error_load
 import smartroute_mobile.composeapp.generated.resources.trip_detail_flights
 import smartroute_mobile.composeapp.generated.resources.trip_detail_stops
@@ -33,6 +35,7 @@ import smartroute_mobile.composeapp.generated.resources.trip_detail_travelers
 fun TripDetailScreen(
     state: TripDetailUiState,
     onRetryLoad: () -> Unit,
+    onPlanTripClick: () -> Unit,
     onBack: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -51,7 +54,7 @@ fun TripDetailScreen(
                 )
             }
             is TripDetailUiState.Loaded ->
-                LoadedContent(trip = state.trip, onBack = onBack)
+                LoadedContent(trip = state.trip, onPlanTripClick = onPlanTripClick, onBack = onBack)
         }
     }
 }
@@ -59,6 +62,7 @@ fun TripDetailScreen(
 @Composable
 private fun LoadedContent(
     trip: TripDetail,
+    onPlanTripClick: () -> Unit,
     onBack: () -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -73,6 +77,9 @@ private fun LoadedContent(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                Button(onClick = onPlanTripClick, modifier = Modifier.padding(top = 12.dp)) {
+                    Text(stringResource(Res.string.plan_trip))
+                }
                 Text(
                     text = stringResource(Res.string.trip_detail_flights),
                     style = MaterialTheme.typography.titleMedium,

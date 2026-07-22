@@ -53,6 +53,17 @@
     <string name="trip_detail_flights">Uçuşlar</string>
     <string name="trip_detail_travelers">yolcu</string>
     <string name="trip_detail_stops">aktarma</string>
+    <string name="plan_trip">Gezi planı</string>
+    <string name="trip_plan_error_load">Bu gezinin planı yüklenemedi</string>
+    <string name="trip_plan_no_guide">Bu şehir için henüz rehber yok.</string>
+    <string name="trip_plan_open_in_maps">Haritada aç</string>
+    <string name="attraction_category_landmark">Simge yapı</string>
+    <string name="attraction_category_museum">Müze</string>
+    <string name="attraction_category_religious">Dini mekan</string>
+    <string name="attraction_category_park">Park</string>
+    <string name="attraction_category_viewpoint">Manzara noktası</string>
+    <string name="attraction_category_historical">Tarihi mekan</string>
+    <string name="attraction_category_market">Çarşı</string>
     <string name="onboarding_title">Nelerden hoşlanırsın?</string>
     <string name="onboarding_hint">Beğenmek için sağa, beğenmemek için sola kaydır; atlamak için dokun</string>
     <string name="onboarding_skip_all">Şimdilik atla</string>

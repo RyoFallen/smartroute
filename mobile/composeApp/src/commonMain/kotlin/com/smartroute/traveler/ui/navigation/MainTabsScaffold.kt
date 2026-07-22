@@ -47,6 +47,8 @@ import com.smartroute.traveler.ui.profile.PreferencesViewModel
 import com.smartroute.traveler.ui.profile.ProfileScreen
 import com.smartroute.traveler.ui.trips.TripDetailScreen
 import com.smartroute.traveler.ui.trips.TripDetailViewModel
+import com.smartroute.traveler.ui.trips.TripPlanScreen
+import com.smartroute.traveler.ui.trips.TripPlanViewModel
 import com.smartroute.traveler.ui.trips.TripsListScreen
 import com.smartroute.traveler.ui.trips.TripsListViewModel
 import kotlinx.serialization.Serializable
@@ -71,6 +73,11 @@ object MyTripsListRoute
 
 @Serializable
 data class TripDetailRoute(
+    val tripId: String,
+)
+
+@Serializable
+data class TripPlanRoute(
     val tripId: String,
 )
 
@@ -168,6 +175,18 @@ fun MainTabsScaffold(
                     TripDetailScreen(
                         state = detailState,
                         onRetryLoad = detailViewModel::load,
+                        onPlanTripClick = { navController.navigate(TripPlanRoute(route.tripId)) },
+                        onBack = { navController.popBackStack() },
+                    )
+                }
+                composable<TripPlanRoute> { backStackEntry ->
+                    val route = backStackEntry.toRoute<TripPlanRoute>()
+                    val planViewModel = viewModel { TripPlanViewModel(AppGraph.apiClient, route.tripId) }
+                    val planState by planViewModel.state.collectAsState()
+                    LaunchedEffect(route.tripId) { planViewModel.load() }
+                    TripPlanScreen(
+                        state = planState,
+                        onRetryLoad = planViewModel::load,
                         onBack = { navController.popBackStack() },
                     )
                 }

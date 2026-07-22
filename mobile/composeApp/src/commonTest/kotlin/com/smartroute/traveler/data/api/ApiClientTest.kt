@@ -1,5 +1,6 @@
 package com.smartroute.traveler.data.api
 
+import com.smartroute.traveler.domain.AttractionCategory
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpHeaders
@@ -28,6 +29,16 @@ private const val TRIP_DETAIL_JSON = """
     "carrier": "XX", "priceCents": 42350, "durationMin": 90, "stops": 0}],
   "totalPriceCents": 84700,
   "createdAt": "2026-07-12T00:00:00Z", "updatedAt": "2026-07-12T00:00:00Z"}
+"""
+
+private const val TRIP_PLAN_JSON = """
+{"tripId": "trip_1", "cities": [
+  {"iata": "SOF", "name": "Sofia", "available": true, "mustGo": [
+    {"id": "a1", "name": "Alexander Nevsky Cathedral", "category": "RELIGIOUS",
+      "rank": 1, "lat": 42.6957, "lon": 23.3327, "description": "A neo-Byzantine cathedral."}
+  ]},
+  {"iata": "BEG", "name": null, "available": false, "mustGo": []}
+]}
 """
 
 class ApiClientTest {
@@ -121,5 +132,25 @@ class ApiClientTest {
             assertEquals(1, trip.flights.size)
             assertEquals("SOF", trip.flights.single().origin)
             assertEquals(42350L, trip.flights.single().priceCents)
+        }
+
+    @Test
+    fun `fetches a trip plan with per-city availability`() =
+        runTest {
+            val engine =
+                MockEngine { request ->
+                    assertEquals("/trips/trip_1/plan", request.url.encodedPath)
+                    respond(TRIP_PLAN_JSON, HttpStatusCode.OK, headersOf(HttpHeaders.ContentType, "application/json"))
+                }
+            val api = ApiClient(engine, BASE) { "session-jwt" }
+
+            val plan = api.getTripPlan("trip_1")
+
+            val sofia = plan.cities[0]
+            assertEquals(2, plan.cities.size)
+            assertEquals("Sofia", sofia.name)
+            assertEquals(1, sofia.mustGo.size)
+            assertEquals(AttractionCategory.RELIGIOUS, sofia.mustGo.single().category)
+            assertEquals(false, plan.cities[1].available)
         }
 }
