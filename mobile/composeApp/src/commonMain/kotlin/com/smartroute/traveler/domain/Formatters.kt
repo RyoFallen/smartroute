@@ -12,3 +12,9 @@ fun formatPrice(
     val minorPadded = (absolute % 100).toString().padStart(2, '0')
     return "$currencyCode $sign$major.$minorPadded"
 }
+
+/** "2026-08-01" from a backend ISO-8601 datetime string. */
+fun formatIsoDate(iso: String): String = iso.substring(0, 10)
+
+/** "2026-08-01 08:00" from a backend ISO-8601 datetime string. */
+fun formatIsoDateTime(iso: String): String = "${iso.substring(0, 10)} ${iso.substring(11, 16)}"

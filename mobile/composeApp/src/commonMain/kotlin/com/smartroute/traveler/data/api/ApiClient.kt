@@ -48,6 +48,8 @@ class ApiClient(
 
     suspend fun getTrips(): List<TripSummary> = get("/trips")
 
+    suspend fun getTrip(id: String): TripDetail = get("/trips/$id")
+
     suspend fun getMe(): ProfileEnvelopeDto = get("/users/me")
 
     suspend fun putInterests(interests: List<InterestEntryDto>): ProfileEnvelopeDto =

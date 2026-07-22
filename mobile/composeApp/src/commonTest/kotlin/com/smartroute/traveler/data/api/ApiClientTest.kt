@@ -19,6 +19,17 @@ private const val TRIPS_JSON = """
   "createdAt": "2026-07-12T00:00:00Z", "updatedAt": "2026-07-12T00:00:00Z"}]
 """
 
+private const val TRIP_DETAIL_JSON = """
+{"id": "trip_1", "name": "Balkans", "startDate": "2026-08-01T00:00:00.000Z",
+  "endDate": "2026-08-10T00:00:00.000Z", "cabinClass": "ECONOMY", "travelers": 1,
+  "cities": ["SOF", "BEG", "TIA"],
+  "flights": [{"origin": "SOF", "destination": "BEG",
+    "depart": "2026-08-01T08:00:00.000Z", "arrive": "2026-08-01T09:30:00.000Z",
+    "carrier": "XX", "priceCents": 42350, "durationMin": 90, "stops": 0}],
+  "totalPriceCents": 84700,
+  "createdAt": "2026-07-12T00:00:00Z", "updatedAt": "2026-07-12T00:00:00Z"}
+"""
+
 class ApiClientTest {
     @Test
     fun `attaches bearer token and parses trips`() =
@@ -91,5 +102,24 @@ class ApiClientTest {
             assertEquals("NOT_FOUND", error.code)
             assertEquals("Trip not found", error.message)
             assertEquals(404, error.status)
+        }
+
+    @Test
+    fun `fetches a single trip with its flight legs`() =
+        runTest {
+            val engine =
+                MockEngine { request ->
+                    assertEquals("/trips/trip_1", request.url.encodedPath)
+                    respond(TRIP_DETAIL_JSON, HttpStatusCode.OK, headersOf(HttpHeaders.ContentType, "application/json"))
+                }
+            val api = ApiClient(engine, BASE) { "session-jwt" }
+
+            val trip = api.getTrip("trip_1")
+
+            assertEquals("Balkans", trip.name)
+            assertEquals("ECONOMY", trip.cabinClass)
+            assertEquals(1, trip.flights.size)
+            assertEquals("SOF", trip.flights.single().origin)
+            assertEquals(42350L, trip.flights.single().priceCents)
         }
 }

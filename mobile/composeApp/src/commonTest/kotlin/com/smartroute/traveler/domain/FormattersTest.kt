@@ -23,4 +23,14 @@ class FormattersTest {
     fun formatsNegativeAmount() {
         assertEquals("USD -8.05", formatPrice(-805, "USD"))
     }
+
+    @Test
+    fun formatsIsoDateAsJustTheDate() {
+        assertEquals("2026-08-01", formatIsoDate("2026-08-01T08:00:00.000Z"))
+    }
+
+    @Test
+    fun formatsIsoDateTimeAsDateAndTime() {
+        assertEquals("2026-08-01 08:00", formatIsoDateTime("2026-08-01T08:00:00.000Z"))
+    }
 }

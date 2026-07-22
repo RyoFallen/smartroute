@@ -49,6 +49,10 @@
     <string name="preferences_error_save">Could not save your preferences</string>
     <string name="my_trips_empty">No saved trips yet.</string>
     <string name="my_trips_error_load">Could not load your saved trips</string>
+    <string name="trip_detail_error_load">Could not load this trip</string>
+    <string name="trip_detail_flights">Flights</string>
+    <string name="trip_detail_travelers">traveler(s)</string>
+    <string name="trip_detail_stops">stop(s)</string>
     <string name="onboarding_title">What do you enjoy?</string>
     <string name="onboarding_hint">Swipe right to like, left to dislike, tap to skip</string>
     <string name="onboarding_skip_all">Skip for now</string>

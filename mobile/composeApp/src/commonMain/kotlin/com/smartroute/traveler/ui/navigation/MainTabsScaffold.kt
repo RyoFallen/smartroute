@@ -32,6 +32,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.smartroute.traveler.AppGraph
 import com.smartroute.traveler.data.storage.AppLanguage
 import com.smartroute.traveler.ui.home.HomeScreen
@@ -44,6 +45,8 @@ import com.smartroute.traveler.ui.profile.LanguageScreen
 import com.smartroute.traveler.ui.profile.PreferencesScreen
 import com.smartroute.traveler.ui.profile.PreferencesViewModel
 import com.smartroute.traveler.ui.profile.ProfileScreen
+import com.smartroute.traveler.ui.trips.TripDetailScreen
+import com.smartroute.traveler.ui.trips.TripDetailViewModel
 import com.smartroute.traveler.ui.trips.TripsListScreen
 import com.smartroute.traveler.ui.trips.TripsListViewModel
 import kotlinx.serialization.Serializable
@@ -65,6 +68,11 @@ object MyTripsRoute
 
 @Serializable
 object MyTripsListRoute
+
+@Serializable
+data class TripDetailRoute(
+    val tripId: String,
+)
 
 @Serializable
 object ExploreRoute
@@ -147,9 +155,20 @@ fun MainTabsScaffold(
                     LaunchedEffect(Unit) { tripsViewModel.load() }
                     TripsListScreen(
                         state = tripsState,
-                        // Trip detail is ticket #19 (Phase 8 #3) — no destination to navigate to yet.
-                        onTripClick = {},
+                        onTripClick = { tripId -> navController.navigate(TripDetailRoute(tripId)) },
                         onRetryLoad = tripsViewModel::load,
+                    )
+                }
+                composable<TripDetailRoute> { backStackEntry ->
+                    val route = backStackEntry.toRoute<TripDetailRoute>()
+                    val detailViewModel =
+                        viewModel { TripDetailViewModel(AppGraph.apiClient, route.tripId) }
+                    val detailState by detailViewModel.state.collectAsState()
+                    LaunchedEffect(route.tripId) { detailViewModel.load() }
+                    TripDetailScreen(
+                        state = detailState,
+                        onRetryLoad = detailViewModel::load,
+                        onBack = { navController.popBackStack() },
                     )
                 }
             }

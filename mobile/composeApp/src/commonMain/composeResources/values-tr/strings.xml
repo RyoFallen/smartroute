@@ -49,6 +49,10 @@
     <string name="preferences_error_save">Tercihlerin kaydedilemedi</string>
     <string name="my_trips_empty">Henüz kayıtlı gezin yok.</string>
     <string name="my_trips_error_load">Gezilerin yüklenemedi</string>
+    <string name="trip_detail_error_load">Bu gezi yüklenemedi</string>
+    <string name="trip_detail_flights">Uçuşlar</string>
+    <string name="trip_detail_travelers">yolcu</string>
+    <string name="trip_detail_stops">aktarma</string>
     <string name="onboarding_title">Nelerden hoşlanırsın?</string>
     <string name="onboarding_hint">Beğenmek için sağa, beğenmemek için sola kaydır; atlamak için dokun</string>
     <string name="onboarding_skip_all">Şimdilik atla</string>
