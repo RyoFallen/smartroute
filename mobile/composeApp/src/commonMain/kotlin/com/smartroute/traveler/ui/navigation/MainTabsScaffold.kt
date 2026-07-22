@@ -44,6 +44,8 @@ import com.smartroute.traveler.ui.profile.LanguageScreen
 import com.smartroute.traveler.ui.profile.PreferencesScreen
 import com.smartroute.traveler.ui.profile.PreferencesViewModel
 import com.smartroute.traveler.ui.profile.ProfileScreen
+import com.smartroute.traveler.ui.trips.TripsListScreen
+import com.smartroute.traveler.ui.trips.TripsListViewModel
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -60,6 +62,9 @@ object HomeRoute
 
 @Serializable
 object MyTripsRoute
+
+@Serializable
+object MyTripsListRoute
 
 @Serializable
 object ExploreRoute
@@ -135,7 +140,19 @@ fun MainTabsScaffold(
             modifier = Modifier.fillMaxSize().padding(innerPadding),
         ) {
             composable<HomeRoute> { HomeScreen() }
-            composable<MyTripsRoute> { StubScreen(title = stringResource(Res.string.tab_my_trips)) }
+            navigation<MyTripsRoute>(startDestination = MyTripsListRoute) {
+                composable<MyTripsListRoute> {
+                    val tripsViewModel = viewModel { TripsListViewModel(AppGraph.apiClient) }
+                    val tripsState by tripsViewModel.state.collectAsState()
+                    LaunchedEffect(Unit) { tripsViewModel.load() }
+                    TripsListScreen(
+                        state = tripsState,
+                        // Trip detail is ticket #19 (Phase 8 #3) — no destination to navigate to yet.
+                        onTripClick = {},
+                        onRetryLoad = tripsViewModel::load,
+                    )
+                }
+            }
             composable<ExploreRoute> { StubScreen(title = stringResource(Res.string.tab_explore)) }
             navigation<ProfileGraphRoute>(startDestination = ProfileRoute) {
                 composable<ProfileRoute> {

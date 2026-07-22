@@ -47,6 +47,8 @@
     <string name="saved">Kaydedildi</string>
     <string name="preferences_error_load">Tercihlerin yüklenemedi</string>
     <string name="preferences_error_save">Tercihlerin kaydedilemedi</string>
+    <string name="my_trips_empty">Henüz kayıtlı gezin yok.</string>
+    <string name="my_trips_error_load">Gezilerin yüklenemedi</string>
     <string name="onboarding_title">Nelerden hoşlanırsın?</string>
     <string name="onboarding_hint">Beğenmek için sağa, beğenmemek için sola kaydır; atlamak için dokun</string>
     <string name="onboarding_skip_all">Şimdilik atla</string>
