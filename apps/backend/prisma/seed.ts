@@ -14,6 +14,7 @@ export async function loadSeed(db: PrismaClient, data: unknown): Promise<void> {
         create: {
           iata: c.iata,
           altCodes: c.altCodes,
+          metroIata: c.metroIata ?? null,
           name: c.name,
           country: c.country,
           lat: c.lat,
@@ -22,6 +23,7 @@ export async function loadSeed(db: PrismaClient, data: unknown): Promise<void> {
         },
         update: {
           altCodes: c.altCodes,
+          metroIata: c.metroIata ?? null,
           name: c.name,
           country: c.country,
           lat: c.lat,

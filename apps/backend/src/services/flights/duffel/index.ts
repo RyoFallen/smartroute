@@ -1,9 +1,11 @@
 import type { Duffel } from '@duffel/api';
+import type { PrismaClient } from '@prisma/client';
 import type { FastifyBaseLogger } from 'fastify';
 import { ApiError } from '../../../lib/ApiError.js';
 import type { FlightProvider, PriceQuery, PriceResult } from '../provider.js';
 import { bestOfferToPriceResult, queryToOfferRequest } from './mappers.js';
 import { classifyDuffelError, isRetryable } from './errors.js';
+import { mapWithConcurrency } from './concurrency.js';
 
 export interface DuffelFlightProviderOptions {
   /** Number of retries (in addition to the first attempt) for retryable errors. */
@@ -12,6 +14,9 @@ export interface DuffelFlightProviderOptions {
   retryBackoffMs?: number;
 }
 
+/** Duffel's test-mode ceiling is 10 TPS; stay comfortably under it. */
+const MAX_CONCURRENT_REQUESTS = 8;
+
 export class DuffelFlightProvider implements FlightProvider {
   private readonly maxRetries: number;
   private readonly retryBackoffMs: number;
@@ -19,6 +24,7 @@ export class DuffelFlightProvider implements FlightProvider {
   constructor(
     private readonly duffel: Duffel,
     private readonly logger: FastifyBaseLogger,
+    private readonly prisma: PrismaClient,
     opts: DuffelFlightProviderOptions = {},
   ) {
     this.maxRetries = opts.maxRetries ?? 1;
@@ -26,7 +32,10 @@ export class DuffelFlightProvider implements FlightProvider {
   }
 
   async getPrices(queries: PriceQuery[]): Promise<PriceResult[]> {
-    const settled = await Promise.allSettled(queries.map((q) => this.fetchOne(q)));
+    const metroCodes = await this.resolveMetroCodes(queries);
+    const settled = await mapWithConcurrency(queries, MAX_CONCURRENT_REQUESTS, (q) =>
+      this.fetchOne(q, metroCodes),
+    );
 
     // Any auth failure on any query is fatal — surface so FlightService
     // can fall back to the stale cache. Cheaper than silently dropping
@@ -52,11 +61,42 @@ export class DuffelFlightProvider implements FlightProvider {
     return out;
   }
 
-  private async fetchOne(q: PriceQuery): Promise<PriceResult | null> {
+  /**
+   * Resolve each airport code in this batch to its Duffel metro code
+   * (e.g. LHR/LGW -> LON) in one batched lookup, so multi-airport cities
+   * get priced across every airport Duffel knows about for that metro.
+   * Codes with no matching City row (or no metroIata) map to themselves.
+   */
+  private async resolveMetroCodes(queries: PriceQuery[]): Promise<Map<string, string>> {
+    const codes = [...new Set(queries.flatMap((q) => [q.origin, q.destination]))];
+    if (codes.length === 0) return new Map();
+
+    const cities = await this.prisma.city.findMany({
+      where: { OR: [{ iata: { in: codes } }, { altCodes: { hasSome: codes } }] },
+    });
+
+    const resolved = new Map<string, string>();
+    for (const city of cities) {
+      const metro = city.metroIata ?? city.iata;
+      resolved.set(city.iata, metro);
+      for (const alt of city.altCodes) resolved.set(alt, metro);
+    }
+    return resolved;
+  }
+
+  private async fetchOne(
+    q: PriceQuery,
+    metroCodes: Map<string, string>,
+  ): Promise<PriceResult | null> {
+    const outbound: PriceQuery = {
+      ...q,
+      origin: metroCodes.get(q.origin) ?? q.origin,
+      destination: metroCodes.get(q.destination) ?? q.destination,
+    };
     let attempt = 0;
     for (;;) {
       try {
-        const req = queryToOfferRequest(q);
+        const req = queryToOfferRequest(outbound);
         const res = await this.duffel.offerRequests.create({ ...req, return_offers: true });
         const offers = res.data.offers ?? [];
         return bestOfferToPriceResult(q, offers);

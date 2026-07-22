@@ -59,4 +59,12 @@ describe('attractions seed data', () => {
     expect(byIata.get('LHR')?.altCodes).toContain('LGW');
     expect(byIata.get('CDG')?.altCodes).toContain('ORY');
   });
+
+  it('metroIata is only set when altCodes is non-empty', () => {
+    for (const c of cities) {
+      if (c.metroIata) {
+        expect(c.altCodes.length, `${c.iata} has metroIata but no altCodes`).toBeGreaterThan(0);
+      }
+    }
+  });
 });

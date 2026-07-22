@@ -60,6 +60,9 @@ model FlightPriceCache {
 model City {
   iata        String       @id
   altCodes    String[]     @default([])
+  // Duffel metro/city IATA code (e.g. "LON", "PAR") covering this city's alt
+  // airports; set only when altCodes is non-empty. Null falls back to iata.
+  metroIata   String?
   name        String
   country     String
   lat         Float

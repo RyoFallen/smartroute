@@ -17,6 +17,7 @@ export type SeedAttraction = z.infer<typeof SeedAttraction>;
 export const SeedCity = z.object({
   iata: Iata,
   altCodes: z.array(Iata).default([]),
+  metroIata: Iata.nullable().optional(),
   name: z.string().min(1),
   country: z.string().min(1),
   lat: z.number().min(-90).max(90),

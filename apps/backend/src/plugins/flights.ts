@@ -21,7 +21,7 @@ export const flightsPlugin = fp(async (app) => {
     }
     const basePath = process.env.DUFFEL_BASE_URL;
     const duffel = createDuffelClient({ token, basePath });
-    provider = new DuffelFlightProvider(duffel, app.log);
+    provider = new DuffelFlightProvider(duffel, app.log, app.prisma);
     app.log.info(
       { provider: 'duffel', basePath: basePath ?? 'https://api.duffel.com' },
       'flight provider selected',

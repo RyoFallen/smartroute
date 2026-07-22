@@ -79,4 +79,12 @@ describe('loadSeed', () => {
     await expect(loadSeed(prisma, bad)).rejects.toThrow();
     expect(await prisma.city.count()).toBe(0);
   });
+
+  it('persists metroIata when set, and null when omitted', async () => {
+    await loadSeed(prisma, [{ ...fixture[0]!, altCodes: ['LGW'], metroIata: 'LON' }]);
+    expect((await prisma.city.findUnique({ where: { iata: 'IST' } }))?.metroIata).toBe('LON');
+
+    await loadSeed(prisma, fixture);
+    expect((await prisma.city.findUnique({ where: { iata: 'IST' } }))?.metroIata).toBeNull();
+  });
 });

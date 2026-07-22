@@ -2,6 +2,7 @@
   {
     "iata": "IST",
     "altCodes": [],
+    "metroIata": null,
     "name": "Istanbul",
     "country": "Türkiye",
     "lat": 41.0082,
@@ -121,6 +122,7 @@
   {
     "iata": "BER",
     "altCodes": [],
+    "metroIata": null,
     "name": "Berlin",
     "country": "Germany",
     "lat": 52.52,
@@ -240,6 +242,7 @@
   {
     "iata": "WAW",
     "altCodes": [],
+    "metroIata": null,
     "name": "Warsaw",
     "country": "Poland",
     "lat": 52.2297,
@@ -350,6 +353,7 @@
   {
     "iata": "BUD",
     "altCodes": [],
+    "metroIata": null,
     "name": "Budapest",
     "country": "Hungary",
     "lat": 47.4979,
@@ -469,6 +473,7 @@
   {
     "iata": "LHR",
     "altCodes": ["LGW"],
+    "metroIata": "LON",
     "name": "London",
     "country": "United Kingdom",
     "lat": 51.5074,
@@ -588,6 +593,7 @@
   {
     "iata": "CDG",
     "altCodes": ["ORY"],
+    "metroIata": "PAR",
     "name": "Paris",
     "country": "France",
     "lat": 48.8566,
@@ -707,6 +713,7 @@
   {
     "iata": "FCO",
     "altCodes": [],
+    "metroIata": null,
     "name": "Rome",
     "country": "Italy",
     "lat": 41.9028,
@@ -826,6 +833,7 @@
   {
     "iata": "BCN",
     "altCodes": [],
+    "metroIata": null,
     "name": "Barcelona",
     "country": "Spain",
     "lat": 41.3874,
