@@ -105,4 +105,7 @@
     <string name="results_label_cheapest">En ucuz</string>
     <string name="results_label_fastest">En hızlı</string>
     <string name="results_label_most_direct">En direkt</string>
+    <string name="results_save">Seçili geziyi kaydet</string>
+    <string name="results_saving">Kaydediliyor…</string>
+    <string name="results_save_error">Bu gezi kaydedilemedi</string>
 </resources>

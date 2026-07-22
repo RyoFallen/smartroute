@@ -248,7 +248,17 @@ fun MainTabsScaffold(
                     LaunchedEffect(request) { resultsViewModel.load() }
                     ResultsScreen(
                         state = resultsState,
+                        onSelectOption = resultsViewModel::selectOption,
+                        onSave = resultsViewModel::save,
                         onRetryLoad = resultsViewModel::load,
+                        onSaved = { tripId ->
+                            // Pop the whole Explore flow (config + results) so back-navigation
+                            // from the new trip's detail doesn't return to a stale, already-saved
+                            // Results screen — which would also re-fire this same save callback.
+                            navController.navigate(TripDetailRoute(tripId)) {
+                                popUpTo<ExploreRoute> { inclusive = true }
+                            }
+                        },
                         onBack = { navController.popBackStack() },
                     )
                 }

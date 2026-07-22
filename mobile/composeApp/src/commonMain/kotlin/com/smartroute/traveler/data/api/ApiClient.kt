@@ -57,6 +57,8 @@ class ApiClient(
 
     suspend fun optimize(request: OptimizeRequestDto): OptimizeResponseDto = post("/optimize", request)
 
+    suspend fun createTrip(request: CreateTripRequestDto): TripDetail = post("/trips", request)
+
     suspend fun getMe(): ProfileEnvelopeDto = get("/users/me")
 
     suspend fun putInterests(interests: List<InterestEntryDto>): ProfileEnvelopeDto =

@@ -221,4 +221,36 @@ class ApiClientTest {
             val decoded = requestJson.decodeFromString<OptimizeRequestDto>(sentBody!!.body.toByteArray().decodeToString())
             assertEquals(request, decoded)
         }
+
+    @Test
+    fun `creates a trip and parses the saved record`() =
+        runTest {
+            val requestJson = Json { ignoreUnknownKeys = true }
+            var sentBody: HttpRequestData? = null
+            val engine =
+                MockEngine { request ->
+                    assertEquals("/trips", request.url.encodedPath)
+                    sentBody = request
+                    respond(TRIP_DETAIL_JSON, HttpStatusCode.Created, headersOf(HttpHeaders.ContentType, "application/json"))
+                }
+            val api = ApiClient(engine, BASE) { "session-jwt" }
+            val request =
+                CreateTripRequestDto(
+                    name = "SOF → BEG",
+                    startDate = "2026-08-01",
+                    endDate = "2026-08-06",
+                    cabinClass = "ECONOMY",
+                    travelers = 1,
+                    cities = listOf("SOF", "BEG"),
+                    flights = emptyList(),
+                    totalPriceCents = 84700,
+                )
+
+            val trip = api.createTrip(request)
+
+            assertEquals("trip_1", trip.id)
+            val decoded =
+                requestJson.decodeFromString<CreateTripRequestDto>(sentBody!!.body.toByteArray().decodeToString())
+            assertEquals(request, decoded)
+        }
 }

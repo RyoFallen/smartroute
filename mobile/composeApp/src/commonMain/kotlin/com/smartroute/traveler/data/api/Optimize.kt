@@ -25,11 +25,15 @@ data class OptimizeRequestDto(
     }
 }
 
-/** Subset of the shared RouteOption schema the results screen needs. */
+/**
+ * Mirrors the shared RouteOption schema. [flights] is needed to save the
+ * selected option as a trip (POST /trips), not just to render the card.
+ */
 @Serializable
 data class RouteOptionDto(
     val label: RouteLabel,
     val order: List<String>,
+    val flights: List<FlightLegDto>,
     val totalPriceCents: Long,
     val totalDurationMin: Int,
 )
