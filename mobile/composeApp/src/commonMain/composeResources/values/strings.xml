@@ -18,7 +18,6 @@
     <string name="tab_my_trips">My Trips</string>
     <string name="tab_explore">Explore</string>
     <string name="tab_profile">Profile</string>
-    <string name="coming_soon">Coming soon</string>
     <string name="language">Language</string>
     <string name="language_english">English</string>
     <string name="language_turkish">Türkçe</string>
@@ -84,4 +83,26 @@
     <string name="interest_family_activities">Family Activities</string>
     <string name="interest_wellness_spa">Wellness &amp; Spa</string>
     <string name="interest_live_entertainment">Live Entertainment</string>
+    <string name="explore_error_load">Could not load cities</string>
+    <string name="explore_cities_label">Cities (%1$d selected)</string>
+    <string name="explore_select_hint">Select 2–8 cities</string>
+    <string name="explore_date_hint">Select a departure date</string>
+    <string name="explore_preset_label">Optimize for</string>
+    <string name="explore_preset_budget">Budget</string>
+    <string name="explore_preset_time">Time</string>
+    <string name="explore_preset_comfort">Comfort</string>
+    <string name="explore_preset_balanced">Balanced</string>
+    <string name="explore_direct_only">Direct flights only</string>
+    <string name="explore_stay_days">days</string>
+    <string name="explore_depart_date">Depart date</string>
+    <string name="explore_depart_date_placeholder">Select a date</string>
+    <string name="explore_date_confirm">OK</string>
+    <string name="explore_find_routes">Find routes</string>
+    <string name="results_title">Routes</string>
+    <string name="results_error_load">Could not find routes</string>
+    <string name="results_no_routes">No routes found</string>
+    <string name="results_label_recommended">Recommended</string>
+    <string name="results_label_cheapest">Cheapest</string>
+    <string name="results_label_fastest">Fastest</string>
+    <string name="results_label_most_direct">Most direct</string>
 </resources>

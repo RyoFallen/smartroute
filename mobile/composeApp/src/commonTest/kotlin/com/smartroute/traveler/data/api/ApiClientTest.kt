@@ -1,12 +1,17 @@
 package com.smartroute.traveler.data.api
 
 import com.smartroute.traveler.domain.AttractionCategory
+import com.smartroute.traveler.domain.OptimizePreset
+import com.smartroute.traveler.domain.RouteLabel
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.toByteArray
+import io.ktor.client.request.HttpRequestData
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -38,6 +43,18 @@ private const val TRIP_PLAN_JSON = """
       "rank": 1, "lat": 42.6957, "lon": 23.3327, "description": "A neo-Byzantine cathedral."}
   ]},
   {"iata": "BEG", "name": null, "available": false, "mustGo": []}
+]}
+"""
+
+private const val CITIES_JSON = """
+[{"iata": "SOF", "name": "Sofia", "country": "Bulgaria"},
+ {"iata": "BEG", "name": "Belgrade", "country": "Serbia"}]
+"""
+
+private const val OPTIMIZE_RESPONSE_JSON = """
+{"options": [
+  {"label": "recommended", "order": ["SOF", "BEG"], "flights": [],
+    "totalPriceCents": 84700, "totalDurationMin": 180}
 ]}
 """
 
@@ -152,5 +169,56 @@ class ApiClientTest {
             assertEquals(1, sofia.mustGo.size)
             assertEquals(AttractionCategory.RELIGIOUS, sofia.mustGo.single().category)
             assertEquals(false, plan.cities[1].available)
+        }
+
+    @Test
+    fun `fetches curated cities`() =
+        runTest {
+            val engine =
+                MockEngine { request ->
+                    assertEquals("/cities", request.url.encodedPath)
+                    respond(CITIES_JSON, HttpStatusCode.OK, headersOf(HttpHeaders.ContentType, "application/json"))
+                }
+            val api = ApiClient(engine, BASE) { "session-jwt" }
+
+            val cities = api.getCities()
+
+            assertEquals(2, cities.size)
+            assertEquals("Sofia", cities.first().name)
+        }
+
+    @Test
+    fun `posts an optimize request and parses the response`() =
+        runTest {
+            val requestJson = Json { ignoreUnknownKeys = true }
+            var sentBody: HttpRequestData? = null
+            val engine =
+                MockEngine { request ->
+                    assertEquals("/optimize", request.url.encodedPath)
+                    sentBody = request
+                    respond(
+                        OPTIMIZE_RESPONSE_JSON,
+                        HttpStatusCode.OK,
+                        headersOf(HttpHeaders.ContentType, "application/json"),
+                    )
+                }
+            val api = ApiClient(engine, BASE) { "session-jwt" }
+            val request =
+                OptimizeRequestDto(
+                    cities = listOf("SOF", "BEG"),
+                    departDate = "2026-08-01",
+                    perCityDays = listOf(2, 3),
+                    travelers = 1,
+                    cabinClass = "ECONOMY",
+                    directOnly = false,
+                    preset = OptimizePreset.BALANCED,
+                )
+
+            val response = api.optimize(request)
+
+            assertEquals(1, response.options.size)
+            assertEquals(RouteLabel.RECOMMENDED, response.options.single().label)
+            val decoded = requestJson.decodeFromString<OptimizeRequestDto>(sentBody!!.body.toByteArray().decodeToString())
+            assertEquals(request, decoded)
         }
 }

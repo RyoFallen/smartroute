@@ -18,7 +18,6 @@
     <string name="tab_my_trips">Gezilerim</string>
     <string name="tab_explore">Keşfet</string>
     <string name="tab_profile">Profil</string>
-    <string name="coming_soon">Çok yakında</string>
     <string name="language">Dil</string>
     <string name="language_english">English</string>
     <string name="language_turkish">Türkçe</string>
@@ -84,4 +83,26 @@
     <string name="interest_family_activities">Aile Etkinlikleri</string>
     <string name="interest_wellness_spa">Sağlık ve Spa</string>
     <string name="interest_live_entertainment">Canlı Eğlence</string>
+    <string name="explore_error_load">Şehirler yüklenemedi</string>
+    <string name="explore_cities_label">Şehirler (%1$d seçildi)</string>
+    <string name="explore_select_hint">2–8 şehir seç</string>
+    <string name="explore_date_hint">Bir gidiş tarihi seç</string>
+    <string name="explore_preset_label">Şuna göre optimize et</string>
+    <string name="explore_preset_budget">Bütçe</string>
+    <string name="explore_preset_time">Süre</string>
+    <string name="explore_preset_comfort">Konfor</string>
+    <string name="explore_preset_balanced">Dengeli</string>
+    <string name="explore_direct_only">Sadece direkt uçuşlar</string>
+    <string name="explore_stay_days">gün</string>
+    <string name="explore_depart_date">Gidiş tarihi</string>
+    <string name="explore_depart_date_placeholder">Bir tarih seç</string>
+    <string name="explore_date_confirm">Tamam</string>
+    <string name="explore_find_routes">Rotaları bul</string>
+    <string name="results_title">Rotalar</string>
+    <string name="results_error_load">Rotalar bulunamadı</string>
+    <string name="results_no_routes">Rota bulunamadı</string>
+    <string name="results_label_recommended">Önerilen</string>
+    <string name="results_label_cheapest">En ucuz</string>
+    <string name="results_label_fastest">En hızlı</string>
+    <string name="results_label_most_direct">En direkt</string>
 </resources>

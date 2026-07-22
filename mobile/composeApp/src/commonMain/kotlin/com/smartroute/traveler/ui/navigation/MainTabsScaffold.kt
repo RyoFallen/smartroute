@@ -1,7 +1,5 @@
 package com.smartroute.traveler.ui.navigation
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -10,7 +8,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -19,10 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -34,7 +29,13 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.smartroute.traveler.AppGraph
+import com.smartroute.traveler.data.api.OptimizeRequestDto
 import com.smartroute.traveler.data.storage.AppLanguage
+import com.smartroute.traveler.domain.OptimizePreset
+import com.smartroute.traveler.ui.explore.ResultsScreen
+import com.smartroute.traveler.ui.explore.ResultsViewModel
+import com.smartroute.traveler.ui.explore.TripConfigScreen
+import com.smartroute.traveler.ui.explore.TripConfigViewModel
 import com.smartroute.traveler.ui.home.HomeScreen
 import com.smartroute.traveler.ui.profile.DeleteAccountDialog
 import com.smartroute.traveler.ui.profile.DeleteAccountUiState
@@ -55,7 +56,6 @@ import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import smartroute_mobile.composeapp.generated.resources.Res
-import smartroute_mobile.composeapp.generated.resources.coming_soon
 import smartroute_mobile.composeapp.generated.resources.tab_explore
 import smartroute_mobile.composeapp.generated.resources.tab_home
 import smartroute_mobile.composeapp.generated.resources.tab_my_trips
@@ -83,6 +83,18 @@ data class TripPlanRoute(
 
 @Serializable
 object ExploreRoute
+
+@Serializable
+object TripConfigRoute
+
+@Serializable
+data class ResultsRoute(
+    val cities: List<String>,
+    val perCityDays: List<Int>,
+    val departDate: String,
+    val directOnly: Boolean,
+    val preset: OptimizePreset,
+)
 
 @Serializable
 object ProfileGraphRoute
@@ -191,7 +203,56 @@ fun MainTabsScaffold(
                     )
                 }
             }
-            composable<ExploreRoute> { StubScreen(title = stringResource(Res.string.tab_explore)) }
+            navigation<ExploreRoute>(startDestination = TripConfigRoute) {
+                composable<TripConfigRoute> {
+                    val configViewModel = viewModel { TripConfigViewModel(AppGraph.apiClient) }
+                    val configState by configViewModel.state.collectAsState()
+                    LaunchedEffect(Unit) { configViewModel.load() }
+                    TripConfigScreen(
+                        state = configState,
+                        onToggleCity = configViewModel::toggleCity,
+                        onSetDays = configViewModel::setDays,
+                        onSetPreset = configViewModel::setPreset,
+                        onSetDirectOnly = configViewModel::setDirectOnly,
+                        onSetDepartDate = configViewModel::setDepartDate,
+                        onSubmit = {
+                            configViewModel.buildRequest()?.let { request ->
+                                navController.navigate(
+                                    ResultsRoute(
+                                        cities = request.cities,
+                                        perCityDays = request.perCityDays,
+                                        departDate = request.departDate,
+                                        directOnly = request.directOnly,
+                                        preset = request.preset,
+                                    ),
+                                )
+                            }
+                        },
+                        onRetryLoad = configViewModel::load,
+                    )
+                }
+                composable<ResultsRoute> { backStackEntry ->
+                    val route = backStackEntry.toRoute<ResultsRoute>()
+                    val request =
+                        OptimizeRequestDto(
+                            cities = route.cities,
+                            departDate = route.departDate,
+                            perCityDays = route.perCityDays,
+                            travelers = OptimizeRequestDto.DEFAULT_TRAVELERS,
+                            cabinClass = OptimizeRequestDto.DEFAULT_CABIN_CLASS,
+                            directOnly = route.directOnly,
+                            preset = route.preset,
+                        )
+                    val resultsViewModel = viewModel { ResultsViewModel(AppGraph.apiClient, request) }
+                    val resultsState by resultsViewModel.state.collectAsState()
+                    LaunchedEffect(request) { resultsViewModel.load() }
+                    ResultsScreen(
+                        state = resultsState,
+                        onRetryLoad = resultsViewModel::load,
+                        onBack = { navController.popBackStack() },
+                    )
+                }
+            }
             navigation<ProfileGraphRoute>(startDestination = ProfileRoute) {
                 composable<ProfileRoute> {
                     val deleteViewModel =
@@ -249,21 +310,5 @@ fun MainTabsScaffold(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun StubScreen(title: String) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(text = title, style = MaterialTheme.typography.headlineSmall)
-        Text(
-            text = stringResource(Res.string.coming_soon),
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(top = 8.dp),
-        )
     }
 }

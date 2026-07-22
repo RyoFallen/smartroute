@@ -9,11 +9,12 @@ import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
-import io.ktor.client.request.put
+import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
@@ -52,6 +53,10 @@ class ApiClient(
 
     suspend fun getTripPlan(id: String): TripPlanResponseDto = get("/trips/$id/plan")
 
+    suspend fun getCities(): List<CitySummaryDto> = get("/cities")
+
+    suspend fun optimize(request: OptimizeRequestDto): OptimizeResponseDto = post("/optimize", request)
+
     suspend fun getMe(): ProfileEnvelopeDto = get("/users/me")
 
     suspend fun putInterests(interests: List<InterestEntryDto>): ProfileEnvelopeDto =
@@ -74,9 +79,21 @@ class ApiClient(
     private suspend inline fun <reified B, reified T> put(
         path: String,
         body: B,
+    ): T = send(HttpMethod.Put, path, body)
+
+    private suspend inline fun <reified B, reified T> post(
+        path: String,
+        body: B,
+    ): T = send(HttpMethod.Post, path, body)
+
+    private suspend inline fun <reified B, reified T> send(
+        method: HttpMethod,
+        path: String,
+        body: B,
     ): T {
         val response =
-            http.put("$baseUrl$path") {
+            http.request("$baseUrl$path") {
+                this.method = method
                 contentType(ContentType.Application.Json)
                 setBody(body)
             }
