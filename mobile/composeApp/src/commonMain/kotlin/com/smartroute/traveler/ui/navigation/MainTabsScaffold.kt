@@ -93,7 +93,11 @@ data class ResultsRoute(
     val perCityDays: List<Int>,
     val departDate: String,
     val directOnly: Boolean,
-    val preset: OptimizePreset,
+    // OptimizePreset.name, not the enum itself — Navigation-Compose's type-safe
+    // routing (2.8.0-alpha12) has no NavType for custom enums, only built-in
+    // primitives/lists. Converted back to OptimizePreset at the ResultsRoute
+    // composable below.
+    val preset: String,
 )
 
 @Serializable
@@ -223,7 +227,7 @@ fun MainTabsScaffold(
                                         perCityDays = request.perCityDays,
                                         departDate = request.departDate,
                                         directOnly = request.directOnly,
-                                        preset = request.preset,
+                                        preset = request.preset.name,
                                     ),
                                 )
                             }
@@ -241,7 +245,7 @@ fun MainTabsScaffold(
                             travelers = OptimizeRequestDto.DEFAULT_TRAVELERS,
                             cabinClass = OptimizeRequestDto.DEFAULT_CABIN_CLASS,
                             directOnly = route.directOnly,
-                            preset = route.preset,
+                            preset = OptimizePreset.valueOf(route.preset),
                         )
                     val resultsViewModel = viewModel { ResultsViewModel(AppGraph.apiClient, request) }
                     val resultsState by resultsViewModel.state.collectAsState()
