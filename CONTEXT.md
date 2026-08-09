@@ -20,12 +20,51 @@ _Avoid_: preference (that word is reserved for trip-pacing settings)
 The traveler-facing optimizer preset on `POST /optimize` (`budget`, `time`, `comfort`, `balanced`) that selects the weight row of the GA's multi-objective fitness (cost / directness / travel time).
 _Avoid_: preference (reserved for trip-pacing settings), profile
 
+**OpeningHours**:
+The published visiting window of an Attraction. Three states are distinct and must never be
+conflated: _constrained_ (a specific weekly schedule), _always open_ (no restriction — typical of
+squares, parks and streets), and _unknown_ (absent from our dataset). "Always open" is a fact about
+the attraction; "unknown" is a fact about our data.
+_Avoid_: hours (unqualified), availability
+
+**VisitDuration**:
+How long a traveler is expected to spend at one Attraction. Curated per attraction where known,
+otherwise inferred from its AttractionCategory. This is our own datum — no external provider
+publishes it.
+_Avoid_: duration (unqualified — that word already means flight time on a FlightLeg), dwell time
+
 ### Trip pacing
 
 **TripIntensity**:
-The traveler's stored profile setting for how densely an itinerary should be scheduled (`RELAXED`, `MODERATE`, `PACKED`). Set once on the profile; applies to every trip.
+The traveler's stored profile setting for how densely an itinerary should be scheduled (`RELAXED`,
+`MODERATE`, `PACKED`). Set once on the profile; applies to every trip. It sets an _upper bound_ on
+attractions per day, not a quota — a city with fewer available attractions than the bound yields a
+lighter day, never a padded one.
 _Avoid_: pace, density
 
 **CityStay**:
 The number of days a traveler plans to spend in one city of a multi-city trip (`perCityDays` on `POST /optimize`, one entry per city). Drives the optimizer's flight-date math and the trip planner's per-city duration input.
 _Avoid_: duration, days (unqualified)
+
+### Itinerary
+
+**Itinerary**:
+The day-by-day schedule of attraction visits generated for a saved Trip, one section per city in the
+trip's visiting order. Always _derived_ from the Trip, the traveler's profile and the attraction
+data — never authored or edited by the traveler.
+_Avoid_: plan (that word means the flat must-go list served by `GET /trips/:id/plan`), schedule
+
+**ItineraryDay**:
+One calendar day of an Itinerary, belonging to exactly one city and holding an ordered sequence of
+VisitSlots. A day may legitimately hold none — an evening arrival leaves no usable time.
+_Avoid_: day (unqualified)
+
+**VisitSlot**:
+One scheduled visit to one Attraction within an ItineraryDay: which attraction, when it starts, and
+how long the walk from the previous slot took.
+_Avoid_: stop, activity, event
+
+**SchedulableWindow**:
+The portion of a calendar day in which VisitSlots may be placed. Bounded by the traveler's wake-up
+time and, on arrival and departure days, by the flight times plus transfer buffers.
+_Avoid_: free time, availability
