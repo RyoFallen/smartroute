@@ -1,0 +1,51 @@
+{
+  "license": "ODbL-1.0",
+  "attribution": "© OpenStreetMap contributors — https://www.openstreetmap.org/copyright",
+  "source": "Overpass API (https://overpass-api.de/api/interpreter)",
+  "osmBaseTimestamp": "2026-08-09T10:42:44Z",
+  "_comment": [
+    "OSM-derived OpeningHours, kept separate from the hand-curated attractions.json",
+    "so ODbL share-alike never attaches to our own work (ADR-0005). Every row records",
+    "the element the value actually came from: OSM name matching is unreliable, so a",
+    "value must be auditable rather than re-derivable by name.",
+    "Partial by design. These rows are the spot-checks verified during the provider",
+    "investigation (docs/research/2026-08-09-places-api-selection.md §4.4). The bulk",
+    "import of the remaining ~63 sourced values is issue #25, which should key on",
+    "wikidata/OSM ids rather than fuzzy names — the automated name matcher used during",
+    "research under-counted, missing all five rows below."
+  ],
+  "entries": [
+    {
+      "cityIata": "IST",
+      "attraction": "Hagia Sophia",
+      "openingHours": "Mo-Su 09:00-19:30",
+      "osmElement": "way/109862851",
+      "wikidata": "Q12506"
+    },
+    {
+      "cityIata": "IST",
+      "attraction": "Topkapı Palace",
+      "openingHours": "Mo, We-Su 09:00-18:00",
+      "osmElement": "node/10284696709",
+      "wikidata": "Q170495"
+    },
+    {
+      "cityIata": "IST",
+      "attraction": "Grand Bazaar",
+      "openingHours": "Mo-Sa 9:00-19:00",
+      "osmElement": "way/303807317"
+    },
+    {
+      "cityIata": "IST",
+      "attraction": "Spice Bazaar",
+      "openingHours": "Mo-Sa 08:00-19:00; Su 09:30-19:00",
+      "osmElement": "way/24234971"
+    },
+    {
+      "cityIata": "IST",
+      "attraction": "Chora Church (Kariye)",
+      "openingHours": "09:00-18:00",
+      "osmElement": "relation/7614527"
+    }
+  ]
+}

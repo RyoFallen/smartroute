@@ -11,6 +11,11 @@ export const SeedAttraction = z.object({
   tags: z
     .array(z.string().regex(/^[a-z][a-z0-9-]*$/, 'tags must be lowercase with optional hyphens'))
     .min(1),
+  // VisitDuration in minutes. Our own curated datum, so it belongs in this
+  // hand-curated file rather than the ODbL-marked supplementary ones. Optional:
+  // omitted means "fall back to the AttractionCategory default at read time",
+  // which keeps curated and assumed values distinguishable.
+  visitMinutes: z.number().int().positive().optional(),
 });
 export type SeedAttraction = z.infer<typeof SeedAttraction>;
 

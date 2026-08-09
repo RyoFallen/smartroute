@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { loadSeed } from '../../../prisma/seed.js';
+import { ALWAYS_OPEN } from '../../../src/services/plan/seed-opening-hours.js';
 import { prisma } from '../../setup-db.js';
 
 const fixture = [
@@ -22,6 +23,34 @@ const fixture = [
     })),
   },
 ];
+
+const osmFile = (entries: unknown[]) => ({
+  license: 'ODbL-1.0',
+  attribution: '© OpenStreetMap contributors',
+  source: 'Overpass API',
+  osmBaseTimestamp: '2026-08-09T10:42:44Z',
+  entries,
+});
+
+const osmEntry = (attraction: string, openingHours: string) => ({
+  cityIata: 'IST',
+  attraction,
+  openingHours,
+  osmElement: 'way/109862851',
+});
+
+const manualFile = (entries: unknown[]) => ({
+  note: 'Hand-filled where OSM had no opening_hours tag.',
+  entries,
+});
+
+const manualEntry = (attraction: string, openingHours: string) => ({
+  cityIata: 'IST',
+  attraction,
+  openingHours,
+  source: 'https://example.org/times',
+  retrieved: '2026-08-09',
+});
 
 describe('loadSeed', () => {
   it('inserts cities and attractions', async () => {
@@ -77,6 +106,53 @@ describe('loadSeed', () => {
   it('rejects invalid data before touching the DB', async () => {
     const bad = [{ ...fixture[0]!, attractions: [] }]; // violates min 8
     await expect(loadSeed(prisma, bad)).rejects.toThrow();
+    expect(await prisma.city.count()).toBe(0);
+  });
+
+  it('leaves openingHours and visitMinutes null when nothing supplies them', async () => {
+    await loadSeed(prisma, fixture);
+    const a = await prisma.attraction.findFirst({ where: { name: 'Sight 1' } });
+    expect(a?.openingHours).toBeNull();
+    expect(a?.visitMinutes).toBeNull();
+  });
+
+  it('persists curated visitMinutes from the attraction file', async () => {
+    const withVisitMinutes = [
+      {
+        ...fixture[0]!,
+        attractions: fixture[0]!.attractions.map((a, i) =>
+          i === 0 ? { ...a, visitMinutes: 180 } : a,
+        ),
+      },
+    ];
+    await loadSeed(prisma, withVisitMinutes);
+    expect((await prisma.attraction.findFirst({ where: { name: 'Sight 1' } }))?.visitMinutes).toBe(
+      180,
+    );
+    // Uncurated rows stay null so the fallback stays distinguishable from a real value.
+    expect(
+      (await prisma.attraction.findFirst({ where: { name: 'Sight 2' } }))?.visitMinutes,
+    ).toBeNull();
+  });
+
+  it('persists openingHours joined from the supplementary files', async () => {
+    await loadSeed(prisma, fixture, {
+      osm: osmFile([osmEntry('Sight 1', 'Tu-Su 09:00-17:00')]),
+      manual: manualFile([manualEntry('Sight 2', ALWAYS_OPEN)]),
+    });
+
+    const byName = new Map(
+      (await prisma.attraction.findMany()).map((a) => [a.name, a.openingHours]),
+    );
+    expect(byName.get('Sight 1')).toBe('Tu-Su 09:00-17:00');
+    expect(byName.get('Sight 2')).toBe(ALWAYS_OPEN);
+    expect(byName.get('Sight 3')).toBeNull();
+  });
+
+  it('rejects an orphaned OpeningHours entry before touching the DB', async () => {
+    await expect(
+      loadSeed(prisma, fixture, { osm: osmFile([osmEntry('Does Not Exist', ALWAYS_OPEN)]) }),
+    ).rejects.toThrow(/Does Not Exist/);
     expect(await prisma.city.count()).toBe(0);
   });
 

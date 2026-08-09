@@ -1,10 +1,21 @@
 import { readFileSync } from 'node:fs';
 import { describe, it, expect, beforeAll } from 'vitest';
+import {
+  attractionKey,
+  ManualOpeningHoursFile,
+  OsmOpeningHoursFile,
+  resolveOpeningHours,
+} from '../../../src/services/plan/seed-opening-hours.js';
 import { SeedFile } from '../../../src/services/plan/seed-schema.js';
 
 // ESM project — no __dirname; resolve relative to this file via import.meta.url
+const read = (name: string): unknown =>
+  JSON.parse(readFileSync(new URL(`../../../prisma/seed/${name}`, import.meta.url), 'utf8'));
+
 const file = new URL('../../../prisma/seed/attractions.json', import.meta.url);
 const raw: unknown = JSON.parse(readFileSync(file, 'utf8'));
+const rawOsm: unknown = read('opening-hours.osm.json');
+const rawManual: unknown = read('opening-hours.manual.json');
 
 describe('attractions seed data', () => {
   // Parse once in beforeAll: if the schema rejects the file, the whole suite
@@ -66,5 +77,63 @@ describe('attractions seed data', () => {
         expect(c.altCodes.length, `${c.iata} has metroIata but no altCodes`).toBeGreaterThan(0);
       }
     }
+  });
+
+  it('carries only hand-curated fields — OSM-derived provenance belongs in the ODbL files', () => {
+    // ADR-0005: OSM-derived content must never enter this file, or share-alike
+    // attaches to our own work. An allow-list rather than a "contains hours"
+    // check, so pasting in an osmElement, a wikidata id or any other borrowed
+    // field fails too. Checked against the raw JSON because the schema would
+    // silently strip an unknown key.
+    const allowed = new Set([
+      'name',
+      'category',
+      'rank',
+      'lat',
+      'lon',
+      'description',
+      'tags',
+      'visitMinutes',
+    ]);
+    for (const city of raw as { iata: string; attractions: Record<string, unknown>[] }[]) {
+      for (const a of city.attractions) {
+        for (const key of Object.keys(a)) {
+          expect(allowed.has(key), `${city.iata}/${String(a.name)} has field "${key}"`).toBe(true);
+        }
+      }
+    }
+  });
+});
+
+describe('supplementary opening-hours seed files', () => {
+  it('the OSM file parses, with its licence and Overpass timestamp intact', () => {
+    const parsed = OsmOpeningHoursFile.parse(rawOsm);
+    expect(parsed.license).toBe('ODbL-1.0');
+    expect(parsed.attribution).toContain('OpenStreetMap');
+    expect(parsed.osmBaseTimestamp).toBeTruthy();
+  });
+
+  it('the manual file parses and every fill is attributed', () => {
+    const parsed = ManualOpeningHoursFile.parse(rawManual);
+    for (const row of parsed.entries) {
+      expect(row.source, `${row.cityIata}/${row.attraction}`).toMatch(/^https?:\/\//);
+      expect(row.retrieved, `${row.cityIata}/${row.attraction}`).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
+
+  it('joins cleanly onto the curated attractions', () => {
+    // The real integration check: every supplementary row matches a curated
+    // attraction by exact name, no attraction is claimed twice, and every value
+    // parses under the OSM grammar. Any of those failing throws here.
+    const resolved = resolveOpeningHours(SeedFile.parse(raw), rawOsm, rawManual);
+    expect(resolved.size).toBeGreaterThan(0);
+  });
+
+  it('resolves the OpeningHours verified for the Istanbul attractions', () => {
+    const resolved = resolveOpeningHours(SeedFile.parse(raw), rawOsm, rawManual);
+    expect(resolved.get(attractionKey('IST', 'Hagia Sophia'))).toBe('Mo-Su 09:00-19:30');
+    // The qualifier matters: OSM calls this one "Kariye Camii" and the curated
+    // name carries "(Kariye)". An exact-name join is what catches that.
+    expect(resolved.get(attractionKey('IST', 'Chora Church (Kariye)'))).toBe('09:00-18:00');
   });
 });

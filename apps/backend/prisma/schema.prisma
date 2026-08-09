@@ -8,18 +8,18 @@ datasource db {
 }
 
 model Trip {
-  id          String   @id @default(cuid())
-  userId      String
-  name        String
-  startDate   DateTime
-  endDate     DateTime
-  cabinClass  String
-  travelers   Int
-  cities      String[]
-  flights     Json
-  totalPrice  Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  userId     String
+  name       String
+  startDate  DateTime
+  endDate    DateTime
+  cabinClass String
+  travelers  Int
+  cities     String[]
+  flights    Json
+  totalPrice Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@index([userId, createdAt])
 }
@@ -72,17 +72,30 @@ model City {
 }
 
 model Attraction {
-  id          String   @id @default(cuid())
-  cityIata    String
-  name        String
-  category    String // validated against AttractionCategory (zod) at seed time
-  mustGo      Boolean  @default(true)
-  rank        Int // 1 = most iconic; display order within a city
-  lat         Float
-  lon         Float
-  description String
-  tags        String[] // unused in Plan 6 responses; powers Plan 7 filtering
-  city        City     @relation(fields: [cityIata], references: [iata], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  cityIata     String
+  name         String
+  category     String // validated against AttractionCategory (zod) at seed time
+  mustGo       Boolean  @default(true)
+  rank         Int // 1 = most iconic; display order within a city
+  lat          Float
+  lon          Float
+  description  String
+  tags         String[] // unused in Plan 6 responses; powers Plan 7 filtering
+  // OSM `opening_hours` syntax. Three states are meaningful and must not be
+  // collapsed (see CONTEXT.md "OpeningHours"): a concrete schedule; the literal
+  // "24/7" for genuinely unconstrained attractions; and null for a real data
+  // gap. Populated only from the ODbL-marked supplementary seed files per
+  // ADR-0005 — never from attractions.json, which stays free of OSM-derived
+  // content so provenance never has to be untangled.
+  openingHours String?
+  // VisitDuration in minutes. Our own curated datum — no provider publishes a
+  // typical-visit-duration field. Null is preserved on purpose rather than
+  // resolved at seed time: the per-AttractionCategory fallback applies at read
+  // time so curated and assumed values stay distinguishable, which the thesis
+  // methodology needs to report.
+  visitMinutes Int?
+  city         City     @relation(fields: [cityIata], references: [iata], onDelete: Cascade)
 
   @@unique([cityIata, name])
   @@index([cityIata, mustGo, rank])

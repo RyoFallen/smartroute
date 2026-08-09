@@ -1,0 +1,10 @@
+{
+  "note": "OpeningHours filled in by hand where OpenStreetMap carried no opening_hours tag. Each row must record the source it was read from and the date it was retrieved, so the dataset stays reproducible for the thesis. Values here are not OSM-derived and carry no ODbL obligation, which is why they live in their own file rather than in opening-hours.osm.json.",
+  "_comment": [
+    "Empty by design at this stage. Deciding which attractions are genuinely",
+    "unconstrained (open-air squares, parks and streets, which take \"24/7\") versus",
+    "a real data gap needing a sourced fill is human judgement, tracked as issue #25.",
+    "The loader validates whatever appears here; it does not require any rows."
+  ],
+  "entries": []
+}
