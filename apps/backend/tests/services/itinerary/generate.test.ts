@@ -1,7 +1,9 @@
+import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 import {
   ARRIVAL_TRANSFER_MINUTES,
   DAY_END_MINUTES,
+  DEFAULT_MAX_SLOTS_PER_DAY,
   DEPARTURE_AIRPORT_MINUTES,
   generateItinerary,
 } from '../../../src/services/itinerary/generate.js';
@@ -10,6 +12,8 @@ import type {
   ItineraryCityInput,
   ItineraryInput,
 } from '../../../src/services/itinerary/generate.js';
+import { MockWalkingDistanceProvider } from '../../../src/services/itinerary/walking.js';
+import { SeedFile } from '../../../src/services/plan/seed-schema.js';
 
 /** Every off-diagonal walk costs the same, so slot arithmetic stays readable. */
 function uniformWalk(size: number, minutes = 10): number[][] {
@@ -357,5 +361,156 @@ describe('generateItinerary', () => {
   it('is deterministic — the same input yields the same Itinerary', () => {
     const shared = input({ endDate: '2026-07-04' });
     expect(generateItinerary(shared)).toEqual(generateItinerary(shared));
+  });
+});
+
+describe('generateItinerary visiting order', () => {
+  /** Attractions strung along a road, in an editorial rank that zig-zags along it. */
+  const POSITIONS = [25, 0, 60, 10, 40];
+  const alongARoad = (): number[][] =>
+    POSITIONS.map((from) => POSITIONS.map((to) => Math.abs(from - to)));
+
+  it('walks the city in the shortest order rather than in editorial rank', () => {
+    const result = generateItinerary(
+      input({
+        endDate: '2026-07-01',
+        cities: [
+          availableCity({
+            attractions: attractions(5, 30),
+            walkMinutes: alongARoad(),
+          }),
+        ],
+      }),
+    );
+
+    const day = result.cities[0]!.days[0]!;
+    // Rank order would cost 25+60+50+30+20 = 185 minutes of walking; end to end
+    // along the road costs 60.
+    expect(day.slots.map((s) => s.attractionId)).toEqual(['a2', 'a4', 'a1', 'a5', 'a3']);
+    expect(day.slots.map((s) => s.walkMinutesFromPrevious)).toEqual([null, 10, 15, 15, 20]);
+  });
+
+  it('gives each day a contiguous stretch of the one city-wide route', () => {
+    const result = generateItinerary(
+      input({
+        endDate: '2026-07-03',
+        maxSlotsPerDay: 2,
+        cities: [availableCity({ attractions: attractions(5, 30), walkMinutes: alongARoad() })],
+      }),
+    );
+
+    const days = result.cities[0]!.days;
+    expect(days.map((d) => d.slots.map((s) => s.attractionId))).toEqual([
+      ['a2', 'a4'],
+      ['a1', 'a5'],
+      ['a3'],
+    ]);
+    // The first slot of a day is a fresh start from the hotel, not a walk on
+    // from yesterday's last stop.
+    expect(days.map((d) => d.slots[0]?.walkMinutesFromPrevious)).toEqual([null, null, null]);
+  });
+
+  it('caps a day at the per-day ceiling instead of filling the window', () => {
+    const result = generateItinerary(
+      input({
+        endDate: '2026-07-03',
+        cities: [availableCity({ attractions: attractions(12, 30), walkMinutes: uniformWalk(12) })],
+      }),
+    );
+
+    // Twelve 30-minute visits and 10-minute walks would all fit one 720-minute
+    // day; the ceiling is what stops the trip being one exhausting Tuesday.
+    expect(DEFAULT_MAX_SLOTS_PER_DAY).toBe(6);
+    expect(result.cities[0]!.days.map((d) => d.slots.length)).toEqual([6, 6, 0]);
+    expect(result.cities[0]!.days[2]!.emptyReason).toBe('NO_ATTRACTIONS_LEFT');
+  });
+
+  it('honours a tighter ceiling for a traveler who wants an unhurried trip', () => {
+    const result = generateItinerary(
+      input({
+        endDate: '2026-07-03',
+        maxSlotsPerDay: 3,
+        cities: [availableCity({ attractions: attractions(12, 30), walkMinutes: uniformWalk(12) })],
+      }),
+    );
+
+    expect(result.cities[0]!.days.map((d) => d.slots.length)).toEqual([3, 3, 3]);
+  });
+
+  it('rejects a walking matrix that is not square over the attractions', () => {
+    expect(() =>
+      generateItinerary(
+        input({
+          cities: [availableCity({ attractions: attractions(3), walkMinutes: uniformWalk(2) })],
+        }),
+      ),
+    ).toThrow(/walking distance/i);
+  });
+});
+
+describe('generateItinerary over the real seed data', () => {
+  const seed = SeedFile.parse(
+    JSON.parse(
+      readFileSync(new URL('../../../prisma/seed/attractions.json', import.meta.url), 'utf8'),
+    ),
+  );
+  const istanbul = seed.find((c) => c.iata === 'IST')!;
+
+  /** What the walks would have cost had the same days been filled in rank order. */
+  function walkMinutesInRankOrder(matrix: number[][], daySizes: number[]): number {
+    let total = 0;
+    let index = 0;
+    for (const size of daySizes) {
+      for (let i = 1; i < size; i++) total += matrix[index + i - 1]![index + i]!;
+      index += size;
+    }
+    return total;
+  }
+
+  it('spends measurably less of the traveler day walking than editorial rank does', async () => {
+    const ranked = [...istanbul.attractions].sort((a, b) => a.rank - b.rank);
+    const walkMinutes = await new MockWalkingDistanceProvider().matrix(
+      ranked.map((a) => ({ lat: a.lat, lon: a.lon })),
+    );
+
+    const result = generateItinerary(
+      input({
+        startDate: '2026-07-01',
+        endDate: '2026-07-05',
+        cities: [
+          availableCity({
+            name: istanbul.name,
+            timezone: istanbul.timezone,
+            attractions: ranked.map((a, i) => ({
+              id: `ist_${i}`,
+              name: a.name,
+              category: a.category,
+              lat: a.lat,
+              lon: a.lon,
+              description: a.description,
+              visitMinutes: a.visitMinutes ?? null,
+              openingHours: null,
+            })),
+            walkMinutes,
+          }),
+        ],
+      }),
+    );
+
+    const days = result.cities[0]!.days;
+    const slots = days.flatMap((d) => d.slots);
+    expect(slots).toHaveLength(istanbul.attractions.length); // every one is scheduled
+
+    const walked = slots.reduce((sum, s) => sum + (s.walkMinutesFromPrevious ?? 0), 0);
+    const inRankOrder = walkMinutesInRankOrder(
+      walkMinutes,
+      days.map((d) => d.slots.length),
+    );
+
+    // Pinned rather than merely compared: a regression that quietly reverted to
+    // editorial rank would still satisfy a bare "lower than" assertion once the
+    // numbers drifted together.
+    expect(walked).toBeLessThan(inRankOrder);
+    expect({ walked, inRankOrder }).toEqual({ walked: 171, inRankOrder: 346 });
   });
 });

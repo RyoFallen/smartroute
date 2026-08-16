@@ -55,18 +55,32 @@ const trip = {
   totalPriceCents: 80_000,
 };
 
-function seedAttractions(count: number, lat: number, lon: number) {
-  return Array.from({ length: count }, (_, i) => ({
+/**
+ * Attractions strung out along a diagonal road, `alongTheRoad[i]` being how far
+ * along it the i-th one sits. Istanbul's are in road order, so its editorial
+ * rank and its shortest walking route agree; Rome's are scrambled, so they do
+ * not — which is what makes the visiting order observable at this seam.
+ */
+function seedAttractions(alongTheRoad: number[], lat: number, lon: number) {
+  return alongTheRoad.map((step, i) => ({
     name: `Sight ${i + 1}`,
     category: 'LANDMARK' as const,
     rank: i + 1,
-    lat: lat + i / 500,
-    lon: lon + i / 500,
+    lat: lat + step / 500,
+    lon: lon + step / 500,
     description: 'A test attraction description.',
     tags: ['history'],
     visitMinutes: 60,
   }));
 }
+
+const IN_ROAD_ORDER = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+const SCRAMBLED = [5, 0, 9, 2, 11, 7, 1, 10, 3, 8, 4, 6];
+
+/** The names of the scrambled Rome attractions, read off end to end along the road. */
+const ROME_IN_WALKING_ORDER = [...SCRAMBLED.keys()]
+  .sort((a, b) => SCRAMBLED[a]! - SCRAMBLED[b]!)
+  .map((i) => `Sight ${i + 1}`);
 
 const seedFixture = [
   {
@@ -77,7 +91,7 @@ const seedFixture = [
     lat: 41.0082,
     lon: 28.9784,
     timezone: 'Europe/Istanbul',
-    attractions: seedAttractions(12, 41.0, 28.98),
+    attractions: seedAttractions(IN_ROAD_ORDER, 41.0, 28.98),
   },
   {
     iata: 'FCO',
@@ -87,7 +101,7 @@ const seedFixture = [
     lat: 41.9028,
     lon: 12.4964,
     timezone: 'Europe/Rome',
-    attractions: seedAttractions(12, 41.9, 12.49),
+    attractions: seedAttractions(SCRAMBLED, 41.9, 12.49),
   },
 ];
 
@@ -254,6 +268,36 @@ describe('GET /trips/:id/itinerary', () => {
     ).json();
 
     expect(itinerary.cities[0].days[0].slots[0].startsAt).toBe('2026-07-01T07:30:00+03:00');
+  });
+
+  it('walks each city in its shortest order rather than in editorial rank', async () => {
+    const app = await buildServer({ withDb: true });
+    const id = await createTrip(app);
+
+    const itinerary = (
+      await app.inject({ method: 'GET', url: `/trips/${id}/itinerary`, headers: ALICE })
+    ).json();
+
+    const rome = itinerary.cities[1];
+    const visited = rome.days.flatMap((d: { slots: { name: string }[] }) =>
+      d.slots.map((s) => s.name),
+    );
+    expect(visited).toEqual(ROME_IN_WALKING_ORDER);
+    expect(visited).not.toEqual(SCRAMBLED.map((_, i) => `Sight ${i + 1}`));
+  });
+
+  it('caps a day at the per-day ceiling rather than spending it all on Tuesday', async () => {
+    const app = await buildServer({ withDb: true });
+    const id = await createTrip(app);
+
+    const itinerary = (
+      await app.inject({ method: 'GET', url: `/trips/${id}/itinerary`, headers: ALICE })
+    ).json();
+
+    // Twelve hour-long visits would fit the first full day; six is a holiday.
+    const istanbul = itinerary.cities[0];
+    expect(istanbul.days.map((d: { slots: unknown[] }) => d.slots.length)).toEqual([6, 6, 0]);
+    expect(istanbul.days[1].slots[0].name).toBe('Sight 7'); // day 2 resumes along the road
   });
 
   it('leaves the flat must-go plan endpoint working', async () => {

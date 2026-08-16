@@ -7,6 +7,7 @@ import type {
   VisitSlot,
 } from '@smartroute/shared';
 import { visitMinutesFor } from '../plan/visit-duration.js';
+import { optimalWalkingRoute } from './tour.js';
 import type { LocalDate, MinutesOfDay } from './zoned.js';
 import { datesInclusive, localIso, minutesOfDayFromHhMm, toLocal } from './zoned.js';
 
@@ -30,6 +31,22 @@ export const DEPARTURE_AIRPORT_MINUTES = 180;
  */
 export const DAY_END_MINUTES = 21 * 60;
 
+/**
+ * How many VisitSlots a day may hold at most.
+ *
+ * A ceiling, not a quota (see CONTEXT.md on TripIntensity): a city with fewer
+ * attractions than this yields a lighter day, never a padded one. Without it a
+ * twelve-hour day swallows most of a city and leaves the rest of the stay empty,
+ * which is arithmetically fine and no way to spend a holiday.
+ *
+ * Six is the value the seed implies: every city holds ten to fifteen
+ * attractions, so the ceiling starts to bind past about two days in one city —
+ * the point at which the traveler has genuinely seen the place. TripIntensity
+ * will drive this per traveler; until then every traveler gets the middle
+ * setting.
+ */
+export const DEFAULT_MAX_SLOTS_PER_DAY = 6;
+
 export interface ItineraryAttractionInput {
   id: string;
   name: string;
@@ -48,9 +65,9 @@ export interface AvailableCityInput {
   available: true;
   name: string;
   timezone: string;
-  /** In editorial rank order. Exact intra-city ordering arrives with the TSP. */
+  /** In editorial rank order, which only breaks ties — the walking route decides what comes first. */
   attractions: ItineraryAttractionInput[];
-  /** Walking minutes `[from][to]`, indexed into `attractions`. */
+  /** Walking minutes `[from][to]`, indexed into `attractions`. Must be square over them. */
   walkMinutes: number[][];
   /** When the traveler lands. Null for the origin city — an open tour has no arrival there. */
   arriveAt: string | null;
@@ -67,6 +84,8 @@ export interface ItineraryInput {
   endDate: LocalDate;
   /** The traveler's stored wake-up time, "HH:mm". */
   wakeUpTime: string;
+  /** Per-day VisitSlot ceiling; defaults to `DEFAULT_MAX_SLOTS_PER_DAY`. */
+  maxSlotsPerDay?: number;
   /** In visiting order. */
   cities: ItineraryCityInput[];
 }
@@ -80,28 +99,41 @@ export interface ItineraryInput {
  * including the walking-distance matrix, which the caller obtains from the
  * WalkingDistanceProvider.
  *
- * Two things here are deliberately naive and belong to later tickets: slots
- * follow editorial rank rather than an optimal visiting order, and OpeningHours
- * are carried through for disclosure but not yet consulted when placing a day.
+ * One thing here is deliberately naive and belongs to a later ticket:
+ * OpeningHours are carried through for disclosure but not yet consulted when
+ * placing a day.
  */
 export function generateItinerary(input: ItineraryInput): ItineraryResponse {
   const wakeUpMinutes = minutesOfDayFromHhMm(input.wakeUpTime);
+  const maxSlotsPerDay = input.maxSlotsPerDay ?? DEFAULT_MAX_SLOTS_PER_DAY;
   return {
     tripId: input.tripId,
     cities: input.cities.map((city) =>
       city.available
-        ? scheduleCity(city, input.startDate, input.endDate, wakeUpMinutes)
+        ? scheduleCity({
+            city,
+            tripStart: input.startDate,
+            tripEnd: input.endDate,
+            wakeUpMinutes,
+            maxSlotsPerDay,
+          })
         : { iata: city.iata, name: null, available: false, days: [] },
     ),
   };
 }
 
-function scheduleCity(
-  city: AvailableCityInput,
-  tripStart: LocalDate,
-  tripEnd: LocalDate,
-  wakeUpMinutes: MinutesOfDay,
-): ItineraryCity {
+/** Everything one city's stay is scheduled against. */
+interface CitySchedule {
+  city: AvailableCityInput;
+  tripStart: LocalDate;
+  tripEnd: LocalDate;
+  wakeUpMinutes: MinutesOfDay;
+  maxSlotsPerDay: number;
+}
+
+function scheduleCity(stay: CitySchedule): ItineraryCity {
+  const { city, tripStart, tripEnd, wakeUpMinutes, maxSlotsPerDay } = stay;
+
   // Open tours: the origin city's stay starts on the trip's first day because
   // there is no arrival to wait for, and the final city's runs to the trip's
   // end date because there is no departure to close it.
@@ -109,9 +141,18 @@ function scheduleCity(
   const departure = city.departAt ? toLocal(city.timezone, city.departAt) : null;
   const dates = datesInclusive(arrival?.date ?? tripStart, departure?.date ?? tripEnd);
 
-  // One queue for the whole stay, so an attraction is scheduled at most once
-  // and anything a short day cannot hold simply waits for the next one.
-  const queue = [...city.attractions.keys()];
+  // One walking route for the whole city, cut into contiguous per-day stretches
+  // by consuming it from the front. Contiguous stretches of a shortest route are
+  // geographically tight by construction, so a day never crosses the city and
+  // back; and one queue for the whole stay means an attraction is scheduled at
+  // most once, with anything a short day cannot hold simply waiting for the next.
+  //
+  // Filling from the front is not the same as balancing: twelve attractions over
+  // three days give 6/6/0 rather than 4/4/4, because the ceiling is all that
+  // stops the first day. Choosing between the valid cuts is #30's job — it has
+  // to score them against weekly closures anyway, and walking distance is only
+  // its tie-break.
+  const queue = optimalWalkingRoute(checkedWalkMatrix(city));
   const days = dates.map((date, index) => {
     const isArrivalDay = arrival !== null && index === 0;
     const isDepartureDay = departure !== null && index === dates.length - 1;
@@ -129,6 +170,7 @@ function scheduleCity(
           : DAY_END_MINUTES,
       },
       wakeUpMinutes,
+      maxSlotsPerDay,
       isArrivalDay,
       isDepartureDay,
       queue,
@@ -150,22 +192,25 @@ interface DaySchedule {
   dayOfStay: number;
   window: SchedulableWindow;
   wakeUpMinutes: MinutesOfDay;
+  maxSlotsPerDay: number;
   isArrivalDay: boolean;
   isDepartureDay: boolean;
-  /** Indices of the attractions still unscheduled; consumed in place. */
+  /** Attraction indices still unscheduled, in walking-route order; consumed in place. */
   queue: number[];
 }
 
 function scheduleDay(day: DaySchedule): ItineraryDay {
-  const { city, date, dayOfStay, window, queue } = day;
+  const { city, date, dayOfStay, window, maxSlotsPerDay, queue } = day;
   const slots: VisitSlot[] = [];
   let cursor = window.opens;
   let previous: number | null = null;
 
-  while (queue.length > 0 && window.closes > cursor) {
+  while (queue.length > 0 && window.closes > cursor && slots.length < maxSlotsPerDay) {
     const index = queue[0]!;
     const attraction = city.attractions[index]!;
-    const walk = previous === null ? null : walkMinutesBetween(city, previous, index);
+    // The first slot of a day is reached from the traveler's bed, not from
+    // yesterday's last stop, so it carries no walk.
+    const walk = previous === null ? null : city.walkMinutes[previous]![index]!;
     const startsAtMinutes = cursor + (walk ?? 0);
     const minutes = visitMinutesFor(attraction.category, attraction.visitMinutes);
     if (startsAtMinutes + minutes > window.closes) break;
@@ -204,19 +249,21 @@ function scheduleDay(day: DaySchedule): ItineraryDay {
 }
 
 /**
- * A misaligned matrix would otherwise schedule a free walk across the city, and
+ * Checked once, before anything is scheduled: a misaligned matrix would
+ * otherwise route the city around a hole and schedule a free walk across it, and
  * quietly inventing travel time is exactly the failure this design exists to
  * prevent. The provider's contract is one row and column per attraction.
  */
-function walkMinutesBetween(city: AvailableCityInput, from: number, to: number): number {
-  const minutes = city.walkMinutes[from]?.[to];
-  if (minutes === undefined) {
+function checkedWalkMatrix(city: AvailableCityInput): number[][] {
+  const size = city.attractions.length;
+  const square =
+    city.walkMinutes.length === size && city.walkMinutes.every((row) => row.length === size);
+  if (!square) {
     throw new Error(
-      `No walking distance for ${city.iata} ${from}->${to}: the matrix does not cover ` +
-        `${city.attractions.length} attractions`,
+      `No walking distance matrix for ${city.iata}: expected ${size}x${size} over its attractions`,
     );
   }
-  return minutes;
+  return city.walkMinutes;
 }
 
 function emptyReasonFor(day: DaySchedule): EmptyDayReason {

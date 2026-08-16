@@ -64,6 +64,14 @@ One scheduled visit to one Attraction within an ItineraryDay: which attraction, 
 how long the walk from the previous slot took.
 _Avoid_: stop, activity, event
 
+**WalkingRoute**:
+The order in which one city's selected Attractions are walked — the shortest pedestrian route through
+them, computed per city and then cut into contiguous per-day stretches. Distinct from _visiting
+order_, which is reserved for the order of **cities** in a Trip; these are two different orderings
+solved by two different algorithms (in-house Held–Karp here, the GA there).
+_Avoid_: visiting order (that means the city order), tour, route (unqualified — that word already
+means a flight itinerary option on `POST /optimize`)
+
 **SchedulableWindow**:
 The portion of a calendar day in which VisitSlots may be placed. Bounded by the traveler's wake-up
 time and, on arrival and departure days, by the flight times plus transfer buffers.

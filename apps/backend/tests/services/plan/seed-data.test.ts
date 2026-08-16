@@ -7,6 +7,7 @@ import {
   resolveOpeningHours,
 } from '../../../src/services/plan/seed-opening-hours.js';
 import { SeedFile } from '../../../src/services/plan/seed-schema.js';
+import { MAX_EXACT_TOUR_NODES } from '../../../src/services/itinerary/tour.js';
 
 // ESM project — no __dirname; resolve relative to this file via import.meta.url
 const read = (name: string): unknown =>
@@ -45,6 +46,14 @@ describe('attractions seed data', () => {
       expect(c.attractions.length, c.iata).toBeLessThanOrEqual(15);
       const names = new Set(c.attractions.map((a) => a.name));
       expect(names.size, c.iata).toBe(c.attractions.length);
+    }
+  });
+
+  it('stays inside the bound the exact visiting order can solve', () => {
+    // `optimalWalkingRoute` refuses anything larger rather than degrading quietly,
+    // so the guarantee that a real city never trips it belongs with the data.
+    for (const c of cities) {
+      expect(c.attractions.length, c.iata).toBeLessThanOrEqual(MAX_EXACT_TOUR_NODES);
     }
   });
 
