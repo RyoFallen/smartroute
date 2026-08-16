@@ -33,4 +33,16 @@ class FormattersTest {
     fun formatsIsoDateTimeAsDateAndTime() {
         assertEquals("2026-08-01 08:00", formatIsoDateTime("2026-08-01T08:00:00.000Z"))
     }
+
+    @Test
+    fun formatsIsoTimeAsJustTheTime() {
+        assertEquals("08:00", formatIsoTime("2026-08-01T08:00:00.000Z"))
+    }
+
+    @Test
+    fun readsAVisitSlotTimeOnTheCityOwnClock() {
+        // The offset is the city's, so the wall clock in the string is already
+        // local — no conversion, no device timezone.
+        assertEquals("09:00", formatIsoTime("2026-07-01T09:00:00+03:00"))
+    }
 }

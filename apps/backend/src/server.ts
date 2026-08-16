@@ -9,6 +9,7 @@ import { errorHandlerPlugin } from './plugins/error-handler.js';
 import { prismaPlugin } from './plugins/prisma.js';
 import { authPlugin } from './plugins/auth.js';
 import { flightsPlugin } from './plugins/flights.js';
+import { walkingPlugin } from './plugins/walking.js';
 
 export interface BuildOptions {
   withDb?: boolean;
@@ -21,6 +22,7 @@ export async function buildServer(opts: BuildOptions = {}): Promise<FastifyInsta
   if (opts.withDb ?? Boolean(process.env.DATABASE_URL)) {
     await app.register(prismaPlugin);
     await app.register(flightsPlugin);
+    await app.register(walkingPlugin);
     await app.register(optimizeRoute);
     await app.register(tripsRoute);
     await app.register(usersRoute);

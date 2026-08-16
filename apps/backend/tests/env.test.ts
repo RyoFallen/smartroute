@@ -40,4 +40,17 @@ describe('env', () => {
     expect(() => loadEnv()).toThrow('exit called');
     spy.mockRestore();
   });
+
+  it('defaults WALKING_PROVIDER to mock', () => {
+    expect(loadEnv().WALKING_PROVIDER).toBe('mock');
+  });
+
+  it('exits on WALKING_PROVIDER=osrm rather than failing later at boot', () => {
+    process.env.WALKING_PROVIDER = 'osrm';
+    const spy = vi.spyOn(process, 'exit').mockImplementation(((): never => {
+      throw new Error('exit called');
+    }) as never);
+    expect(() => loadEnv()).toThrow('exit called');
+    spy.mockRestore();
+  });
 });

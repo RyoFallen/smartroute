@@ -5,6 +5,7 @@ export * from './routes.js';
 export * from './optimize.js';
 export * from './trips.js';
 export * from './attractions.js';
+export * from './itinerary.js';
 export * from './interests.js';
 export * from './users.js';
 export * from './cities.js';

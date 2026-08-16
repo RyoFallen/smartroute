@@ -18,3 +18,12 @@ fun formatIsoDate(iso: String): String = iso.substring(0, 10)
 
 /** "2026-08-01 08:00" from a backend ISO-8601 datetime string. */
 fun formatIsoDateTime(iso: String): String = "${iso.substring(0, 10)} ${iso.substring(11, 16)}"
+
+/**
+ * "08:00" from a backend ISO-8601 datetime string.
+ *
+ * VisitSlot times already carry the city's own UTC offset, so the wall clock in
+ * the string is the local one — reading it straight off is correct, and
+ * converting through the device timezone would be wrong.
+ */
+fun formatIsoTime(iso: String): String = iso.substring(11, 16)

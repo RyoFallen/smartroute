@@ -36,13 +36,18 @@ private const val TRIP_DETAIL_JSON = """
   "createdAt": "2026-07-12T00:00:00Z", "updatedAt": "2026-07-12T00:00:00Z"}
 """
 
-private const val TRIP_PLAN_JSON = """
+private const val ITINERARY_JSON = """
 {"tripId": "trip_1", "cities": [
-  {"iata": "SOF", "name": "Sofia", "available": true, "mustGo": [
-    {"id": "a1", "name": "Alexander Nevsky Cathedral", "category": "RELIGIOUS",
-      "rank": 1, "lat": 42.6957, "lon": 23.3327, "description": "A neo-Byzantine cathedral."}
+  {"iata": "SOF", "name": "Sofia", "available": true, "days": [
+    {"date": "2026-08-01", "dayOfStay": 1, "empty": false, "emptyReason": null, "slots": [
+      {"attractionId": "a1", "name": "Alexander Nevsky Cathedral", "category": "RELIGIOUS",
+        "lat": 42.6957, "lon": 23.3327, "description": "A neo-Byzantine cathedral.",
+        "startsAt": "2026-08-01T09:00:00+03:00", "endsAt": "2026-08-01T09:45:00+03:00",
+        "visitMinutes": 45, "walkMinutesFromPrevious": null,
+        "hoursAssumed": false, "closedOnThisDay": false}
+    ]}
   ]},
-  {"iata": "BEG", "name": null, "available": false, "mustGo": []}
+  {"iata": "BEG", "name": null, "available": false, "days": []}
 ]}
 """
 
@@ -152,23 +157,24 @@ class ApiClientTest {
         }
 
     @Test
-    fun `fetches a trip plan with per-city availability`() =
+    fun `fetches a trip itinerary with per-city availability`() =
         runTest {
             val engine =
                 MockEngine { request ->
-                    assertEquals("/trips/trip_1/plan", request.url.encodedPath)
-                    respond(TRIP_PLAN_JSON, HttpStatusCode.OK, headersOf(HttpHeaders.ContentType, "application/json"))
+                    assertEquals("/trips/trip_1/itinerary", request.url.encodedPath)
+                    respond(ITINERARY_JSON, HttpStatusCode.OK, headersOf(HttpHeaders.ContentType, "application/json"))
                 }
             val api = ApiClient(engine, BASE) { "session-jwt" }
 
-            val plan = api.getTripPlan("trip_1")
+            val itinerary = api.getTripItinerary("trip_1")
 
-            val sofia = plan.cities[0]
-            assertEquals(2, plan.cities.size)
+            val sofia = itinerary.cities[0]
+            assertEquals(2, itinerary.cities.size)
             assertEquals("Sofia", sofia.name)
-            assertEquals(1, sofia.mustGo.size)
-            assertEquals(AttractionCategory.RELIGIOUS, sofia.mustGo.single().category)
-            assertEquals(false, plan.cities[1].available)
+            val slots = sofia.days.single().slots
+            assertEquals(1, slots.size)
+            assertEquals(AttractionCategory.RELIGIOUS, slots.single().category)
+            assertEquals(false, itinerary.cities[1].available)
         }
 
     @Test

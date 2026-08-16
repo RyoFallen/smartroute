@@ -2,6 +2,7 @@ import type { PrismaClient } from '@prisma/client';
 import type { Trip, TripPlanCity, TripPlanResponse } from '@smartroute/shared';
 import { AttractionCategory } from '@smartroute/shared';
 import { TripService } from '../trips/index.js';
+import { mustGoCitiesByCode } from '../cities/index.js';
 
 export function visitOrder(trip: Trip): string[] {
   if (trip.flights.length > 0) {
@@ -24,16 +25,7 @@ export class PlanService {
     const trip = await new TripService(this.db).findById(userId, tripId);
     const order = visitOrder(trip);
 
-    const cities = await this.db.city.findMany({
-      where: { OR: [{ iata: { in: order } }, { altCodes: { hasSome: order } }] },
-      include: { attractions: { where: { mustGo: true }, orderBy: { rank: 'asc' } } },
-    });
-
-    const byCode = new Map<string, (typeof cities)[number]>();
-    for (const c of cities) {
-      byCode.set(c.iata, c);
-      for (const alt of c.altCodes) byCode.set(alt, c);
-    }
+    const byCode = await mustGoCitiesByCode(this.db, order);
 
     return {
       tripId: trip.id,

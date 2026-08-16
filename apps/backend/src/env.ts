@@ -11,10 +11,19 @@ const Env = z
     FLIGHT_PROVIDER: z.enum(['mock', 'duffel']).default('mock'),
     DUFFEL_API_KEY: z.string().min(1).optional(),
     DUFFEL_BASE_URL: z.string().url().default('https://api.duffel.com'),
+    WALKING_PROVIDER: z.enum(['mock', 'osrm']).default('mock'),
   })
   .refine((e) => e.FLIGHT_PROVIDER !== 'duffel' || !!e.DUFFEL_API_KEY, {
     message: 'DUFFEL_API_KEY is required when FLIGHT_PROVIDER=duffel',
     path: ['DUFFEL_API_KEY'],
+  })
+  // The enum names the intended vocabulary, but only `mock` is wired up. Reject
+  // `osrm` here so a misconfiguration fails at load with an explanation rather
+  // than validating cleanly and then killing the server mid-boot.
+  .refine((e) => e.WALKING_PROVIDER !== 'osrm', {
+    message:
+      'WALKING_PROVIDER=osrm is not available yet: the self-hosted OSRM service is not wired up',
+    path: ['WALKING_PROVIDER'],
   });
 
 export type AppEnv = z.infer<typeof Env>;

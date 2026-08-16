@@ -51,7 +51,7 @@ class ApiClient(
 
     suspend fun getTrip(id: String): TripDetail = get("/trips/$id")
 
-    suspend fun getTripPlan(id: String): TripPlanResponseDto = get("/trips/$id/plan")
+    suspend fun getTripItinerary(id: String): ItineraryResponseDto = get("/trips/$id/itinerary")
 
     suspend fun getCities(): List<CitySummaryDto> = get("/cities")
 
