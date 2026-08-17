@@ -1,10 +1,88 @@
 {
-  "note": "OpeningHours filled in by hand where OpenStreetMap carried no opening_hours tag. Each row must record the source it was read from and the date it was retrieved, so the dataset stays reproducible for the thesis. Values here are not OSM-derived and carry no ODbL obligation, which is why they live in their own file rather than in opening-hours.osm.json.",
+  "note": "OpeningHours decided by hand, where OpenStreetMap carried no usable opening_hours tag. Every row states the basis it rests on. Values here are not OSM-derived and carry no ODbL obligation, which is why they live in their own file rather than in opening-hours.osm.json.",
   "_comment": [
-    "Empty by design at this stage. Deciding which attractions are genuinely",
-    "unconstrained (open-air squares, parks and streets, which take \"24/7\") versus",
-    "a real data gap needing a sourced fill is human judgement, tracked as issue #25.",
-    "The loader validates whatever appears here; it does not require any rows."
+    "Three bases, because the hand-work has three genuinely different outcomes:",
+    "",
+    "  \"sourced\"      a real opening time read off a published page. Requires",
+    "                 `openingHours`, `source` (URL) and `retrieved` (ISO date),",
+    "                 so a thesis reader can go and check it.",
+    "",
+    "  \"always-open\"  genuinely unconstrained — a square, a park, a street, an",
+    "                 open viewpoint. Requires a `rationale` and NO openingHours:",
+    "                 the value is always 24/7 and the loader supplies it. There",
+    "                 is no page to cite for \"this fountain has no gates\", and",
+    "                 demanding a URL would only produce a fabricated citation.",
+    "",
+    "  \"unknown\"      looked at, and deliberately left unknown. Requires a",
+    "                 `rationale` and resolves to no value at all. This exists so",
+    "                 that \"we checked and there is nothing to record\" is visible",
+    "                 as a decision — an attraction simply missing from this file",
+    "                 is indistinguishable from one nobody has examined yet.",
+    "",
+    "CONTEXT.md's OpeningHours entry is what these bases protect: \"always open\"",
+    "is a fact about the attraction, \"unknown\" is a fact about our data, and the",
+    "two must never be conflated.",
+    "",
+    "Names must match attractions.json exactly — the loader rejects orphans, and",
+    "an attraction claimed by both this file and the OSM one is an error rather",
+    "than a precedence rule.",
+    "",
+    "PH/SH holiday macros must not be stored: measured 2026-08-09 they throw for",
+    "`tr` and `gb` (Istanbul, London). Rewrite them to explicit dates and record",
+    "the original in `rewrittenFrom` so the transformation stays auditable.",
+    "",
+    "Progress is counted by scripts/attraction-data-coverage.ts, which writes",
+    "docs/research/attraction-data-coverage.md — the methodology note. Tracked as",
+    "issue #25."
   ],
-  "entries": []
+  "entries": [
+    {
+      "basis": "always-open",
+      "cityIata": "IST",
+      "attraction": "İstiklal Street & Taksim",
+      "rationale": "A public pedestrian street and the square it ends at. Continuously accessible; individual shops along it keep their own hours, but the attraction as visited is the street itself."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "BER",
+      "attraction": "Checkpoint Charlie",
+      "rationale": "An open-air street site at the Friedrichstraße crossing — the reconstructed guardhouse and signage stand in the public roadway. The adjacent private museum is ticketed, but it is not this attraction."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "BER",
+      "attraction": "Gendarmenmarkt",
+      "rationale": "A public square. The concert hall and cathedrals framing it keep their own hours; the square itself is never closed."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "BUD",
+      "attraction": "Heroes' Square",
+      "rationale": "A public square at the end of Andrássy Avenue, open on all sides and continuously accessible."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "FCO",
+      "attraction": "Trevi Fountain",
+      "rationale": "An open-air fountain in a public piazza, with no enclosure and no admission."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "FCO",
+      "attraction": "Spanish Steps",
+      "rationale": "A public stairway between Piazza di Spagna and Trinità dei Monti. Continuously accessible; sitting on the steps is policed, but access is not."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "FCO",
+      "attraction": "Piazza Navona",
+      "rationale": "A public square. Its fountains and the surrounding cafés are visited from the open piazza, which has no closing time."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "BCN",
+      "attraction": "La Rambla",
+      "rationale": "A public pedestrian boulevard. The market and venues along it keep their own hours; the promenade itself is never closed."
+    }
+  ]
 }

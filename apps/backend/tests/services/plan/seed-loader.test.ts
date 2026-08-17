@@ -45,11 +45,26 @@ const manualFile = (entries: unknown[]) => ({
 });
 
 const manualEntry = (attraction: string, openingHours: string) => ({
+  basis: 'sourced',
   cityIata: 'IST',
   attraction,
   openingHours,
   source: 'https://example.org/times',
   retrieved: '2026-08-09',
+});
+
+const alwaysOpenEntry = (attraction: string) => ({
+  basis: 'always-open',
+  cityIata: 'IST',
+  attraction,
+  rationale: 'Open-air public space with no gates.',
+});
+
+const unknownEntry = (attraction: string) => ({
+  basis: 'unknown',
+  cityIata: 'IST',
+  attraction,
+  rationale: 'Checked; the operator publishes no hours.',
 });
 
 describe('loadSeed', () => {
@@ -138,7 +153,11 @@ describe('loadSeed', () => {
   it('persists openingHours joined from the supplementary files', async () => {
     await loadSeed(prisma, fixture, {
       osm: osmFile([osmEntry('Sight 1', 'Tu-Su 09:00-17:00')]),
-      manual: manualFile([manualEntry('Sight 2', ALWAYS_OPEN)]),
+      manual: manualFile([
+        alwaysOpenEntry('Sight 2'),
+        unknownEntry('Sight 4'),
+        manualEntry('Sight 5', 'Mo-Fr 10:00-18:00'),
+      ]),
     });
 
     const byName = new Map(
@@ -147,6 +166,14 @@ describe('loadSeed', () => {
     expect(byName.get('Sight 1')).toBe('Tu-Su 09:00-17:00');
     expect(byName.get('Sight 2')).toBe(ALWAYS_OPEN);
     expect(byName.get('Sight 3')).toBeNull();
+    // Each of the three hand-made bases lands differently in the column: a
+    // sourced fill persists its value, always-open persists the marker, and a
+    // deliberate unknown persists nothing at all.
+    expect(byName.get('Sight 5')).toBe('Mo-Fr 10:00-18:00');
+    // A deliberate unknown persists exactly as an unexamined one does. The
+    // decision is recorded in the seed file, not in the column — the database
+    // only ever holds "we have a value" or "we do not".
+    expect(byName.get('Sight 4')).toBeNull();
   });
 
   it('rejects an orphaned OpeningHours entry before touching the DB', async () => {

@@ -125,8 +125,37 @@ describe('supplementary opening-hours seed files', () => {
   it('the manual file parses and every fill is attributed', () => {
     const parsed = ManualOpeningHoursFile.parse(rawManual);
     for (const row of parsed.entries) {
-      expect(row.source, `${row.cityIata}/${row.attraction}`).toMatch(/^https?:\/\//);
-      expect(row.retrieved, `${row.cityIata}/${row.attraction}`).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      const label = `${row.cityIata}/${row.attraction}`;
+      if (row.basis === 'sourced') {
+        // A hand-entered opening time is only defensible in a thesis if a reader
+        // can go and check the page it was read off, on the date it was read.
+        expect(row.source, label).toMatch(/^https?:\/\//);
+        expect(row.retrieved, label).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      } else {
+        // The other two bases cite no page — there is none to cite — so the
+        // rationale is the whole of their justification and cannot be a stub.
+        expect(row.rationale.length, label).toBeGreaterThan(20);
+      }
+    }
+  });
+
+  it('records a real judgement for every always-open attraction, not a blanket 24/7', () => {
+    // The failure this guards against is someone clearing the "not yet examined"
+    // count by marking everything always-open. Each of these has to be somewhere
+    // a traveler can genuinely walk up to at any hour.
+    const parsed = ManualOpeningHoursFile.parse(rawManual);
+    const alwaysOpen = parsed.entries.filter((e) => e.basis === 'always-open');
+    const curated = new Map(
+      SeedFile.parse(raw).flatMap((c) => c.attractions.map((a) => [`${c.iata}/${a.name}`, a])),
+    );
+
+    for (const row of alwaysOpen) {
+      const attraction = curated.get(`${row.cityIata}/${row.attraction}`);
+      // Open-air public space, by the categories the dataset already assigns.
+      // A MUSEUM marked always-open is the smell — it means the row is about a
+      // district or island that shares a name with a ticketed venue, and the
+      // itinerary would tell a traveler to walk into a locked building.
+      expect(attraction?.category, `${row.cityIata}/${row.attraction}`).not.toBe('MUSEUM');
     }
   });
 

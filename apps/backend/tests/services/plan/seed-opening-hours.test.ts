@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
+  ALWAYS_OPEN,
   attractionKey,
   resolveOpeningHours,
 } from '../../../src/services/plan/seed-opening-hours.js';
@@ -49,11 +50,26 @@ const manualFile = (rows: unknown[]) => ({
 });
 
 const manualEntry = (attraction: string, openingHours: string) => ({
+  basis: 'sourced',
   cityIata: 'IST',
   attraction,
   openingHours,
   source: 'https://example.org/opening-times',
   retrieved: '2026-08-09',
+});
+
+const alwaysOpenEntry = (attraction: string) => ({
+  basis: 'always-open',
+  cityIata: 'IST',
+  attraction,
+  rationale: 'A public square with no gates and no published hours.',
+});
+
+const unknownEntry = (attraction: string) => ({
+  basis: 'unknown',
+  cityIata: 'IST',
+  attraction,
+  rationale: 'Operator publishes no hours; the site is seasonal and unstaffed.',
 });
 
 /** Drops one key, so a test can assert that a required field really is required. */
@@ -76,6 +92,102 @@ describe('resolveOpeningHours', () => {
       manualFile([manualEntry('Sight 2', '24/7')]),
     );
     expect(map.get(attractionKey('IST', 'Sight 2'))).toBe('24/7');
+  });
+
+  describe('the three bases a hand-made judgement can rest on', () => {
+    it('resolves an always-open entry to the marker without asking for a source', () => {
+      // A public square has no published hours to cite. Demanding a source URL
+      // for one would force a fabricated citation, which is the opposite of what
+      // the provenance requirement is for.
+      const map = resolveOpeningHours(
+        cities(),
+        undefined,
+        manualFile([alwaysOpenEntry('Sight 2')]),
+      );
+      expect(map.get(attractionKey('IST', 'Sight 2'))).toBe(ALWAYS_OPEN);
+    });
+
+    it('records a deliberate unknown without giving it opening hours', () => {
+      // The distinction the whole file exists to preserve: "we looked and there
+      // is nothing to record" is a decision, and it must be visible as one.
+      // Absence alone cannot say that — it is indistinguishable from nobody
+      // having looked yet.
+      const map = resolveOpeningHours(cities(), undefined, manualFile([unknownEntry('Sight 2')]));
+      expect(map.has(attractionKey('IST', 'Sight 2'))).toBe(false);
+    });
+
+    it('still stops a deliberate unknown from colliding with a sourced value', () => {
+      // An attraction cannot be both deliberately unknown and known.
+      expect(() =>
+        resolveOpeningHours(
+          cities(),
+          osmFile([osmEntry('Sight 1', 'Tu-Su 09:00-17:00')]),
+          manualFile([unknownEntry('Sight 1')]),
+        ),
+      ).toThrow(/claimed by both/);
+    });
+
+    it('rejects an always-open entry that tries to smuggle in real hours', () => {
+      // `24/7` is implied by the basis, never written out — otherwise the file
+      // could claim a row is unconstrained while carrying a weekly schedule.
+      expect(() =>
+        resolveOpeningHours(
+          cities(),
+          undefined,
+          manualFile([{ ...alwaysOpenEntry('Sight 2'), openingHours: 'Mo-Fr 09:00-17:00' }]),
+        ),
+      ).toThrow();
+    });
+
+    it('requires a rationale for always-open and for unknown', () => {
+      expect(() =>
+        resolveOpeningHours(
+          cities(),
+          undefined,
+          manualFile([without(alwaysOpenEntry('Sight 2'), 'rationale')]),
+        ),
+      ).toThrow();
+      expect(() =>
+        resolveOpeningHours(
+          cities(),
+          undefined,
+          manualFile([without(unknownEntry('Sight 2'), 'rationale')]),
+        ),
+      ).toThrow();
+    });
+
+    it('rejects an entry with no basis at all', () => {
+      // Every row states what it rests on; there is no default basis.
+      expect(() =>
+        resolveOpeningHours(
+          cities(),
+          undefined,
+          manualFile([without(manualEntry('Sight 2', '24/7'), 'basis')]),
+        ),
+      ).toThrow();
+    });
+
+    it('keeps a deliberate unknown out of the way of orphan detection', () => {
+      expect(() =>
+        resolveOpeningHours(cities(), undefined, manualFile([unknownEntry('Nowhere')])),
+      ).toThrow(/no curated attraction/);
+    });
+  });
+
+  it('carries an audit trail when a value was rewritten from its published form', () => {
+    // PH/SH holiday macros cannot be evaluated for `tr` or `gb`, so they are
+    // rewritten to explicit dates. The original has to survive the rewrite or
+    // the transformation is unauditable.
+    const map = resolveOpeningHours(
+      cities(),
+      osmFile([
+        {
+          ...osmEntry('Sight 1', 'Mo-Fr 09:00-17:00; Jan 01,Dec 25 off'),
+          rewrittenFrom: 'Mo-Fr 09:00-17:00; PH off',
+        },
+      ]),
+    );
+    expect(map.get(attractionKey('IST', 'Sight 1'))).toBe('Mo-Fr 09:00-17:00; Jan 01,Dec 25 off');
   });
 
   it('merges both files', () => {
