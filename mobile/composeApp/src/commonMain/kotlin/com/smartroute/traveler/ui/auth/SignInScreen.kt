@@ -23,6 +23,7 @@ import smartroute_mobile.composeapp.generated.resources.Res
 import smartroute_mobile.composeapp.generated.resources.auth_error_code_required
 import smartroute_mobile.composeapp.generated.resources.auth_error_email_required
 import smartroute_mobile.composeapp.generated.resources.auth_error_send_failed
+import smartroute_mobile.composeapp.generated.resources.auth_error_session_expired
 import smartroute_mobile.composeapp.generated.resources.auth_error_start_over
 import smartroute_mobile.composeapp.generated.resources.auth_error_verify_failed
 import smartroute_mobile.composeapp.generated.resources.sign_in_code_label
@@ -126,5 +127,6 @@ private fun errorText(error: AuthError): String =
         AuthError.StartOver -> stringResource(Res.string.auth_error_start_over)
         AuthError.SendFailed -> stringResource(Res.string.auth_error_send_failed)
         AuthError.VerifyFailed -> stringResource(Res.string.auth_error_verify_failed)
+        AuthError.SessionExpired -> stringResource(Res.string.auth_error_session_expired)
         is AuthError.Server -> error.message
     }

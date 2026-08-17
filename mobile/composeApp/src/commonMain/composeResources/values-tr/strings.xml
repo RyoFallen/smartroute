@@ -13,6 +13,7 @@
     <string name="auth_error_start_over">Baştan başlayıp yeni bir kod iste</string>
     <string name="auth_error_send_failed">Kod gönderilemedi</string>
     <string name="auth_error_verify_failed">Doğrulama başarısız oldu</string>
+    <string name="auth_error_session_expired">Oturumunun süresi doldu. Lütfen tekrar giriş yap.</string>
     <string name="sign_out">Çıkış yap</string>
     <string name="tab_home">Ana Sayfa</string>
     <string name="tab_my_trips">Gezilerim</string>

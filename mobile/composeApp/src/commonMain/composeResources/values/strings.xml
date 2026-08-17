@@ -13,6 +13,7 @@
     <string name="auth_error_start_over">Start over and request a new code</string>
     <string name="auth_error_send_failed">Could not send the code</string>
     <string name="auth_error_verify_failed">Verification failed</string>
+    <string name="auth_error_session_expired">Your session expired. Please sign in again.</string>
     <string name="sign_out">Sign out</string>
     <string name="tab_home">Home</string>
     <string name="tab_my_trips">My Trips</string>

@@ -142,4 +142,132 @@ class AuthViewModelTest {
             vm.signOut()
             vm.state.first { it == AuthUiState.SignedOut() }
         }
+
+    @Test
+    fun `a session Clerk has revoked sends the traveler back to sign in`() =
+        runTest(dispatcher) {
+            // #33: the app used to believe it was signed in forever, because
+            // this state was decided once at construction and nothing could move
+            // it back. Whatever screen they were on, they end up somewhere they
+            // can act.
+            val store = TokenStore(MapSettings())
+            store.clientJwt = "client-jwt"
+            store.sessionId = "sess_gone"
+            val auth =
+                ClerkAuthClient(
+                    MockEngine { json("""{"errors": []}""", HttpStatusCode.NotFound) },
+                    FAPI,
+                    store,
+                )
+            val vm = AuthViewModel(auth)
+            assertIs<AuthUiState.SignedIn>(vm.state.value)
+
+            runCatching { auth.fetchSessionJwt() }
+
+            val state = vm.state.first { it is AuthUiState.SignedOut }
+            assertEquals(AuthUiState.SignedOut(error = AuthError.SessionExpired), state)
+        }
+
+    @Test
+    fun `an expired session does not read as a failed sign-in attempt`() =
+        runTest(dispatcher) {
+            // They did nothing wrong and typed nothing wrong. Telling them their
+            // sign-in failed would send them hunting for a mistake that is not
+            // there.
+            val store = TokenStore(MapSettings())
+            store.clientJwt = "client-jwt"
+            store.sessionId = "sess_gone"
+            val auth =
+                ClerkAuthClient(
+                    MockEngine { json("""{"errors": []}""", HttpStatusCode.Unauthorized) },
+                    FAPI,
+                    store,
+                )
+            val vm = AuthViewModel(auth)
+
+            runCatching { auth.fetchSessionJwt() }
+            val state = vm.state.first { it is AuthUiState.SignedOut } as AuthUiState.SignedOut
+
+            assertEquals(AuthError.SessionExpired, state.error)
+            assertEquals(SignInStage.EMAIL, state.stage, "they have to start from their address")
+        }
+
+    @Test
+    fun `a revocation that happened before the ViewModel existed still lands`() =
+        runTest(dispatcher) {
+            // The ticket's own scenario is a launch, where the refresh can lose
+            // the race with construction. Pins the replay that makes this work,
+            // so swapping the flow for a one-shot channel fails here rather than
+            // silently reinstating the dead-end screen.
+            val store = TokenStore(MapSettings())
+            store.clientJwt = "client-jwt"
+            store.sessionId = "sess_gone"
+            val auth =
+                ClerkAuthClient(
+                    MockEngine { json("""{"errors": []}""", HttpStatusCode.NotFound) },
+                    FAPI,
+                    store,
+                )
+            runCatching { auth.fetchSessionJwt() }
+
+            val vm = AuthViewModel(auth)
+
+            // Waiting on the error, not merely on SignedOut: the store is
+            // already cleared by now, so the *initial* state is SignedOut too
+            // and would match instantly without proving anything.
+            val state = vm.state.first { it is AuthUiState.SignedOut && it.error != null }
+            assertEquals(AuthUiState.SignedOut(error = AuthError.SessionExpired), state)
+        }
+
+    @Test
+    fun `a late revocation does not interrupt someone already signing in`() =
+        runTest(dispatcher) {
+            // They are at the code stage with a code in hand. A refresh failing
+            // for the session they are replacing must not reset them to the
+            // email stage and throw the attempt away.
+            val store = TokenStore(MapSettings())
+            val happyPath = happyPathHandler()
+            val auth =
+                ClerkAuthClient(
+                    MockEngine { request ->
+                        if (request.url.encodedPath.endsWith("/tokens")) {
+                            json("""{"errors": []}""", HttpStatusCode.NotFound)
+                        } else {
+                            happyPath(request)
+                        }
+                    },
+                    FAPI,
+                    store,
+                )
+            val vm = AuthViewModel(auth)
+            vm.sendCode("burak@example.com")
+            vm.state.first { it == AuthUiState.SignedOut(stage = SignInStage.CODE) }
+
+            store.sessionId = "sess_gone"
+            runCatching { auth.fetchSessionJwt() }
+            // Let the collector run, so this asserts the guard held rather than
+            // just that nothing has happened yet.
+            vm.state.first { it == AuthUiState.SignedOut(stage = SignInStage.CODE) }
+
+            assertEquals(AuthUiState.SignedOut(stage = SignInStage.CODE), vm.state.value)
+        }
+
+    @Test
+    fun `a Clerk outage leaves a signed-in traveler signed in`() =
+        runTest(dispatcher) {
+            val store = TokenStore(MapSettings())
+            store.clientJwt = "client-jwt"
+            store.sessionId = "sess_7"
+            val auth =
+                ClerkAuthClient(
+                    MockEngine { json("""{"errors": []}""", HttpStatusCode.InternalServerError) },
+                    FAPI,
+                    store,
+                )
+            val vm = AuthViewModel(auth)
+
+            runCatching { auth.fetchSessionJwt() }
+
+            assertIs<AuthUiState.SignedIn>(vm.state.value)
+        }
 }
