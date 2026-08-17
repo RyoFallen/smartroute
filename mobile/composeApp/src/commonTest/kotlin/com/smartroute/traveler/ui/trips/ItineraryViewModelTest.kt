@@ -47,6 +47,23 @@ private const val ITINERARY_JSON = """
 ]}
 """
 
+/** A conflict no arrangement could avoid, and a day left clear to make room (#30). */
+private const val CLOSURE_JSON = """
+{"tripId": "trip_1", "cities": [
+  {"iata": "IST", "name": "Istanbul", "available": true, "days": [
+    {"date": "2026-07-01", "dayOfStay": 1, "empty": false, "emptyReason": null, "slots": [
+      {"attractionId": "a3", "name": "Topkapi Palace", "category": "HISTORICAL",
+        "lat": 41.0115, "lon": 28.9833, "description": "An Ottoman palace.",
+        "startsAt": "2026-07-01T09:00:00+03:00", "endsAt": "2026-07-01T10:00:00+03:00",
+        "visitMinutes": 60, "walkMinutesFromPrevious": null,
+        "hoursAssumed": false, "closedOnThisDay": true}
+    ]},
+    {"date": "2026-07-02", "dayOfStay": 2, "empty": true,
+      "emptyReason": "SCHEDULED_AROUND_CLOSURES", "slots": []}
+  ]}
+]}
+"""
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class ItineraryViewModelTest {
     private val dispatcher = StandardTestDispatcher()
@@ -109,6 +126,22 @@ class ItineraryViewModelTest {
             assertFalse(slots[0].hoursAssumed)
             assertTrue(slots[1].hoursAssumed)
             assertFalse(slots[1].closedOnThisDay)
+            // The conflict the backend could not design away. It reaching the UI
+            // layer at all is the point: ItineraryScreen badges exactly this,
+            // and a slot that silently loses the flag sends someone to a locked
+            // door.
+        }
+
+    @Test
+    fun `a closure the backend could not design away reaches the UI`() =
+        runTest(dispatcher) {
+            // ItineraryScreen badges exactly this flag, and a day left clear to
+            // make room carries its own reason. Both are #30's disclosure, and a
+            // slot that silently loses the flag sends someone to a locked door.
+            val city = loaded(CLOSURE_JSON).cities[0]
+
+            assertTrue(city.days[0].slots[0].closedOnThisDay)
+            assertEquals(EmptyDayReason.SCHEDULED_AROUND_CLOSURES, city.days[1].reason)
         }
 
     @Test

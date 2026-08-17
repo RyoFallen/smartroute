@@ -101,7 +101,9 @@ describe('generateItinerary', () => {
   });
 
   it('charges the walk from the previous slot to the next start time', () => {
-    const result = generateItinerary(input());
+    // A one-day stay, so this is about consecutive slots rather than about how
+    // the days were divided up — which #30's cut scoring is free to change.
+    const result = generateItinerary(input({ endDate: '2026-07-01' }));
     const [first, second] = result.cities[0]!.days[0]!.slots;
 
     expect(first!.walkMinutesFromPrevious).toBeNull();
@@ -356,6 +358,9 @@ describe('generateItinerary', () => {
     const unknown = { ...attractions(1)[0]!, id: 'a2', name: 'Sight 2', openingHours: null };
     const result = generateItinerary(
       input({
+        // One day, so both land together and the assertion is about disclosure
+        // rather than about which day each was assigned to.
+        endDate: '2026-07-01',
         cities: [availableCity({ attractions: [known, unknown], walkMinutes: uniformWalk(2) })],
       }),
     );
@@ -434,16 +439,27 @@ describe('generateItinerary visiting order', () => {
 
     // Twelve 30-minute visits and 10-minute walks would all fit one 720-minute
     // day; the ceiling is what stops the trip being one exhausting Tuesday.
+    //
+    // 4/4/4 rather than the 6/6/0 this produced before #30: no day exceeds the
+    // ceiling either way, but the arrangement is now chosen rather than taken
+    // from filling each day to the brim in turn. #27 recorded that lopsidedness
+    // as a wart to be closed here, and this is it closing.
     expect(MAX_SLOTS_PER_DAY_BY_INTENSITY.MODERATE).toBe(6);
-    expect(result.cities[0]!.days.map((d) => d.slots.length)).toEqual([6, 6, 0]);
-    expect(result.cities[0]!.days[2]!.emptyReason).toBe('NO_ATTRACTIONS_LEFT');
+    expect(result.cities[0]!.days.map((d) => d.slots.length)).toEqual([4, 4, 4]);
+    expect(result.cities[0]!.days.every((d) => d.slots.length <= 6)).toBe(true);
   });
 
   it('sets the per-day ceiling from the traveler stored TripIntensity', () => {
     const daySizes = (intensity: ItineraryInput['intensity']): number[] =>
       generateItinerary(
         input({
-          endDate: '2026-07-03',
+          // A single day over twelve attractions, so the ceiling alone decides
+          // and every intensity is visible in the answer. Spread over more days
+          // the arrangement evens them out and each ceiling stops binding, which
+          // would leave this passing while proving nothing; and the ceiling
+          // cannot be made to bind on a longer stay without exceeding the
+          // fifteen-node bound the exact walking route carries.
+          endDate: '2026-07-01',
           intensity,
           cities: [
             availableCity({ attractions: attractions(12, 30), walkMinutes: uniformWalk(12) }),
@@ -451,10 +467,11 @@ describe('generateItinerary visiting order', () => {
         }),
       ).cities[0]!.days.map((d) => d.slots.length);
 
-    // The same twelve attractions and the same three days; only the ceiling moves.
-    expect(daySizes('RELAXED')).toEqual([4, 4, 4]);
-    expect(daySizes('MODERATE')).toEqual([6, 6, 0]);
-    expect(daySizes('PACKED')).toEqual([8, 4, 0]);
+    // The same twelve attractions and the same single day; only the ceiling
+    // moves, and it is what caps each answer.
+    expect(daySizes('RELAXED')).toEqual([4]);
+    expect(daySizes('MODERATE')).toEqual([6]);
+    expect(daySizes('PACKED')).toEqual([8]);
     // MODERATE is what a traveler who never finished onboarding gets.
     expect(daySizes(undefined)).toEqual(daySizes('MODERATE'));
   });
@@ -607,9 +624,14 @@ describe('generateItinerary interest-driven selection', () => {
       }),
     );
 
+    // The claim is about how much the stay holds, not which day each visit lands
+    // on — a two-attraction city over three days stays two attractions, each
+    // scheduled once, and the spare day stays empty rather than being padded.
     const days = result.cities[0]!.days;
-    expect(days.map((d) => d.slots.map((s) => s.attractionId))).toEqual([['a1', 'a2'], [], []]);
-    expect(days[1]!.emptyReason).toBe('NO_ATTRACTIONS_LEFT');
+    const scheduled = days.flatMap((d) => d.slots.map((s) => s.attractionId));
+    expect(scheduled.slice().sort()).toEqual(['a1', 'a2']);
+    expect(days.filter((d) => d.empty)).toHaveLength(1);
+    expect(days.find((d) => d.empty)!.emptyReason).toBe('NO_ATTRACTIONS_LEFT');
   });
 
   it('stays deterministic for a given traveler and Trip', () => {
@@ -689,7 +711,13 @@ describe('generateItinerary over the real seed data', () => {
     // Pinned rather than merely compared: a regression that quietly reverted to
     // editorial rank would still satisfy a bare "lower than" assertion once the
     // numbers drifted together.
+    //
+    // Both figures dropped at #30 (from 171 against 346) because the stay is now
+    // spread across all of its days instead of filling the first two. Only the
+    // second visit of a day onwards carries a walk, so using more days charges
+    // fewer of them — for the rank baseline exactly as much as for the route,
+    // which is why the comparison is still like for like.
     expect(walked).toBeLessThan(inRankOrder);
-    expect({ walked, inRankOrder }).toEqual({ walked: 171, inRankOrder: 346 });
+    expect({ walked, inRankOrder }).toEqual({ walked: 63, inRankOrder: 224 });
   });
 });

@@ -37,10 +37,12 @@ import smartroute_mobile.composeapp.generated.resources.attraction_category_muse
 import smartroute_mobile.composeapp.generated.resources.attraction_category_park
 import smartroute_mobile.composeapp.generated.resources.attraction_category_religious
 import smartroute_mobile.composeapp.generated.resources.attraction_category_viewpoint
+import smartroute_mobile.composeapp.generated.resources.itinerary_closed_today
 import smartroute_mobile.composeapp.generated.resources.itinerary_day_of_stay
 import smartroute_mobile.composeapp.generated.resources.itinerary_empty_arrival_too_late
 import smartroute_mobile.composeapp.generated.resources.itinerary_empty_departure_too_early
 import smartroute_mobile.composeapp.generated.resources.itinerary_empty_no_attractions_left
+import smartroute_mobile.composeapp.generated.resources.itinerary_empty_scheduled_around_closures
 import smartroute_mobile.composeapp.generated.resources.itinerary_empty_unknown
 import smartroute_mobile.composeapp.generated.resources.itinerary_empty_window_too_short
 import smartroute_mobile.composeapp.generated.resources.itinerary_error_load
@@ -88,6 +90,8 @@ private val EmptyDayReason.labelRes: StringResource
             EmptyDayReason.DEPARTURE_TOO_EARLY -> Res.string.itinerary_empty_departure_too_early
             EmptyDayReason.WINDOW_TOO_SHORT -> Res.string.itinerary_empty_window_too_short
             EmptyDayReason.NO_ATTRACTIONS_LEFT -> Res.string.itinerary_empty_no_attractions_left
+            EmptyDayReason.SCHEDULED_AROUND_CLOSURES ->
+                Res.string.itinerary_empty_scheduled_around_closures
             EmptyDayReason.UNKNOWN -> Res.string.itinerary_empty_unknown
         }
 
@@ -216,6 +220,17 @@ private fun VisitSlotRow(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+        // A conflict the schedule could not design away. Shown in the error
+        // colour because it is the one thing on this row that will waste the
+        // traveler's morning if they do not read it.
+        if (slot.closedOnThisDay) {
+            Text(
+                text = "⚠️ ${stringResource(Res.string.itinerary_closed_today)}",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 4.dp),
+            )
+        }
         Text(
             text = slot.description,
             style = MaterialTheme.typography.bodyMedium,

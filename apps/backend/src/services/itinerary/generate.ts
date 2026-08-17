@@ -9,6 +9,8 @@ import type {
   VisitSlot,
 } from '@smartroute/shared';
 import { visitMinutesFor } from '../plan/visit-duration.js';
+import { closedOn } from './closures.js';
+import { bestArrangement } from './arrange.js';
 import { selectAttractions } from './select.js';
 import { optimalWalkingRoute } from './tour.js';
 import type { LocalDate, MinutesOfDay } from './zoned.js';
@@ -112,9 +114,9 @@ export interface ItineraryInput {
  * including the walking-distance matrix, which the caller obtains from the
  * WalkingDistanceProvider.
  *
- * One thing here is deliberately naive and belongs to a later ticket:
- * OpeningHours are carried through for disclosure but not yet consulted when
- * placing a day.
+ * OpeningHours are consulted when placing a day (see `arrangeDays`): a visit is
+ * kept off a day the attraction is shut wherever any arrangement of the stay
+ * allows it, and flagged on the slot where none does.
  */
 export function generateItinerary(input: ItineraryInput): ItineraryResponse {
   const wakeUpMinutes = minutesOfDayFromHhMm(input.wakeUpTime);
@@ -159,7 +161,7 @@ function scheduleCity(stay: CitySchedule): ItineraryCity {
 
   // Windows first, because what the stay can hold is what decides how many
   // attractions it is worth choosing.
-  const stayDays = dates.map((date, index) => {
+  const stayDays: StayDay[] = dates.map((date, index) => {
     const isArrivalDay = arrival !== null && index === 0;
     const isDepartureDay = departure !== null && index === dates.length - 1;
     return {
@@ -194,35 +196,93 @@ function scheduleCity(stay: CitySchedule): ItineraryCity {
   const usableDays = stayDays.filter((d) => d.window.closes > d.window.opens).length;
   const chosen = selectAttractions(city.attractions, interests, usableDays * maxSlotsPerDay);
 
-  // One walking route for the whole city, cut into contiguous per-day stretches
-  // by consuming it from the front. Contiguous stretches of a shortest route are
-  // geographically tight by construction, so a day never crosses the city and
-  // back; and one queue for the whole stay means an attraction is scheduled at
-  // most once, with anything a short day cannot hold simply waiting for the next.
+  // One walking route for the whole city, divided into contiguous per-day
+  // stretches. Contiguous stretches of a shortest route are geographically tight
+  // by construction, so a day never crosses the city and back; and one queue for
+  // the whole stay means an attraction is scheduled at most once.
   //
-  // Filling from the front is not the same as balancing: twelve attractions over
-  // three days give 6/6/0 rather than 4/4/4, because the ceiling is all that
-  // stops the first day. Choosing between the valid cuts is #30's job — it has
-  // to score them against weekly closures anyway, and walking distance is only
-  // its tie-break.
-  const queue = optimalWalkingRoute(submatrix(walkMinutes, chosen)).map((i) => chosen[i]!);
-  const days = stayDays.map((day) =>
-    scheduleDay({
-      city,
-      ...day,
-      wakeUpMinutes,
-      maxSlotsPerDay,
-      queue,
-    }),
-  );
+  // *Which* division is used is chosen rather than assumed: every valid one is
+  // enumerated and scored, so an attraction shut on a Monday is placed on a day
+  // it is open whenever any arrangement allows it.
+  const route = optimalWalkingRoute(submatrix(walkMinutes, chosen)).map((i) => chosen[i]!);
+  const days = arrangeDays({ ...stay, stayDays, route });
 
   return { iata: city.iata, name: city.name, available: true, days };
+}
+
+/** Everything `arrangeDays` needs; deliberately narrower than `CitySchedule`. */
+interface ArrangementPlan {
+  city: AvailableCityInput;
+  wakeUpMinutes: MinutesOfDay;
+  maxSlotsPerDay: number;
+  stayDays: StayDay[];
+  /** Attraction indices in walking-route order. */
+  route: number[];
+}
+
+/**
+ * The route divided across the stay's days, best arrangement first.
+ *
+ * The cost of one day's share is computed by actually scheduling it, so the
+ * arrangement is scored on what the traveler would really get — which visits
+ * fit the window, which fall on a closed day, how far they walk — rather than on
+ * a proxy for it.
+ */
+function arrangeDays(plan: ArrangementPlan): ItineraryDay[] {
+  const { stayDays, route, maxSlotsPerDay } = plan;
+
+  const takes = bestArrangement(
+    route.length,
+    stayDays.length,
+    maxSlotsPerDay,
+    (day, from, take) => {
+      const scheduled = scheduleDay(dayPlan(plan, day, from, take));
+      // A share that does not fit is not rejected: the day simply schedules what
+      // it can, and the arrangement is scored on that. Rejecting it would leave
+      // a short arrival day unable to hold anything at all.
+      return {
+        scheduled: scheduled.slots.length,
+        conflicts: scheduled.slots.filter((s) => s.closedOnThisDay).length,
+        walkMinutes: scheduled.slots.reduce((sum, s) => sum + (s.walkMinutesFromPrevious ?? 0), 0),
+      };
+    },
+  );
+
+  // Re-scheduled once with the winning shares, because the costing above threw
+  // its days away and only kept the numbers.
+  let from = 0;
+  return stayDays.map((_, index) => {
+    const day = scheduleDay(dayPlan(plan, index, from, takes[index]!));
+    from += day.slots.length;
+    return day;
+  });
+}
+
+function dayPlan(plan: ArrangementPlan, index: number, from: number, take: number): DaySchedule {
+  return {
+    city: plan.city,
+    ...plan.stayDays[index]!,
+    wakeUpMinutes: plan.wakeUpMinutes,
+    // The share for this day, which `scheduleDay` treats as its ceiling.
+    maxSlotsPerDay: take,
+    queue: plan.route.slice(from, from + take),
+    remaining: plan.route.length - from,
+  };
 }
 
 /** The part of a calendar day in which VisitSlots may be placed (see CONTEXT.md). */
 interface SchedulableWindow {
   opens: MinutesOfDay;
   closes: MinutesOfDay;
+}
+
+/** One calendar day of the stay, before anything has been placed on it. */
+interface StayDay {
+  date: LocalDate;
+  dayOfStay: number;
+  isArrivalDay: boolean;
+  isDepartureDay: boolean;
+  window: SchedulableWindow;
 }
 
 interface DaySchedule {
@@ -234,8 +294,18 @@ interface DaySchedule {
   maxSlotsPerDay: number;
   isArrivalDay: boolean;
   isDepartureDay: boolean;
-  /** Attraction indices still unscheduled, in walking-route order; consumed in place. */
+  /** This day's share of the walking route, in order; consumed in place. */
   queue: number[];
+  /**
+   * Attractions of the whole city still unscheduled when this day begins, its
+   * own share included.
+   *
+   * Separate from `queue` because the arrangement hands each day only its own
+   * slice: an empty `queue` says this day was given nothing, which is a very
+   * different thing from the city being finished, and only this tells them
+   * apart.
+   */
+  remaining: number;
 }
 
 function scheduleDay(day: DaySchedule): ItineraryDay {
@@ -268,9 +338,10 @@ function scheduleDay(day: DaySchedule): ItineraryDay {
       // A null OpeningHours means we are scheduling against an assumed window
       // rather than a published one; the traveler is told so they can verify.
       hoursAssumed: attraction.openingHours === null,
-      // Weekly closures are not consulted yet — the flag ships with the contract
-      // so the client can render it the day the checker lands.
-      closedOnThisDay: false,
+      // Set even while candidate arrangements are still being scored: this is
+      // what they are scored on, and on the winner it is what the traveler is
+      // shown. A conflict surviving here is one no valid cut could avoid.
+      closedOnThisDay: closedOn(attraction.openingHours, date),
     });
 
     cursor = startsAtMinutes + minutes;
@@ -320,18 +391,30 @@ function submatrix(matrix: number[][], indices: number[]): number[][] {
 }
 
 function emptyReasonFor(day: DaySchedule): EmptyDayReason {
-  const { window, wakeUpMinutes, isArrivalDay, isDepartureDay, queue } = day;
+  const { window, wakeUpMinutes, isArrivalDay, isDepartureDay, remaining } = day;
 
   // Nothing left to schedule is the honest answer whenever the day itself was
   // usable — the flights had nothing to do with it.
-  if (queue.length === 0 && window.closes > window.opens) return 'NO_ATTRACTIONS_LEFT';
+  if (remaining === 0 && window.closes > window.opens) return 'NO_ATTRACTIONS_LEFT';
 
-  // Otherwise attribute the loss to whichever flight narrowed the day, so the
-  // traveler reads "you land too late" rather than a generic shrug. This covers
-  // the near miss as well as the impossible day: a 19:00 arrival leaves a real
-  // half-hour that nothing fits into, and the arrival is still the cause.
+  // Attribute the loss to whichever flight narrowed the day, so the traveler
+  // reads "you land too late" rather than a generic shrug. This covers the near
+  // miss as well as the impossible day: a 19:00 arrival leaves a real half-hour
+  // that nothing fits into, and the arrival is still the cause.
+  //
+  // Ahead of the arrangement below on purpose: a flight that wrecked the day is
+  // a fact about the day, and the reason the arrangement then had nothing to put
+  // on it. Blaming the schedule for it would point the traveler at the wrong
+  // thing entirely.
   if (isArrivalDay && window.opens > wakeUpMinutes) return 'ARRIVAL_TOO_LATE';
   if (isDepartureDay && window.closes < DAY_END_MINUTES) return 'DEPARTURE_TOO_EARLY';
 
-  return queue.length === 0 ? 'NO_ATTRACTIONS_LEFT' : 'WINDOW_TOO_SHORT';
+  // A day the flights left alone, that the arrangement gave nothing to, with
+  // visits still waiting: left clear so those visits could land on days they are
+  // open.
+  if (day.queue.length === 0 && window.closes > window.opens) {
+    return 'SCHEDULED_AROUND_CLOSURES';
+  }
+
+  return remaining === 0 ? 'NO_ATTRACTIONS_LEFT' : 'WINDOW_TOO_SHORT';
 }

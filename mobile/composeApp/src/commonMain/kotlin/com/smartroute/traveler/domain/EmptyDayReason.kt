@@ -12,6 +12,7 @@ enum class EmptyDayReason {
     DEPARTURE_TOO_EARLY,
     WINDOW_TOO_SHORT,
     NO_ATTRACTIONS_LEFT,
+    SCHEDULED_AROUND_CLOSURES,
     UNKNOWN,
     ;
 

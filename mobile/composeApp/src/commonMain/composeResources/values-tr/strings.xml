@@ -65,6 +65,8 @@
     <string name="itinerary_empty_departure_too_early">Gün başlamadan havalimanına hareket ediyorsunuz.</string>
     <string name="itinerary_empty_window_too_short">Bugün bir ziyaret için yeterli zaman yok.</string>
     <string name="itinerary_empty_no_attractions_left">Gezilecek yer kalmadı — tüm duraklar programlandı.</string>
+    <string name="itinerary_empty_scheduled_around_closures">Ziyaretlerin açık oldukları günlere denk gelsin diye boş bırakıldı.</string>
+    <string name="itinerary_closed_today">Bu gün kapalı</string>
     <string name="itinerary_empty_unknown">Bugün için bir program yok.</string>
     <string name="weekday_monday">Pazartesi</string>
     <string name="weekday_tuesday">Salı</string>

@@ -12,6 +12,8 @@ export const EmptyDayReason = z.enum([
   'DEPARTURE_TOO_EARLY', // must leave for the airport before the day opens
   'WINDOW_TOO_SHORT', // the SchedulableWindow cannot hold the next visit
   'NO_ATTRACTIONS_LEFT', // every attraction we hold for this city is already scheduled
+  // the day was usable, and left clear so visits could avoid days they are shut
+  'SCHEDULED_AROUND_CLOSURES',
 ]);
 export type EmptyDayReason = z.infer<typeof EmptyDayReason>;
 
