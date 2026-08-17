@@ -1,10 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
+import type { AttractionCategory, InterestEntry } from '@smartroute/shared';
+import { InterestCategory } from '@smartroute/shared';
 import {
   ARRIVAL_TRANSFER_MINUTES,
   DAY_END_MINUTES,
-  DEFAULT_MAX_SLOTS_PER_DAY,
   DEPARTURE_AIRPORT_MINUTES,
+  MAX_SLOTS_PER_DAY_BY_INTENSITY,
   generateItinerary,
 } from '../../../src/services/itinerary/generate.js';
 import type {
@@ -33,6 +35,11 @@ function attractions(count: number, visitMinutes: number | null = 60): Itinerary
     visitMinutes,
     openingHours: '24/7',
   }));
+}
+
+/** The same attractions, re-categorised — in editorial rank order, as the seed serves them. */
+function categorised(...categories: AttractionCategory[]): ItineraryAttractionInput[] {
+  return attractions(categories.length, 30).map((a, i) => ({ ...a, category: categories[i]! }));
 }
 
 function availableCity(over: Partial<Extract<ItineraryCityInput, { available: true }>> = {}) {
@@ -367,8 +374,9 @@ describe('generateItinerary', () => {
 describe('generateItinerary visiting order', () => {
   /** Attractions strung along a road, in an editorial rank that zig-zags along it. */
   const POSITIONS = [25, 0, 60, 10, 40];
-  const alongARoad = (): number[][] =>
-    POSITIONS.map((from) => POSITIONS.map((to) => Math.abs(from - to)));
+  const LONGER_ROAD = [50, 0, 90, 20, 110, 70, 10, 100, 30, 80, 40, 60];
+  const alongARoad = (positions: number[] = POSITIONS): number[][] =>
+    positions.map((from) => positions.map((to) => Math.abs(from - to)));
 
   it('walks the city in the shortest order rather than in editorial rank', () => {
     const result = generateItinerary(
@@ -394,16 +402,22 @@ describe('generateItinerary visiting order', () => {
     const result = generateItinerary(
       input({
         endDate: '2026-07-03',
-        maxSlotsPerDay: 2,
-        cities: [availableCity({ attractions: attractions(5, 30), walkMinutes: alongARoad() })],
+        intensity: 'RELAXED',
+        cities: [
+          availableCity({
+            attractions: attractions(12, 30),
+            walkMinutes: alongARoad(LONGER_ROAD),
+          }),
+        ],
       }),
     );
 
     const days = result.cities[0]!.days;
+    // End to end along the road, cut into three stretches of four.
     expect(days.map((d) => d.slots.map((s) => s.attractionId))).toEqual([
-      ['a2', 'a4'],
-      ['a1', 'a5'],
-      ['a3'],
+      ['a2', 'a7', 'a4', 'a9'],
+      ['a11', 'a1', 'a12', 'a6'],
+      ['a10', 'a3', 'a8', 'a5'],
     ]);
     // The first slot of a day is a fresh start from the hotel, not a walk on
     // from yesterday's last stop.
@@ -420,21 +434,29 @@ describe('generateItinerary visiting order', () => {
 
     // Twelve 30-minute visits and 10-minute walks would all fit one 720-minute
     // day; the ceiling is what stops the trip being one exhausting Tuesday.
-    expect(DEFAULT_MAX_SLOTS_PER_DAY).toBe(6);
+    expect(MAX_SLOTS_PER_DAY_BY_INTENSITY.MODERATE).toBe(6);
     expect(result.cities[0]!.days.map((d) => d.slots.length)).toEqual([6, 6, 0]);
     expect(result.cities[0]!.days[2]!.emptyReason).toBe('NO_ATTRACTIONS_LEFT');
   });
 
-  it('honours a tighter ceiling for a traveler who wants an unhurried trip', () => {
-    const result = generateItinerary(
-      input({
-        endDate: '2026-07-03',
-        maxSlotsPerDay: 3,
-        cities: [availableCity({ attractions: attractions(12, 30), walkMinutes: uniformWalk(12) })],
-      }),
-    );
+  it('sets the per-day ceiling from the traveler stored TripIntensity', () => {
+    const daySizes = (intensity: ItineraryInput['intensity']): number[] =>
+      generateItinerary(
+        input({
+          endDate: '2026-07-03',
+          intensity,
+          cities: [
+            availableCity({ attractions: attractions(12, 30), walkMinutes: uniformWalk(12) }),
+          ],
+        }),
+      ).cities[0]!.days.map((d) => d.slots.length);
 
-    expect(result.cities[0]!.days.map((d) => d.slots.length)).toEqual([3, 3, 3]);
+    // The same twelve attractions and the same three days; only the ceiling moves.
+    expect(daySizes('RELAXED')).toEqual([4, 4, 4]);
+    expect(daySizes('MODERATE')).toEqual([6, 6, 0]);
+    expect(daySizes('PACKED')).toEqual([8, 4, 0]);
+    // MODERATE is what a traveler who never finished onboarding gets.
+    expect(daySizes(undefined)).toEqual(daySizes('MODERATE'));
   });
 
   it('rejects a walking matrix that is not square over the attractions', () => {
@@ -445,6 +467,163 @@ describe('generateItinerary visiting order', () => {
         }),
       ),
     ).toThrow(/walking distance/i);
+  });
+});
+
+describe('generateItinerary interest-driven selection', () => {
+  /** A city whose editorial rank alternates between the two things a traveler might want. */
+  const MIXED: AttractionCategory[] = ['MUSEUM', 'LANDMARK', 'PARK', 'MUSEUM', 'LANDMARK', 'PARK'];
+
+  /** One day, four slots: enough that the ceiling binds and the choice is visible. */
+  function oneRelaxedDay(
+    attractionList: ItineraryAttractionInput[],
+    interests: InterestEntry[],
+  ): string[] {
+    const result = generateItinerary(
+      input({
+        endDate: '2026-07-01',
+        intensity: 'RELAXED',
+        interests,
+        cities: [
+          availableCity({
+            attractions: attractionList,
+            walkMinutes: uniformWalk(attractionList.length),
+          }),
+        ],
+      }),
+    );
+    return result.cities[0]!.days.flatMap((d) => d.slots.map((s) => s.attractionId));
+  }
+
+  it('takes the lesser of the days times the ceiling and what the city actually holds', () => {
+    const result = generateItinerary(
+      input({
+        endDate: '2026-07-03',
+        intensity: 'RELAXED',
+        cities: [availableCity({ attractions: attractions(20, 30), walkMinutes: uniformWalk(20) })],
+      }),
+    );
+
+    // Three days at four a day is twelve of the twenty on offer — and only those
+    // twelve reach the walking solver, which is bounded well below twenty.
+    const ids = result.cities[0]!.days.flatMap((d) => d.slots.map((s) => s.attractionId));
+    expect(result.cities[0]!.days.map((d) => d.slots.length)).toEqual([4, 4, 4]);
+    expect(new Set(ids).size).toBe(12);
+  });
+
+  it('does not let a day the flights wiped out buy attractions nobody will see', () => {
+    // Twelve attractions strung along a road in editorial rank order, the eight
+    // museums in the middle of it — so the walking route and the traveler's
+    // Interests genuinely disagree about who should be dropped.
+    const road = (count: number): number[][] =>
+      Array.from({ length: count }, (_, i) =>
+        Array.from({ length: count }, (_, j) => Math.abs(i - j) * 10),
+      );
+    const middleMuseums: AttractionCategory[] = [
+      'LANDMARK',
+      'LANDMARK',
+      ...Array<AttractionCategory>(8).fill('MUSEUM'),
+      'LANDMARK',
+      'LANDMARK',
+    ];
+
+    const result = generateItinerary(
+      input({
+        endDate: '2026-07-05',
+        intensity: 'RELAXED',
+        interests: [{ category: 'museums-galleries', rating: 1 }],
+        cities: [
+          // Three calendar days, but the 07:00 departure closes the third before
+          // it opens. Counting that day would put the limit at twelve — the whole
+          // city — so nothing would be cut here, and the four the traveler never
+          // gets to would be dropped by the walking route running out of day
+          // rather than by what they said they liked.
+          availableCity({
+            departAt: '2026-07-03T04:00:00.000Z',
+            attractions: categorised(...middleMuseums),
+            walkMinutes: road(12),
+          }),
+          availableCity({ iata: 'FCO', name: 'Rome', timezone: 'Europe/Rome' }),
+        ],
+      }),
+    );
+
+    const days = result.cities[0]!.days;
+    expect(days.map((d) => d.slots.length)).toEqual([4, 4, 0]);
+    // The eight museums, walked end to end — not the first eight along the road.
+    expect(days.flatMap((d) => d.slots.map((s) => s.attractionId))).toEqual([
+      'a3',
+      'a4',
+      'a5',
+      'a6',
+      'a7',
+      'a8',
+      'a9',
+      'a10',
+    ]);
+  });
+
+  it('gives two travelers with different Interests visibly different Itineraries', () => {
+    const city = categorised('MUSEUM', 'MUSEUM', 'MUSEUM', 'PARK', 'PARK', 'PARK');
+
+    const museumGoer = oneRelaxedDay(city, [{ category: 'museums-galleries', rating: 1 }]);
+    const walker = oneRelaxedDay(city, [{ category: 'nature-parks', rating: 1 }]);
+
+    expect(museumGoer).toEqual(['a1', 'a2', 'a3', 'a4']);
+    expect(walker).toEqual(['a4', 'a5', 'a6', 'a1']);
+    expect(museumGoer).not.toEqual(walker);
+  });
+
+  it('ranks liked Interests up, disliked down, and breaks the ties on editorial rank', () => {
+    const chosen = oneRelaxedDay(categorised(...MIXED), [
+      { category: 'museums-galleries', rating: 1 },
+      { category: 'nature-parks', rating: -1 },
+    ]);
+
+    // Both museums first, then both landmarks; the disliked parks are what the
+    // ceiling drops, and within each band rank 1 still precedes rank 4.
+    expect(chosen).toEqual(['a1', 'a4', 'a2', 'a5']);
+  });
+
+  it('orders by editorial rank alone for a traveler with no Interests recorded', () => {
+    expect(oneRelaxedDay(categorised(...MIXED), [])).toEqual(['a1', 'a2', 'a3', 'a4']);
+  });
+
+  it('still plans a day for a traveler who dislikes every InterestCategory', () => {
+    const allDisliked: InterestEntry[] = InterestCategory.options.map((category) => ({
+      category,
+      rating: -1,
+    }));
+
+    expect(oneRelaxedDay(categorised(...MIXED), allDisliked)).toEqual(['a1', 'a2', 'a3', 'a4']);
+  });
+
+  it('yields a lighter stay rather than padding a city that holds few attractions', () => {
+    const result = generateItinerary(
+      input({
+        endDate: '2026-07-03',
+        interests: [{ category: 'museums-galleries', rating: 1 }],
+        cities: [availableCity({ attractions: categorised('MUSEUM', 'PARK') })],
+      }),
+    );
+
+    const days = result.cities[0]!.days;
+    expect(days.map((d) => d.slots.map((s) => s.attractionId))).toEqual([['a1', 'a2'], [], []]);
+    expect(days[1]!.emptyReason).toBe('NO_ATTRACTIONS_LEFT');
+  });
+
+  it('stays deterministic for a given traveler and Trip', () => {
+    const shared = input({
+      endDate: '2026-07-02',
+      intensity: 'RELAXED',
+      interests: [
+        { category: 'shopping', rating: 1 },
+        { category: 'nature-parks', rating: -1 },
+      ],
+      cities: [availableCity({ attractions: categorised(...MIXED, 'MARKET') })],
+    });
+
+    expect(generateItinerary(shared)).toEqual(generateItinerary(shared));
   });
 });
 

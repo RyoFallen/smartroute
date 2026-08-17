@@ -1,12 +1,15 @@
 import type {
   AttractionCategory,
   EmptyDayReason,
+  InterestEntry,
   ItineraryCity,
   ItineraryDay,
   ItineraryResponse,
+  TripIntensity,
   VisitSlot,
 } from '@smartroute/shared';
 import { visitMinutesFor } from '../plan/visit-duration.js';
+import { selectAttractions } from './select.js';
 import { optimalWalkingRoute } from './tour.js';
 import type { LocalDate, MinutesOfDay } from './zoned.js';
 import { datesInclusive, localIso, minutesOfDayFromHhMm, toLocal } from './zoned.js';
@@ -32,20 +35,28 @@ export const DEPARTURE_AIRPORT_MINUTES = 180;
 export const DAY_END_MINUTES = 21 * 60;
 
 /**
- * How many VisitSlots a day may hold at most.
+ * How many VisitSlots a day may hold at most, per TripIntensity.
  *
  * A ceiling, not a quota (see CONTEXT.md on TripIntensity): a city with fewer
  * attractions than this yields a lighter day, never a padded one. Without it a
  * twelve-hour day swallows most of a city and leaves the rest of the stay empty,
  * which is arithmetically fine and no way to spend a holiday.
  *
- * Six is the value the seed implies: every city holds ten to fifteen
+ * MODERATE's six is the value the seed implies: every city holds ten to fifteen
  * attractions, so the ceiling starts to bind past about two days in one city —
- * the point at which the traveler has genuinely seen the place. TripIntensity
- * will drive this per traveler; until then every traveler gets the middle
- * setting.
+ * the point at which the traveler has genuinely seen the place. RELAXED and
+ * PACKED sit one long visit either side of it: four is a morning and an
+ * afternoon with time to sit down, eight is a day that only works if you keep
+ * moving.
  */
-export const DEFAULT_MAX_SLOTS_PER_DAY = 6;
+export const MAX_SLOTS_PER_DAY_BY_INTENSITY: Record<TripIntensity, number> = {
+  RELAXED: 4,
+  MODERATE: 6,
+  PACKED: 8,
+};
+
+/** What a traveler who has not finished onboarding gets — the UserProfile column default. */
+export const DEFAULT_TRIP_INTENSITY: TripIntensity = 'MODERATE';
 
 export interface ItineraryAttractionInput {
   id: string;
@@ -84,8 +95,10 @@ export interface ItineraryInput {
   endDate: LocalDate;
   /** The traveler's stored wake-up time, "HH:mm". */
   wakeUpTime: string;
-  /** Per-day VisitSlot ceiling; defaults to `DEFAULT_MAX_SLOTS_PER_DAY`. */
-  maxSlotsPerDay?: number;
+  /** The traveler's stored TripIntensity; defaults to `DEFAULT_TRIP_INTENSITY`. */
+  intensity?: TripIntensity;
+  /** The traveler's Interest ratings; absent or empty leaves editorial rank in charge. */
+  interests?: InterestEntry[];
   /** In visiting order. */
   cities: ItineraryCityInput[];
 }
@@ -105,7 +118,8 @@ export interface ItineraryInput {
  */
 export function generateItinerary(input: ItineraryInput): ItineraryResponse {
   const wakeUpMinutes = minutesOfDayFromHhMm(input.wakeUpTime);
-  const maxSlotsPerDay = input.maxSlotsPerDay ?? DEFAULT_MAX_SLOTS_PER_DAY;
+  const maxSlotsPerDay = MAX_SLOTS_PER_DAY_BY_INTENSITY[input.intensity ?? DEFAULT_TRIP_INTENSITY];
+  const interests = input.interests ?? [];
   return {
     tripId: input.tripId,
     cities: input.cities.map((city) =>
@@ -116,6 +130,7 @@ export function generateItinerary(input: ItineraryInput): ItineraryResponse {
             tripEnd: input.endDate,
             wakeUpMinutes,
             maxSlotsPerDay,
+            interests,
           })
         : { iata: city.iata, name: null, available: false, days: [] },
     ),
@@ -129,10 +144,11 @@ interface CitySchedule {
   tripEnd: LocalDate;
   wakeUpMinutes: MinutesOfDay;
   maxSlotsPerDay: number;
+  interests: InterestEntry[];
 }
 
 function scheduleCity(stay: CitySchedule): ItineraryCity {
-  const { city, tripStart, tripEnd, wakeUpMinutes, maxSlotsPerDay } = stay;
+  const { city, tripStart, tripEnd, wakeUpMinutes, maxSlotsPerDay, interests } = stay;
 
   // Open tours: the origin city's stay starts on the trip's first day because
   // there is no arrival to wait for, and the final city's runs to the trip's
@@ -140,6 +156,43 @@ function scheduleCity(stay: CitySchedule): ItineraryCity {
   const arrival = city.arriveAt ? toLocal(city.timezone, city.arriveAt) : null;
   const departure = city.departAt ? toLocal(city.timezone, city.departAt) : null;
   const dates = datesInclusive(arrival?.date ?? tripStart, departure?.date ?? tripEnd);
+
+  // Windows first, because what the stay can hold is what decides how many
+  // attractions it is worth choosing.
+  const stayDays = dates.map((date, index) => {
+    const isArrivalDay = arrival !== null && index === 0;
+    const isDepartureDay = departure !== null && index === dates.length - 1;
+    return {
+      date,
+      dayOfStay: index + 1,
+      isArrivalDay,
+      isDepartureDay,
+      window: {
+        opens: isArrivalDay
+          ? Math.max(wakeUpMinutes, arrival.minutesOfDay + ARRIVAL_TRANSFER_MINUTES)
+          : wakeUpMinutes,
+        closes: isDepartureDay
+          ? Math.min(DAY_END_MINUTES, departure.minutesOfDay - DEPARTURE_AIRPORT_MINUTES)
+          : DAY_END_MINUTES,
+      },
+    };
+  });
+
+  // What the stay has room for, chosen before anything is routed: the ceiling is
+  // per day, so the whole stay holds at most one day's worth times the days that
+  // can hold anything. Days the flights wiped out — a dawn departure, a midnight
+  // landing — are excluded, and that exclusion is what makes Interests matter:
+  // counted, they would raise the limit past what the traveler will ever see, and
+  // the surplus would then be trimmed by the walking route rather than by what
+  // the traveler likes. Interests decide who makes the cut (see
+  // `selectAttractions`), which is also why a walking route is only ever solved
+  // over the attractions the traveler will actually be shown.
+  //
+  // A day left with a genuine but tiny sliver still counts: it has real time in
+  // it, and whether a particular visit fits is not knowable before the route is.
+  const walkMinutes = checkedWalkMatrix(city);
+  const usableDays = stayDays.filter((d) => d.window.closes > d.window.opens).length;
+  const chosen = selectAttractions(city.attractions, interests, usableDays * maxSlotsPerDay);
 
   // One walking route for the whole city, cut into contiguous per-day stretches
   // by consuming it from the front. Contiguous stretches of a shortest route are
@@ -152,30 +205,16 @@ function scheduleCity(stay: CitySchedule): ItineraryCity {
   // stops the first day. Choosing between the valid cuts is #30's job — it has
   // to score them against weekly closures anyway, and walking distance is only
   // its tie-break.
-  const queue = optimalWalkingRoute(checkedWalkMatrix(city));
-  const days = dates.map((date, index) => {
-    const isArrivalDay = arrival !== null && index === 0;
-    const isDepartureDay = departure !== null && index === dates.length - 1;
-
-    return scheduleDay({
+  const queue = optimalWalkingRoute(submatrix(walkMinutes, chosen)).map((i) => chosen[i]!);
+  const days = stayDays.map((day) =>
+    scheduleDay({
       city,
-      date,
-      dayOfStay: index + 1,
-      window: {
-        opens: isArrivalDay
-          ? Math.max(wakeUpMinutes, arrival.minutesOfDay + ARRIVAL_TRANSFER_MINUTES)
-          : wakeUpMinutes,
-        closes: isDepartureDay
-          ? Math.min(DAY_END_MINUTES, departure.minutesOfDay - DEPARTURE_AIRPORT_MINUTES)
-          : DAY_END_MINUTES,
-      },
+      ...day,
       wakeUpMinutes,
       maxSlotsPerDay,
-      isArrivalDay,
-      isDepartureDay,
       queue,
-    });
-  });
+    }),
+  );
 
   return { iata: city.iata, name: city.name, available: true, days };
 }
@@ -264,6 +303,20 @@ function checkedWalkMatrix(city: AvailableCityInput): number[][] {
     );
   }
   return city.walkMinutes;
+}
+
+/**
+ * The walking matrix narrowed to the selected attractions, in selection order.
+ *
+ * The route solver only ever sees the attractions the traveler will be shown, so
+ * it works over an m×m matrix rather than the city's full n×n one. Where the
+ * ceiling cuts a large city back that also brings it inside
+ * `MAX_EXACT_TOUR_NODES` — but only where it cuts: a stay whose usable days times
+ * its ceiling still exceeds that bound is as solvable, or not, as it ever was.
+ * The submatrix's indices are positions in `indices`; the caller maps them back.
+ */
+function submatrix(matrix: number[][], indices: number[]): number[][] {
+  return indices.map((from) => indices.map((to) => matrix[from]![to]!));
 }
 
 function emptyReasonFor(day: DaySchedule): EmptyDayReason {

@@ -65,6 +65,11 @@ export class ItineraryService {
       startDate: calendarDate(trip.startDate),
       endDate: calendarDate(trip.endDate),
       wakeUpTime: profile?.wakeUpTime ?? DEFAULT_WAKE_UP_TIME,
+      // No profile means onboarding is unfinished; both of these are optional
+      // precisely so that case needs no fallback here — `generateItinerary`
+      // owns what an unrated traveler gets.
+      intensity: profile?.intensity,
+      interests: profile?.interests,
       cities: cityInputs,
     });
   }

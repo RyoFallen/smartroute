@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { FastifyInstance } from 'fastify';
+import type { AttractionCategory, InterestEntry, TripIntensity } from '@smartroute/shared';
 import { buildServer } from '../../src/server.js';
 import { loadSeed } from '../../prisma/seed.js';
 import { prisma } from '../setup-db.js';
@@ -17,6 +18,7 @@ vi.mock('@clerk/backend', () => ({
 }));
 
 const ALICE = { authorization: 'Bearer u_alice', 'content-type': 'application/json' };
+const BOB = { authorization: 'Bearer u_bob', 'content-type': 'application/json' };
 
 /**
  * IST → FCO → JFK. JFK is deliberately absent from the seed so the unavailable
@@ -56,15 +58,37 @@ const trip = {
 };
 
 /**
+ * A trip whose Istanbul stay is a single afternoon, so the TripIntensity ceiling
+ * binds hard enough that which attractions were chosen — not merely how they were
+ * ordered — is visible in the response.
+ */
+const shortStay = {
+  ...trip,
+  cities: ['IST', 'FCO'],
+  flights: [
+    {
+      ...trip.flights[0]!,
+      depart: '2026-07-01T15:00:00.000Z', // 18:00 in Istanbul
+      arrive: '2026-07-01T17:00:00.000Z',
+    },
+  ],
+};
+
+/**
  * Attractions strung out along a diagonal road, `alongTheRoad[i]` being how far
  * along it the i-th one sits. Istanbul's are in road order, so its editorial
  * rank and its shortest walking route agree; Rome's are scrambled, so they do
  * not — which is what makes the visiting order observable at this seam.
  */
-function seedAttractions(alongTheRoad: number[], lat: number, lon: number) {
+function seedAttractions(
+  alongTheRoad: number[],
+  lat: number,
+  lon: number,
+  categories: AttractionCategory[] = [],
+) {
   return alongTheRoad.map((step, i) => ({
     name: `Sight ${i + 1}`,
-    category: 'LANDMARK' as const,
+    category: categories[i] ?? ('LANDMARK' as const),
     rank: i + 1,
     lat: lat + step / 500,
     lon: lon + step / 500,
@@ -76,6 +100,17 @@ function seedAttractions(alongTheRoad: number[], lat: number, lon: number) {
 
 const IN_ROAD_ORDER = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 const SCRAMBLED = [5, 0, 9, 2, 11, 7, 1, 10, 3, 8, 4, 6];
+
+/**
+ * Istanbul's back half are museums, so a traveler who likes museums-galleries
+ * wants exactly what editorial rank offers last. The front half stays LANDMARK,
+ * which keeps every test that records no Interests reading as it did before.
+ */
+const IST_CATEGORIES: AttractionCategory[] = [
+  ...Array<AttractionCategory>(6).fill('LANDMARK'),
+  ...Array<AttractionCategory>(6).fill('MUSEUM'),
+];
+const IST_MUSEUMS = ['Sight 7', 'Sight 8', 'Sight 9', 'Sight 10', 'Sight 11', 'Sight 12'];
 
 /** The names of the scrambled Rome attractions, read off end to end along the road. */
 const ROME_IN_WALKING_ORDER = [...SCRAMBLED.keys()]
@@ -91,7 +126,7 @@ const seedFixture = [
     lat: 41.0082,
     lon: 28.9784,
     timezone: 'Europe/Istanbul',
-    attractions: seedAttractions(IN_ROAD_ORDER, 41.0, 28.98),
+    attractions: seedAttractions(IN_ROAD_ORDER, 41.0, 28.98, IST_CATEGORIES),
   },
   {
     iata: 'FCO',
@@ -105,10 +140,57 @@ const seedFixture = [
   },
 ];
 
-async function createTrip(app: FastifyInstance): Promise<string> {
-  const res = await app.inject({ method: 'POST', url: '/trips', headers: ALICE, payload: trip });
+async function createTrip(
+  app: FastifyInstance,
+  headers = ALICE,
+  payload: typeof trip = trip,
+): Promise<string> {
+  const res = await app.inject({ method: 'POST', url: '/trips', headers, payload });
   expect(res.statusCode).toBe(201);
   return res.json().id as string;
+}
+
+async function setIntensity(
+  app: FastifyInstance,
+  headers: typeof ALICE,
+  intensity: TripIntensity,
+): Promise<void> {
+  const res = await app.inject({
+    method: 'PUT',
+    url: '/users/me',
+    headers,
+    payload: { intensity, wakeUpTime: '09:00' },
+  });
+  expect(res.statusCode).toBe(200);
+}
+
+async function setInterests(
+  app: FastifyInstance,
+  headers: typeof ALICE,
+  interests: InterestEntry[],
+): Promise<void> {
+  const res = await app.inject({
+    method: 'PUT',
+    url: '/users/me/interests',
+    headers,
+    payload: { interests },
+  });
+  expect(res.statusCode).toBe(200);
+}
+
+/** The attractions of one city, in the order the traveler is told to walk them. */
+async function visitedIn(
+  app: FastifyInstance,
+  headers: typeof ALICE,
+  tripId: string,
+  cityIndex: number,
+): Promise<string[]> {
+  const itinerary = (
+    await app.inject({ method: 'GET', url: `/trips/${tripId}/itinerary`, headers })
+  ).json();
+  return itinerary.cities[cityIndex].days.flatMap((d: { slots: { name: string }[] }) =>
+    d.slots.map((s) => s.name),
+  );
 }
 
 describe('GET /trips/:id/itinerary', () => {
@@ -298,6 +380,55 @@ describe('GET /trips/:id/itinerary', () => {
     const istanbul = itinerary.cities[0];
     expect(istanbul.days.map((d: { slots: unknown[] }) => d.slots.length)).toEqual([6, 6, 0]);
     expect(istanbul.days[1].slots[0].name).toBe('Sight 7'); // day 2 resumes along the road
+  });
+
+  it('reads the per-day ceiling from the traveler stored TripIntensity', async () => {
+    // The generator owns the intensity-to-ceiling table; what this proves is
+    // that the stored profile reaches it at all — the default run above gives
+    // this same Istanbul stay six a day.
+    const app = await buildServer({ withDb: true });
+    await setIntensity(app, ALICE, 'RELAXED');
+    const id = await createTrip(app);
+
+    const itinerary = (
+      await app.inject({ method: 'GET', url: `/trips/${id}/itinerary`, headers: ALICE })
+    ).json();
+
+    // The third day is the early departure, so it is empty either way.
+    expect(itinerary.cities[0].days.map((d: { slots: unknown[] }) => d.slots.length)).toEqual([
+      4, 4, 0,
+    ]);
+  });
+
+  it('lets the traveler Interests decide which attractions survive the ceiling', async () => {
+    const app = await buildServer({ withDb: true });
+    await setIntensity(app, ALICE, 'RELAXED');
+    await setIntensity(app, BOB, 'RELAXED');
+    await setInterests(app, ALICE, [{ category: 'museums-galleries', rating: 1 }]);
+
+    // One afternoon in Istanbul: four of the twelve attractions make the cut.
+    const aliceTrip = await createTrip(app, ALICE, shortStay);
+    const bobTrip = await createTrip(app, BOB, shortStay);
+
+    const alice = await visitedIn(app, ALICE, aliceTrip, 0);
+    const bob = await visitedIn(app, BOB, bobTrip, 0);
+
+    expect(alice).toEqual(['Sight 7', 'Sight 8', 'Sight 9', 'Sight 10']);
+    expect(alice.every((name) => IST_MUSEUMS.includes(name))).toBe(true);
+    // Bob rated nothing, so editorial rank alone decides — and the two travelers
+    // open the same trip on the same day and are told to see different things.
+    expect(bob).toEqual(['Sight 1', 'Sight 2', 'Sight 3', 'Sight 4']);
+    expect(alice).not.toEqual(bob);
+  });
+
+  it('drops the attractions a traveler dislikes before the ones they are neutral on', async () => {
+    const app = await buildServer({ withDb: true });
+    await setIntensity(app, ALICE, 'RELAXED');
+    await setInterests(app, ALICE, [{ category: 'museums-galleries', rating: -1 }]);
+    const id = await createTrip(app, ALICE, shortStay);
+
+    const visited = await visitedIn(app, ALICE, id, 0);
+    expect(visited.some((name) => IST_MUSEUMS.includes(name))).toBe(false);
   });
 
   it('leaves the flat must-go plan endpoint working', async () => {

@@ -26,9 +26,11 @@ export const MAX_EXACT_TOUR_NODES = 15;
  * steps, bridge ramps — is handled without special-casing.
  *
  * Ties are broken toward the lexicographically smallest route. Indices arrive in
- * editorial rank order, so where two walks cost the same the higher-ranked
- * attraction goes first, and the result is stable for a given matrix: the same
- * Trip yields the same Itinerary every time the traveler opens it.
+ * the caller's priority order — Interest rating first, editorial rank breaking
+ * that tie (see `selectAttractions`) — so where two walks cost the same the
+ * attraction the traveler wants more goes first, and the result is stable for a
+ * given matrix: the same Trip yields the same Itinerary every time the traveler
+ * opens it.
  *
  * @param walkMinutes square matrix of walking minutes, `[from][to]`
  * @returns indices into that matrix, in the order they should be walked
