@@ -41,12 +41,20 @@ describe('env', () => {
     spy.mockRestore();
   });
 
-  it('defaults WALKING_PROVIDER to mock', () => {
+  it('defaults WALKING_PROVIDER to mock, so tests and CI never need a service', () => {
     expect(loadEnv().WALKING_PROVIDER).toBe('mock');
   });
 
-  it('exits on WALKING_PROVIDER=osrm rather than failing later at boot', () => {
+  it('accepts WALKING_PROVIDER=osrm against the local container by default', () => {
     process.env.WALKING_PROVIDER = 'osrm';
+    const env = loadEnv();
+    expect(env.WALKING_PROVIDER).toBe('osrm');
+    expect(env.OSRM_BASE_URL).toBe('http://localhost:5050');
+  });
+
+  it('exits when OSRM_BASE_URL omits its scheme, which `new URL` would accept', () => {
+    process.env.WALKING_PROVIDER = 'osrm';
+    process.env.OSRM_BASE_URL = 'localhost:5000';
     const spy = vi.spyOn(process, 'exit').mockImplementation(((): never => {
       throw new Error('exit called');
     }) as never);

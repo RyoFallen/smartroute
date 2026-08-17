@@ -1,0 +1,23 @@
+{
+  "comment": [
+    "Pinned inputs for the SmartRoute OSRM foot-profile extract (ADR-0005, issue #28).",
+    "`snapshot` is a Geofabrik dated snapshot, NOT `-latest`: `-latest` moves every day, so a",
+    "thesis result derived from it stops being re-derivable the moment it does. Bumping this",
+    "date is a deliberate act — record the new one in README.md when you do.",
+    "Each region is the smallest Geofabrik extract that contains its city; the script clips it",
+    "down to a bounding box derived from the seeded Attraction coordinates."
+  ],
+  "snapshot": "260815",
+  "baseUrl": "https://download.geofabrik.de",
+  "padDegrees": 0.05,
+  "regions": {
+    "IST": "europe/turkey",
+    "BER": "europe/germany/berlin",
+    "WAW": "europe/poland/mazowieckie",
+    "BUD": "europe/hungary",
+    "LHR": "europe/united-kingdom/england/greater-london",
+    "CDG": "europe/france/ile-de-france",
+    "FCO": "europe/italy/centro",
+    "BCN": "europe/spain/cataluna"
+  }
+}

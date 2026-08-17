@@ -12,18 +12,20 @@ const Env = z
     DUFFEL_API_KEY: z.string().min(1).optional(),
     DUFFEL_BASE_URL: z.string().url().default('https://api.duffel.com'),
     WALKING_PROVIDER: z.enum(['mock', 'osrm']).default('mock'),
+    // `.url()` alone is too weak here: `new URL('localhost:5000')` succeeds
+    // with protocol `localhost:`, so the commonest misconfiguration — dropping
+    // the scheme — would validate and then fail on every fetch instead.
+    OSRM_BASE_URL: z
+      .string()
+      .url()
+      .refine((u) => u.startsWith('http://') || u.startsWith('https://'), {
+        message: 'must be an http(s) URL, e.g. http://localhost:5050',
+      })
+      .default('http://localhost:5050'),
   })
   .refine((e) => e.FLIGHT_PROVIDER !== 'duffel' || !!e.DUFFEL_API_KEY, {
     message: 'DUFFEL_API_KEY is required when FLIGHT_PROVIDER=duffel',
     path: ['DUFFEL_API_KEY'],
-  })
-  // The enum names the intended vocabulary, but only `mock` is wired up. Reject
-  // `osrm` here so a misconfiguration fails at load with an explanation rather
-  // than validating cleanly and then killing the server mid-boot.
-  .refine((e) => e.WALKING_PROVIDER !== 'osrm', {
-    message:
-      'WALKING_PROVIDER=osrm is not available yet: the self-hosted OSRM service is not wired up',
-    path: ['WALKING_PROVIDER'],
   });
 
 export type AppEnv = z.infer<typeof Env>;

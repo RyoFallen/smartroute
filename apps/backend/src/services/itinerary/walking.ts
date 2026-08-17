@@ -45,6 +45,21 @@ export const WALKING_SPEED_KMH = 5;
 export const DETOUR_FACTOR = 1.3;
 
 /**
+ * Walking minutes between two points from their straight-line distance,
+ * inflated by the detour factor.
+ *
+ * Shared rather than inlined into the mock because the OSRM provider falls back
+ * to exactly this estimate for a pair it cannot route — two copies of the
+ * formula would let the fallback drift away from the mock it is named after.
+ */
+export function estimatedWalkMinutes(a: Coordinate, b: Coordinate): number {
+  const km = haversineKm(a, b) * DETOUR_FACTOR;
+  if (km === 0) return 0;
+  // Round up: a walk that exists never takes zero minutes.
+  return Math.max(1, Math.ceil((km / WALKING_SPEED_KMH) * 60));
+}
+
+/**
  * Straight-line distances inflated by a fixed detour factor.
  *
  * Deliberately crude: its job is to be *deterministic and dependency-free* so
@@ -54,13 +69,6 @@ export const DETOUR_FACTOR = 1.3;
  */
 export class MockWalkingDistanceProvider implements WalkingDistanceProvider {
   async matrix(points: Coordinate[]): Promise<number[][]> {
-    return points.map((from) =>
-      points.map((to) => {
-        const km = haversineKm(from, to) * DETOUR_FACTOR;
-        if (km === 0) return 0;
-        // Round up: a walk that exists never takes zero minutes.
-        return Math.max(1, Math.ceil((km / WALKING_SPEED_KMH) * 60));
-      }),
-    );
+    return points.map((from) => points.map((to) => estimatedWalkMinutes(from, to)));
   }
 }

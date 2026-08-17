@@ -17,5 +17,45 @@ services:
       timeout: 3s
       retries: 5
 
+  # Self-hosted pedestrian routing for Itinerary generation (ADR-0005).
+  #
+  # Behind a compose profile on purpose: it serves a graph that lives in a
+  # gitignored directory, so a fresh clone has nothing to mount and the
+  # container would crash-loop. `docker compose up -d` keeps meaning "postgres";
+  # this one is opt-in, after `apps/backend/scripts/osrm/prepare-extract.sh`
+  # has built the extract.
+  osrm:
+    # Must match OSRM_IMAGE in prepare-extract.sh — the .osrm format is
+    # version-specific and a mismatch aborts at startup.
+    image: ghcr.io/project-osrm/osrm-backend:v6.0.0
+    container_name: smartroute-osrm
+    profiles: ['osrm']
+    restart: unless-stopped
+    # --max-table-size must match OSRM_MAX_TABLE_SIZE in
+    # apps/backend/src/services/itinerary/osrm.ts, which refuses oversized
+    # requests before making them.
+    command: osrm-routed --algorithm mld --max-table-size 100 /data/smartroute.osrm
+    volumes:
+      - ./apps/backend/data/osrm:/data:ro
+    ports:
+      # 5050 on the host, not OSRM's own 5000: macOS's AirPlay Receiver listens
+      # on 5000 on both IPv4 and IPv6 and answers 403 to everything, which looks
+      # exactly like a broken OSRM container. Keep OSRM_BASE_URL in step.
+      - '5050:5000'
+    healthcheck:
+      # Opening the port is as far as this can go: osrm-routed does not listen
+      # until its graph is loaded, so a successful connect already means it is
+      # serving, and there is no endpoint that answers 2xx independently of
+      # which cities the extract was built for.
+      #
+      # busybox `nc`, not bash's /dev/tcp — /bin/sh in this image is busybox and
+      # has no /dev/tcp, so the shell form fails with "nonexistent directory"
+      # and leaves the container permanently unhealthy.
+      test: ['CMD', 'nc', '-z', '127.0.0.1', '5000']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
 volumes:
   postgres_data:

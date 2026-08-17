@@ -32,3 +32,7 @@ coverage/
 
 # Prisma
 apps/backend/prisma/migrations/dev.db*
+
+# OSRM extract — hundreds of MB, and fully re-derivable from
+# apps/backend/scripts/osrm/prepare-extract.sh at the pinned snapshot
+apps/backend/data/osrm/
