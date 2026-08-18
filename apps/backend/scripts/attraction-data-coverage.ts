@@ -13,10 +13,18 @@
  * Deliberately not part of `pnpm test`: it reads the seed files directly, needs
  * no database, and regenerating a document is not a test. The `--check` mode
  * exists for the moment the note starts mattering for submission.
+ *
+ * What it writes is run through Prettier first, because `docs/**` must be
+ * Prettier-formatted or backend CI fails, and a generator whose output needs a
+ * second pass to be committable cannot check its own work: it would compare its
+ * raw markdown against the formatted file and report a stale note on every run,
+ * however current the note was. Formatting here is what makes `--check` mean
+ * "the seed data moved" rather than "Prettier reflowed a table".
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import * as prettier from 'prettier';
 import type { AttractionCategory } from '@smartroute/shared';
 import { SeedFile } from '../src/services/plan/seed-schema.js';
 import {
@@ -222,11 +230,16 @@ function render(rows: Row[]): string {
 }
 
 const rows = collect();
-const note = render(rows);
+// Resolved from the note's own path so the script picks up whatever
+// `.prettierrc.json` the repo is using rather than restating its settings here.
+const note = await prettier.format(render(rows), {
+  ...(await prettier.resolveConfig(notePath)),
+  parser: 'markdown',
+});
 
 if (process.argv.includes('--check')) {
   const existing = readFileSync(notePath, 'utf8');
-  if (existing.trim() !== note.trim()) {
+  if (existing !== note) {
     console.error(
       `${path.relative(process.cwd(), notePath)} is out of date — regenerate it with:\n` +
         '  pnpm --filter @smartroute/backend exec tsx scripts/attraction-data-coverage.ts',
