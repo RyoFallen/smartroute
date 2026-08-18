@@ -46,6 +46,7 @@ import smartroute_mobile.composeapp.generated.resources.itinerary_empty_schedule
 import smartroute_mobile.composeapp.generated.resources.itinerary_empty_unknown
 import smartroute_mobile.composeapp.generated.resources.itinerary_empty_window_too_short
 import smartroute_mobile.composeapp.generated.resources.itinerary_error_load
+import smartroute_mobile.composeapp.generated.resources.itinerary_hours_assumed
 import smartroute_mobile.composeapp.generated.resources.itinerary_no_guide
 import smartroute_mobile.composeapp.generated.resources.itinerary_open_in_maps
 import smartroute_mobile.composeapp.generated.resources.itinerary_title
@@ -228,6 +229,18 @@ private fun VisitSlotRow(
                 text = "⚠️ ${stringResource(Res.string.itinerary_closed_today)}",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 4.dp),
+            )
+        }
+        // We do not hold this attraction's opening times, so the hour above came
+        // from an assumption about its kind rather than from data. Deliberately
+        // not the error colour — nothing is wrong, the traveler is simply being
+        // told which of these times they should check.
+        if (slot.hoursAssumed) {
+            Text(
+                text = "ⓘ ${stringResource(Res.string.itinerary_hours_assumed)}",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp),
             )
         }

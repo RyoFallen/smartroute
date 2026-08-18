@@ -67,6 +67,7 @@
     <string name="itinerary_empty_no_attractions_left">Nothing left to visit — every stop is already scheduled.</string>
     <string name="itinerary_empty_scheduled_around_closures">Left free so your visits land on days these places are open.</string>
     <string name="itinerary_closed_today">Closed on this day</string>
+    <string name="itinerary_hours_assumed">Opening time assumed — check before you go</string>
     <string name="itinerary_empty_unknown">Nothing is scheduled today.</string>
     <string name="weekday_monday">Monday</string>
     <string name="weekday_tuesday">Tuesday</string>

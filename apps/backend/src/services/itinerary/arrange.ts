@@ -22,6 +22,11 @@ export interface DayCost {
   scheduled: number;
   /** Of those, how many fall on a day the attraction is shut. */
   conflicts: number;
+  /**
+   * Of those, how many had to be placed outside the window their kind is
+   * assumed open in, because the day left nowhere inside it.
+   */
+  outsideAssumed: number;
   walkMinutes: number;
 }
 
@@ -37,6 +42,7 @@ export type Arrangement = number[];
 interface Best {
   scheduled: number;
   conflicts: number;
+  outsideAssumed: number;
   walkMinutes: number;
   lumpiness: number;
   takes: Arrangement;
@@ -61,7 +67,14 @@ export function bestArrangement(
     new Array<Best | null>(total + 1).fill(null),
   );
   for (let from = 0; from <= total; from++) {
-    best[days]![from] = { scheduled: 0, conflicts: 0, walkMinutes: 0, lumpiness: 0, takes: [] };
+    best[days]![from] = {
+      scheduled: 0,
+      conflicts: 0,
+      outsideAssumed: 0,
+      walkMinutes: 0,
+      lumpiness: 0,
+      takes: [],
+    };
   }
 
   for (let day = days - 1; day >= 0; day--) {
@@ -78,6 +91,7 @@ export function bestArrangement(
         const candidate: Best = {
           scheduled: cost.scheduled + rest.scheduled,
           conflicts: cost.conflicts + rest.conflicts,
+          outsideAssumed: cost.outsideAssumed + rest.outsideAssumed,
           walkMinutes: cost.walkMinutes + rest.walkMinutes,
           lumpiness: cost.scheduled * cost.scheduled + rest.lumpiness,
           takes: [take, ...rest.takes],
@@ -101,6 +115,13 @@ export function bestArrangement(
  * disclosed problem for a hidden one. A conflict it cannot design away is
  * flagged on the slot instead; that is what the flag is for.
  *
+ * `outsideAssumed` sits below `conflicts` because a published closure is a fact
+ * and an assumed window is a guess, and a guess must never be enforced harder
+ * than a fact. Above `walkMinutes` because being at the door while it is open
+ * matters more than the walk there. Both are preferences of the same shape: the
+ * arrangement avoids them where it can, and where it cannot the slot is
+ * scheduled anyway and says so, rather than the attraction quietly disappearing.
+ *
  * `walkMinutes` is the ticket's tie-break. The two below it exist because
  * walking alone is not merely arbitrary but biased: only the *second* visit of a
  * day onwards carries a walk — the first is reached from wherever the traveler
@@ -118,6 +139,9 @@ function isBetter(candidate: Best, incumbent: Best): boolean {
   }
   if (candidate.conflicts !== incumbent.conflicts) {
     return candidate.conflicts < incumbent.conflicts;
+  }
+  if (candidate.outsideAssumed !== incumbent.outsideAssumed) {
+    return candidate.outsideAssumed < incumbent.outsideAssumed;
   }
   if (candidate.walkMinutes !== incumbent.walkMinutes) {
     return candidate.walkMinutes < incumbent.walkMinutes;

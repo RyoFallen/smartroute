@@ -25,6 +25,7 @@ import {
   attractionKey,
 } from '../src/services/plan/seed-opening-hours.js';
 import { DEFAULT_VISIT_MINUTES } from '../src/services/plan/visit-duration.js';
+import { ASSUMED_OPENING_WINDOW } from '../src/services/itinerary/assumed-opening-hours.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const seedDir = path.join(here, '../prisma/seed');
@@ -84,6 +85,10 @@ const count = (rows: Row[], basis: HoursBasis): number =>
 const pct = (n: number, total: number): string =>
   total === 0 ? '—' : `${((n / total) * 100).toFixed(0)}%`;
 
+/** Minutes since midnight as a wall clock reads it, for the assumed-window table. */
+const wallClock = (minutes: number): string =>
+  `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+
 function render(rows: Row[]): string {
   const total = rows.length;
   const curated = rows.filter((r) => r.visitMinutesCurated).length;
@@ -137,6 +142,51 @@ function render(rows: Row[]): string {
     for (const r of undecided) out.push(`| ${r.city} | ${r.name} | ${r.category} |`);
     out.push('');
   }
+
+  // Both bases resolve to a null OpeningHours on the Attraction, which is what
+  // the scheduler reads — one deliberately, one because nobody has looked yet.
+  const assumedRows = rows.filter((r) => r.hours === 'undecided' || r.hours === 'unknown');
+
+  out.push('## Assumed opening windows');
+  out.push('');
+  out.push(
+    `Scheduled against an assumed window: **${assumedRows.length} of ${total}** ` +
+      `(${pct(assumedRows.length, total)}) — every Attraction whose \`OpeningHours\` we do not`,
+    'hold, whether it was deliberately left unknown or has not been examined yet. Each affected',
+    'VisitSlot is returned with `hoursAssumed` set and is badged in the app, so a traveler can tell',
+    'an opening time we know from one we guessed.',
+  );
+  out.push('');
+  out.push(
+    'This mirrors the `VisitDuration` fallback below and is our own judgement for the same reason —',
+    'no provider publishes a per-category opening window either. The alternative of dropping such',
+    'Attractions from the Itinerary was rejected: silently losing a must-go landmark for a data',
+    'reason the traveler cannot see is worse than an approximate opening time. The windows are',
+    'deliberately wide, because an assumed window is a plausibility bound, and one narrower than',
+    'reality would push a visit off a day it could genuinely have happened on.',
+    '',
+    'They are a **preference, not a constraint**. A visit is placed inside its window wherever the',
+    'stay allows one, and outside it — still disclosed — where nothing does; enforcing it strictly',
+    'would reintroduce the same silent exclusion by the back door. A published closure, which is a',
+    'fact rather than a guess, is itself only ever flagged, and a guess must not outrank one.',
+  );
+  out.push('');
+  out.push('| AttractionCategory | Assumed open | Assumed close | Attractions using it |');
+  out.push('| ------------------ | ------------ | ------------- | -------------------: |');
+  for (const [category, window] of Object.entries(ASSUMED_OPENING_WINDOW)) {
+    const using = assumedRows.filter((r) => r.category === category).length;
+    out.push(
+      `| ${category} | ${wallClock(window.opens)} | ${wallClock(window.closes)} | ${using} |`,
+    );
+  }
+  out.push('');
+  out.push(
+    'Attractions whose hours we *do* hold — including the ones recorded as genuinely unconstrained',
+    '(`24/7`) — are never touched by this table and never marked as assumed. Note also what this',
+    'does not do: a published weekly schedule is honoured at the level of _which day_ a visit falls',
+    'on, not which hour of it (see `closures.ts`).',
+  );
+  out.push('');
 
   out.push('## VisitDuration');
   out.push('');

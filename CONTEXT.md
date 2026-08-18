@@ -27,6 +27,16 @@ squares, parks and streets), and _unknown_ (absent from our dataset). "Always op
 the attraction; "unknown" is a fact about our data.
 _Avoid_: hours (unqualified), availability
 
+**AssumedOpeningWindow**:
+The part of a day an Attraction of a given AttractionCategory is _assumed_ open for, used only where
+its OpeningHours are unknown. Our own judgement, not a sourced figure — the OpeningHours twin of the
+VisitDuration fallback — and always disclosed on the VisitSlot it placed. A _preference_, not a
+constraint: where a stay leaves nowhere inside it, the visit is scheduled outside it and still
+disclosed, because a guess must never be enforced harder than a published closure, which is itself
+only ever flagged. Note the deliberate asymmetry it lives beside: OpeningHours we _do_ hold are
+honoured at the level of which _day_ a visit falls on, not which hour of it.
+_Avoid_: assumed hours, default hours, opening window (unqualified — that reads as a published one)
+
 **VisitDuration**:
 How long a traveler is expected to spend at one Attraction. Curated per attraction where known,
 otherwise inferred from its AttractionCategory. This is our own datum — no external provider

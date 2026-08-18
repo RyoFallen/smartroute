@@ -119,17 +119,19 @@ class ItineraryViewModelTest {
         }
 
     @Test
-    fun `honesty flags survive to the UI`() =
+    fun `an opening time the backend had to guess reaches the UI`() =
         runTest(dispatcher) {
+            // ItineraryScreen badges exactly this flag (#31). It is behaviour,
+            // not decoration: a slot that silently loses it turns a disclosed
+            // approximation into an undisclosed one, and the traveler can no
+            // longer tell an opening time we know from one we guessed. The two
+            // slots differ only in the flag, so a view model that dropped it
+            // would still return two slots and still fail here.
             val slots = loaded().cities[0].days[0].slots
 
             assertFalse(slots[0].hoursAssumed)
             assertTrue(slots[1].hoursAssumed)
             assertFalse(slots[1].closedOnThisDay)
-            // The conflict the backend could not design away. It reaching the UI
-            // layer at all is the point: ItineraryScreen badges exactly this,
-            // and a slot that silently loses the flag sends someone to a locked
-            // door.
         }
 
     @Test

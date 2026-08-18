@@ -114,6 +114,40 @@ has to reach zero before the dataset is finished.
 | BCN  | Bunkers del Carmel                         | VIEWPOINT  |
 | BCN  | Barcelona Beach — Barceloneta              | PARK       |
 
+## Assumed opening windows
+
+Scheduled against an assumed window: **82 of 95** (86%) — every Attraction whose `OpeningHours` we do not
+hold, whether it was deliberately left unknown or has not been examined yet. Each affected
+VisitSlot is returned with `hoursAssumed` set and is badged in the app, so a traveler can tell
+an opening time we know from one we guessed.
+
+This mirrors the `VisitDuration` fallback below and is our own judgement for the same reason —
+no provider publishes a per-category opening window either. The alternative of dropping such
+Attractions from the Itinerary was rejected: silently losing a must-go landmark for a data
+reason the traveler cannot see is worse than an approximate opening time. The windows are
+deliberately wide, because an assumed window is a plausibility bound, and one narrower than
+reality would push a visit off a day it could genuinely have happened on.
+
+They are a **preference, not a constraint**. A visit is placed inside its window wherever the
+stay allows one, and outside it — still disclosed — where nothing does; enforcing it strictly
+would reintroduce the same silent exclusion by the back door. A published closure, which is a
+fact rather than a guess, is itself only ever flagged, and a guess must not outrank one.
+
+| AttractionCategory | Assumed open | Assumed close | Attractions using it |
+| ------------------ | ------------ | ------------- | -------------------: |
+| MUSEUM             | 10:00        | 18:00         |                   13 |
+| HISTORICAL         | 09:00        | 18:00         |                   19 |
+| RELIGIOUS          | 08:00        | 18:00         |                   14 |
+| MARKET             | 09:00        | 19:00         |                    4 |
+| PARK               | 08:00        | 20:00         |                    6 |
+| VIEWPOINT          | 09:00        | 21:00         |                    9 |
+| LANDMARK           | 08:00        | 20:00         |                   17 |
+
+Attractions whose hours we _do_ hold — including the ones recorded as genuinely unconstrained
+(`24/7`) — are never touched by this table and never marked as assumed. Note also what this
+does not do: a published weekly schedule is honoured at the level of _which day_ a visit falls
+on, not which hour of it (see `closures.ts`).
+
 ## VisitDuration
 
 Curated per attraction: **0 of 95** (0%). The remaining

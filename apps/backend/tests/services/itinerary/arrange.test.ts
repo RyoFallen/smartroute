@@ -6,6 +6,7 @@ import type { DayCost, DayCostFn } from '../../../src/services/itinerary/arrange
 const free: DayCostFn = (_day, _from, take) => ({
   scheduled: take,
   conflicts: 0,
+  outsideAssumed: 0,
   walkMinutes: 0,
 });
 
@@ -16,7 +17,7 @@ function withClosures(closed: Map<number, Set<number>>): DayCostFn {
     for (let i = from; i < from + take; i++) {
       if (closed.get(i)?.has(day)) conflicts++;
     }
-    return { scheduled: take, conflicts, walkMinutes: 0 };
+    return { scheduled: take, conflicts, outsideAssumed: 0, walkMinutes: 0 };
   };
 }
 
@@ -62,6 +63,7 @@ describe('bestArrangement', () => {
     const costly: DayCostFn = (_day, _from, take) => ({
       scheduled: take,
       conflicts: 0,
+      outsideAssumed: 0,
       walkMinutes: Math.max(0, take - 1) * 100,
     });
     expect(bestArrangement(3, 3, 3, costly)).toEqual([1, 1, 1]);
@@ -79,8 +81,8 @@ describe('bestArrangement', () => {
     // move on to the day after rather than falling off the end.
     const blocked: DayCostFn = (day, _from, take) =>
       day === 1
-        ? { scheduled: 0, conflicts: 0, walkMinutes: 0 }
-        : { scheduled: take, conflicts: 0, walkMinutes: 0 };
+        ? { scheduled: 0, conflicts: 0, outsideAssumed: 0, walkMinutes: 0 }
+        : { scheduled: take, conflicts: 0, outsideAssumed: 0, walkMinutes: 0 };
 
     const takes = bestArrangement(4, 3, 2, blocked);
 

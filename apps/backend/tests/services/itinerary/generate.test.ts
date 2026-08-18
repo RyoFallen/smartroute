@@ -370,6 +370,92 @@ describe('generateItinerary', () => {
     expect(slots[1]!.hoursAssumed).toBe(true);
   });
 
+  it('will not open a day on an attraction whose assumed window has not started', () => {
+    // An early riser, and a museum nobody has curated hours for. Left to the
+    // SchedulableWindow alone the visit would begin at 06:00, which is not a
+    // time any museum is open — the whole point of the assumed window.
+    const museum = { ...attractions(1)[0]!, category: 'MUSEUM' as const, openingHours: null };
+    const result = generateItinerary(
+      input({
+        endDate: '2026-07-01',
+        wakeUpTime: '06:00',
+        cities: [availableCity({ attractions: [museum], walkMinutes: uniformWalk(1) })],
+      }),
+    );
+
+    const slot = result.cities[0]!.days[0]!.slots[0]!;
+    expect(slot.hoursAssumed).toBe(true);
+    // ASSUMED_OPENING_WINDOW.MUSEUM opens at 10:00; the traveler waits.
+    expect(slot.startsAt).toBe('2026-07-01T10:00:00+03:00');
+  });
+
+  /** A day-eating landmark, then a museum nobody has curated hours for. */
+  const LONG_DAY_THEN_MUSEUM = [
+    { ...attractions(1)[0]!, visitMinutes: 480 },
+    {
+      ...attractions(1)[0]!,
+      id: 'a2',
+      name: 'Sight 2',
+      category: 'MUSEUM' as const,
+      visitMinutes: 120,
+      openingHours: null,
+    },
+  ];
+
+  it('moves an assumed visit to a day it fits the assumed window on', () => {
+    // Day one is eaten to 17:10 — inside the SchedulableWindow, which runs to
+    // 21:00, and well past when a museum shuts. Day two is untouched.
+    const result = generateItinerary(
+      input({
+        endDate: '2026-07-02',
+        cities: [availableCity({ attractions: LONG_DAY_THEN_MUSEUM, walkMinutes: uniformWalk(2) })],
+      }),
+    );
+
+    const days = result.cities[0]!.days;
+    expect(days[0]!.slots.map((s) => s.name)).toEqual(['Sight 1']);
+    expect(days[1]!.slots.map((s) => s.name)).toEqual(['Sight 2']);
+    // ASSUMED_OPENING_WINDOW.MUSEUM opens at 10:00, past the 09:00 wake-up.
+    expect(days[1]!.slots[0]!.startsAt).toBe('2026-07-02T10:00:00+03:00');
+  });
+
+  it('schedules an assumed visit outside its window rather than losing it', () => {
+    // The same pair with nowhere to move to. The assumed window is a guess about
+    // a *kind* of attraction; a guess must never be why a traveler silently
+    // loses a must-go sight, so the visit happens and `hoursAssumed` says the
+    // time came from us. Real closures are only ever flagged too (#30) — a guess
+    // cannot be enforced harder than a fact.
+    const result = generateItinerary(
+      input({
+        endDate: '2026-07-01',
+        cities: [availableCity({ attractions: LONG_DAY_THEN_MUSEUM, walkMinutes: uniformWalk(2) })],
+      }),
+    );
+
+    const slots = result.cities[0]!.days[0]!.slots;
+    expect(slots.map((s) => s.name)).toEqual(['Sight 1', 'Sight 2']);
+    // 09:00 + 480 visit + 10 walk, past the assumed 18:00 close, and disclosed.
+    expect(slots[1]!.startsAt).toBe('2026-07-01T17:10:00+03:00');
+    expect(slots[1]!.hoursAssumed).toBe(true);
+  });
+
+  it('leaves an attraction with known hours to its own hours', () => {
+    // The mirror of the two above: `24/7` is knowledge, not a gap, so the
+    // category assumption must not touch it — nor mark it as assumed.
+    const square = { ...attractions(1)[0]!, category: 'MUSEUM' as const, openingHours: '24/7' };
+    const result = generateItinerary(
+      input({
+        endDate: '2026-07-01',
+        wakeUpTime: '06:00',
+        cities: [availableCity({ attractions: [square], walkMinutes: uniformWalk(1) })],
+      }),
+    );
+
+    const slot = result.cities[0]!.days[0]!.slots[0]!;
+    expect(slot.hoursAssumed).toBe(false);
+    expect(slot.startsAt).toBe('2026-07-01T06:00:00+03:00');
+  });
+
   it('is deterministic — the same input yields the same Itinerary', () => {
     const shared = input({ endDate: '2026-07-04' });
     expect(generateItinerary(shared)).toEqual(generateItinerary(shared));

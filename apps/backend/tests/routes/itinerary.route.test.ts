@@ -336,11 +336,14 @@ describe('GET /trips/:id/itinerary', () => {
 
   it('starts the day at the traveler stored wake-up time', async () => {
     const app = await buildServer({ withDb: true });
+    // Late enough to sit inside the assumed opening window of the first
+    // attraction, so this asserts the wake-up time and nothing else. An earlier
+    // riser is the next test's subject.
     const saved = await app.inject({
       method: 'PUT',
       url: '/users/me',
       headers: ALICE,
-      payload: { intensity: 'MODERATE', wakeUpTime: '07:30' },
+      payload: { intensity: 'MODERATE', wakeUpTime: '10:30' },
     });
     expect(saved.statusCode).toBe(200);
     const id = await createTrip(app);
@@ -349,7 +352,69 @@ describe('GET /trips/:id/itinerary', () => {
       await app.inject({ method: 'GET', url: `/trips/${id}/itinerary`, headers: ALICE })
     ).json();
 
-    expect(itinerary.cities[0].days[0].slots[0].startsAt).toBe('2026-07-01T07:30:00+03:00');
+    expect(itinerary.cities[0].days[0].slots[0].startsAt).toBe('2026-07-01T10:30:00+03:00');
+  });
+
+  it('holds an attraction with no known hours back to its assumed opening window', async () => {
+    const app = await buildServer({ withDb: true });
+    // Earlier than anything in the dataset opens. Without the assumed window the
+    // traveler would be sent to a sight at dawn, on no evidence that it is open.
+    const saved = await app.inject({
+      method: 'PUT',
+      url: '/users/me',
+      headers: ALICE,
+      payload: { intensity: 'MODERATE', wakeUpTime: '06:00' },
+    });
+    expect(saved.statusCode).toBe(200);
+    const id = await createTrip(app);
+
+    const itinerary = (
+      await app.inject({ method: 'GET', url: `/trips/${id}/itinerary`, headers: ALICE })
+    ).json();
+
+    // The fixture carries no OpeningHours at all, so every slot is scheduled
+    // against ASSUMED_OPENING_WINDOW — and every one of them says so.
+    const slot = itinerary.cities[0].days[0].slots[0];
+    expect(slot.category).toBe('LANDMARK');
+    expect(slot.startsAt).toBe('2026-07-01T08:00:00+03:00');
+    expect(slot.hoursAssumed).toBe(true);
+  });
+
+  it('leaves an attraction whose hours are known unassumed, and unconstrained by the guess', async () => {
+    const app = await buildServer({ withDb: true });
+    // `24/7` is knowledge — the sight has no gates — so neither the flag nor the
+    // per-category window has any business touching it. This is the control for
+    // the test above: the two differ only in whether the dataset knows.
+    await loadSeed(prisma, seedFixture, {
+      manual: {
+        note: 'Fixture: one attraction we know has no gates.',
+        entries: [
+          {
+            basis: 'always-open',
+            cityIata: 'IST',
+            attraction: 'Sight 1',
+            rationale: 'Open-air public space with no gates.',
+          },
+        ],
+      },
+    });
+    const saved = await app.inject({
+      method: 'PUT',
+      url: '/users/me',
+      headers: ALICE,
+      payload: { intensity: 'MODERATE', wakeUpTime: '06:00' },
+    });
+    expect(saved.statusCode).toBe(200);
+    const id = await createTrip(app);
+
+    const itinerary = (
+      await app.inject({ method: 'GET', url: `/trips/${id}/itinerary`, headers: ALICE })
+    ).json();
+
+    const slot = itinerary.cities[0].days[0].slots[0];
+    expect(slot.name).toBe('Sight 1');
+    expect(slot.hoursAssumed).toBe(false);
+    expect(slot.startsAt).toBe('2026-07-01T06:00:00+03:00');
   });
 
   it('walks each city in its shortest order rather than in editorial rank', async () => {

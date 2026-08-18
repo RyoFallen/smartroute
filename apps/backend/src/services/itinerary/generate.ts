@@ -9,6 +9,7 @@ import type {
   VisitSlot,
 } from '@smartroute/shared';
 import { visitMinutesFor } from '../plan/visit-duration.js';
+import { assumedWindowFor } from './assumed-opening-hours.js';
 import { closedOn } from './closures.js';
 import { bestArrangement } from './arrange.js';
 import { selectAttractions } from './select.js';
@@ -31,8 +32,8 @@ export const DEPARTURE_AIRPORT_MINUTES = 180;
 
 /**
  * The end of the touring day. Attractions close and travelers stop; scheduling
- * a visit at 23:00 would be arithmetic, not a plan. Opening hours will narrow
- * this further once they are consulted.
+ * a visit at 23:00 would be arithmetic, not a plan. An attraction whose hours
+ * are unknown narrows this further still (see `ASSUMED_OPENING_WINDOW`).
  */
 export const DAY_END_MINUTES = 21 * 60;
 
@@ -116,7 +117,9 @@ export interface ItineraryInput {
  *
  * OpeningHours are consulted when placing a day (see `arrangeDays`): a visit is
  * kept off a day the attraction is shut wherever any arrangement of the stay
- * allows it, and flagged on the slot where none does.
+ * allows it, and flagged on the slot where none does. Where the dataset holds
+ * no hours at all, the visit is placed inside the documented per-category
+ * assumption instead, and says so.
  */
 export function generateItinerary(input: ItineraryInput): ItineraryResponse {
   const wakeUpMinutes = minutesOfDayFromHhMm(input.wakeUpTime);
@@ -235,15 +238,16 @@ function arrangeDays(plan: ArrangementPlan): ItineraryDay[] {
     route.length,
     stayDays.length,
     maxSlotsPerDay,
-    (day, from, take) => {
-      const scheduled = scheduleDay(dayPlan(plan, day, from, take));
+    (index, from, take) => {
+      const { day, outsideAssumed } = scheduleDay(dayPlan(plan, index, from, take));
       // A share that does not fit is not rejected: the day simply schedules what
       // it can, and the arrangement is scored on that. Rejecting it would leave
       // a short arrival day unable to hold anything at all.
       return {
-        scheduled: scheduled.slots.length,
-        conflicts: scheduled.slots.filter((s) => s.closedOnThisDay).length,
-        walkMinutes: scheduled.slots.reduce((sum, s) => sum + (s.walkMinutesFromPrevious ?? 0), 0),
+        scheduled: day.slots.length,
+        conflicts: day.slots.filter((s) => s.closedOnThisDay).length,
+        outsideAssumed,
+        walkMinutes: day.slots.reduce((sum, s) => sum + (s.walkMinutesFromPrevious ?? 0), 0),
       };
     },
   );
@@ -252,7 +256,7 @@ function arrangeDays(plan: ArrangementPlan): ItineraryDay[] {
   // its days away and only kept the numbers.
   let from = 0;
   return stayDays.map((_, index) => {
-    const day = scheduleDay(dayPlan(plan, index, from, takes[index]!));
+    const { day } = scheduleDay(dayPlan(plan, index, from, takes[index]!));
     from += day.slots.length;
     return day;
   });
@@ -308,11 +312,26 @@ interface DaySchedule {
   remaining: number;
 }
 
-function scheduleDay(day: DaySchedule): ItineraryDay {
+/**
+ * One scheduled day, plus the one thing about it the traveler is not shown.
+ *
+ * `outsideAssumed` never reaches the wire: a slot already carries
+ * `hoursAssumed`, and splitting that into "assumed, and we managed it" versus
+ * "assumed, and we could not" would ask the traveler to act on a distinction
+ * between two of our own guesses. It exists so the arrangement can prefer the
+ * days where the guess held (see `isBetter`).
+ */
+interface ScheduledDay {
+  day: ItineraryDay;
+  outsideAssumed: number;
+}
+
+function scheduleDay(day: DaySchedule): ScheduledDay {
   const { city, date, dayOfStay, window, maxSlotsPerDay, queue } = day;
   const slots: VisitSlot[] = [];
   let cursor = window.opens;
   let previous: number | null = null;
+  let outsideAssumed = 0;
 
   while (queue.length > 0 && window.closes > cursor && slots.length < maxSlotsPerDay) {
     const index = queue[0]!;
@@ -320,8 +339,33 @@ function scheduleDay(day: DaySchedule): ItineraryDay {
     // The first slot of a day is reached from the traveler's bed, not from
     // yesterday's last stop, so it carries no walk.
     const walk = previous === null ? null : city.walkMinutes[previous]![index]!;
-    const startsAtMinutes = cursor + (walk ?? 0);
     const minutes = visitMinutesFor(attraction.category, attraction.visitMinutes);
+
+    // Where the dataset does not know when this attraction opens, the visit is
+    // placed inside the documented per-category assumption rather than at
+    // whatever hour the day happens to have room at. Arriving early means
+    // waiting for the doors, not walking in.
+    const assumed = assumedWindowFor(attraction.category, attraction.openingHours);
+    const earliest = cursor + (walk ?? 0);
+    const insideStart = assumed === null ? earliest : Math.max(earliest, assumed.opens);
+    // Vacuously true where there is no assumption to honour, so an ordinary
+    // visit that simply overran the day is never miscounted as one the guess
+    // displaced — that would have the arrangement dodging days for a reason
+    // that does not exist.
+    const fitsAssumed =
+      assumed === null || insideStart + minutes <= Math.min(window.closes, assumed.closes);
+
+    // A preference, not a veto. Where the day leaves no room inside the assumed
+    // window the visit is still scheduled — an assumed window is a guess about
+    // this *kind* of attraction, and a guess must never be the reason a traveler
+    // silently loses a must-go landmark (the exclusion the parent spec rejected).
+    // #30 already settled the shape of this for real closures, which are facts
+    // and are still only flagged; a guess cannot be enforced harder than that.
+    // Which day it lands on is the arrangement's problem — it scores
+    // `outsideAssumed`, so it moves the visit to a day the guess holds on
+    // wherever one exists.
+    if (!fitsAssumed) outsideAssumed++;
+    const startsAtMinutes = fitsAssumed ? insideStart : earliest;
     if (startsAtMinutes + minutes > window.closes) break;
 
     slots.push({
@@ -335,9 +379,11 @@ function scheduleDay(day: DaySchedule): ItineraryDay {
       endsAt: localIso(city.timezone, date, startsAtMinutes + minutes),
       visitMinutes: minutes,
       walkMinutesFromPrevious: walk,
-      // A null OpeningHours means we are scheduling against an assumed window
-      // rather than a published one; the traveler is told so they can verify.
-      hoursAssumed: attraction.openingHours === null,
+      // Exactly the slots placed inside `ASSUMED_OPENING_WINDOW` above: we are
+      // scheduling against a guess rather than a published time, and the
+      // traveler is told so they can check before they travel. Never set for
+      // hours we hold — `24/7` included, which is knowledge, not a gap.
+      hoursAssumed: assumed !== null,
       // Set even while candidate arrangements are still being scored: this is
       // what they are scored on, and on the winner it is what the traveler is
       // shown. A conflict surviving here is one no valid cut could avoid.
@@ -350,11 +396,14 @@ function scheduleDay(day: DaySchedule): ItineraryDay {
   }
 
   return {
-    date,
-    dayOfStay,
-    empty: slots.length === 0,
-    emptyReason: slots.length === 0 ? emptyReasonFor(day) : null,
-    slots,
+    day: {
+      date,
+      dayOfStay,
+      empty: slots.length === 0,
+      emptyReason: slots.length === 0 ? emptyReasonFor(day) : null,
+      slots,
+    },
+    outsideAssumed,
   };
 }
 
