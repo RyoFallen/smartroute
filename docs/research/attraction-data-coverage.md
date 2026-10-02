@@ -16,9 +16,9 @@ Across **94 attractions** in **8 cities**.
 | Basis                                |  Count |    Share |
 | ------------------------------------ | -----: | -------: |
 | OSM-sourced                          |      5 |       5% |
-| Manually filled, with a cited source |     50 |      53% |
+| Manually filled, with a cited source |     52 |      55% |
 | Genuinely unconstrained (`24/7`)     |     24 |      26% |
-| Deliberately left unknown            |     15 |      16% |
+| Deliberately left unknown            |     13 |      14% |
 | Not yet examined                     |      0 |       0% |
 | **Decided**                          | **94** | **100%** |
 
@@ -29,7 +29,7 @@ has to reach zero before the dataset is finished.
 
 ## Assumed opening windows
 
-Scheduled against an assumed window: **15 of 94** (16%) — every Attraction whose `OpeningHours` we do not
+Scheduled against an assumed window: **13 of 94** (14%) — every Attraction whose `OpeningHours` we do not
 hold, whether it was deliberately left unknown or has not been examined yet. Each affected
 VisitSlot is returned with `hoursAssumed` set and is badged in the app, so a traveler can tell
 an opening time we know from one we guessed.
@@ -48,9 +48,9 @@ fact rather than a guess, is itself only ever flagged, and a guess must not outr
 
 | AttractionCategory | Assumed open | Assumed close | Attractions using it |
 | ------------------ | ------------ | ------------- | -------------------: |
-| MUSEUM             | 10:00        | 18:00         |                    2 |
+| MUSEUM             | 10:00        | 18:00         |                    1 |
 | HISTORICAL         | 09:00        | 18:00         |                    4 |
-| RELIGIOUS          | 08:00        | 18:00         |                    5 |
+| RELIGIOUS          | 08:00        | 18:00         |                    4 |
 | MARKET             | 09:00        | 19:00         |                    1 |
 | PARK               | 08:00        | 20:00         |                    0 |
 | VIEWPOINT          | 09:00        | 21:00         |                    1 |

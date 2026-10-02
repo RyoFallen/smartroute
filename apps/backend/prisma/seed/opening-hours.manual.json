@@ -226,10 +226,10 @@
       "basis": "sourced",
       "cityIata": "WAW",
       "attraction": "Copernicus Science Centre",
-      "openingHours": "Jun 29-Aug 31 Mo-Th 09:00-19:00; Jun 29-Aug 31 Fr 09:00-20:00; Jun 29-Aug 31 Sa-Su 09:00-19:00",
+      "openingHours": "Mo-Th 09:00-18:00; Fr 09:00-20:00; Sa-Su 09:00-19:00; Jun 29-Aug 31 Mo-Th 09:00-19:00",
       "source": "https://www.kopernik.org.pl/en/visit/opening-hours",
-      "retrieved": "2026-08-18",
-      "note": "Only the 29 Jun – 31 Aug season was published when retrieved; the qualifier is kept so the rest of the year reads as unknown-closed rather than over-claimed."
+      "retrieved": "2026-10-03",
+      "note": "Exhibitions. The standard schedule was read 2026-10-03; the summer block (29 Jun – 31 Aug, Monday–Thursday to 19:00) was read off the same page on 2026-08-18, when it was the only season shown."
     },
     {
       "basis": "always-open",
@@ -253,7 +253,7 @@
       "basis": "unknown",
       "cityIata": "BUD",
       "attraction": "Hungarian Parliament Building",
-      "rationale": "`parlament.hu` and `latogatokozpont.parlament.hu` both serve a CAPTCHA challenge (\"Validation needed due to : Policy constraints\") ahead of all content. No official schedule reachable."
+      "rationale": "`parlament.hu` and `latogatokozpont.parlament.hu` both serve a CAPTCHA challenge (\"Validation needed due to : Policy constraints\") ahead of all content. No official schedule reachable. Retried 2026-10-03 in a desktop browser: the visitor-centre host still serves a CAPTCHA before any content, which was deliberately not solved by automation."
     },
     {
       "basis": "sourced",
@@ -462,10 +462,13 @@
       "retrieved": "2026-08-18"
     },
     {
-      "basis": "unknown",
+      "basis": "sourced",
       "cityIata": "CDG",
       "attraction": "Sacré-Cœur & Montmartre",
-      "rationale": "The basilica's own \"Opening hours and access\" page could not be reached (404 on every path tried from `sacre-coeur-montmartre.com`); the homepage carries no times. Compound name, so a wrong value is doubly costly."
+      "openingHours": "06:30-22:30",
+      "source": "https://www.sacre-coeur-montmartre.com/infos-et-visites/informations-pratiques/horaires-et-acces/",
+      "retrieved": "2026-10-03",
+      "note": "The basilica, open \"tous les jours de l'année, sans exception\", free. The dome is ticketed on its own schedule and not encoded; later closings on major feasts are not encoded either."
     },
     {
       "basis": "sourced",
@@ -483,10 +486,13 @@
       "rationale": "Public avenue; walkable at all hours, no admission."
     },
     {
-      "basis": "unknown",
+      "basis": "sourced",
       "cityIata": "CDG",
       "attraction": "Musée d'Orsay",
-      "rationale": "`musee-orsay.fr` returns HTTP 403 on every hours-bearing path (`/en/visit`, `/fr/articles/acces-horaires-tarifs-197704`) through both fetch routes. No official value obtained."
+      "openingHours": "Tu,We,Fr-Su 09:30-18:00; Th 09:30-21:45; May 01,Dec 25 off",
+      "source": "https://www.musee-orsay.fr/en/visit",
+      "retrieved": "2026-10-03",
+      "note": "Closed every Monday. Last admission 17:00 (Thursday 21:00); the museum notes access conditions may change during renovation works."
     },
     {
       "basis": "sourced",
@@ -523,13 +529,13 @@
       "basis": "unknown",
       "cityIata": "FCO",
       "attraction": "Colosseum",
-      "rationale": "`colosseo.it` and `parcocolosseo.it` (both `2.42.229.247`) refused TCP connections on every attempt from this environment. DNS resolves; the host does not accept the connection. No aggregator substituted."
+      "rationale": "`colosseo.it` and `parcocolosseo.it` (both `2.42.229.247`) refused TCP connections on every attempt from this environment. DNS resolves; the host does not accept the connection. No aggregator substituted. Retried 2026-10-03 from a residential European connection in a desktop browser: the host still did not load, so the block is not specific to the research environment. No aggregator substituted."
     },
     {
       "basis": "unknown",
       "cityIata": "FCO",
       "attraction": "Roman Forum & Palatine Hill",
-      "rationale": "Same operator and same host as the Colosseum; unreachable for the same reason."
+      "rationale": "Same operator and same host as the Colosseum; unreachable for the same reason. Retried 2026-10-03 from a residential European connection in a desktop browser: the host still did not load, so the block is not specific to the research environment. No aggregator substituted."
     },
     {
       "basis": "sourced",
@@ -578,13 +584,13 @@
       "basis": "unknown",
       "cityIata": "FCO",
       "attraction": "Castel Sant'Angelo",
-      "rationale": "`castelsantangelo.cultura.gov.it` did not resolve/connect from this environment; the `cultura.gov.it` estate was unreachable throughout."
+      "rationale": "`castelsantangelo.cultura.gov.it` did not resolve/connect from this environment; the `cultura.gov.it` estate was unreachable throughout. Retried 2026-10-03 from a residential European connection in a desktop browser: the host still did not load, so the block is not specific to the research environment. No aggregator substituted."
     },
     {
       "basis": "unknown",
       "cityIata": "FCO",
       "attraction": "Galleria Borghese",
-      "rationale": "`galleriaborghese.it` 301-redirects to `galleriaborghese.cultura.gov.it`, which refused the connection (`ECONNREFUSED 2.42.228.88:443`)."
+      "rationale": "`galleriaborghese.it` 301-redirects to `galleriaborghese.cultura.gov.it`, which refused the connection (`ECONNREFUSED 2.42.228.88:443`). Retried 2026-10-03 from a residential European connection in a desktop browser: the host still did not load, so the block is not specific to the research environment. No aggregator substituted."
     },
     {
       "basis": "unknown",
@@ -665,10 +671,10 @@
       "basis": "sourced",
       "cityIata": "BCN",
       "attraction": "Montjuïc & Magic Fountain",
-      "openingHours": "Jun 03-Sep 27 We-Su 21:30-22:30",
+      "openingHours": "Jun 03-Sep 27 We-Su 21:30-22:30; Oct 01-Oct 31 Th-Sa 21:00-22:00",
       "source": "https://www.barcelona.cat/es/que-hacer-en-bcn/fuente-magica/horarios-de-la-fuente-magica",
-      "retrieved": "2026-08-18",
-      "note": "Encodes the fountain show, summer season only; the winter schedule was not on the page."
+      "retrieved": "2026-10-03",
+      "note": "Encodes the fountain show. The page publishes only the current season: 3 Jun – 27 Sep read 2026-08-18, 1–31 Oct read 2026-10-03. November–May is not yet published and reads as closed."
     },
     {
       "basis": "sourced",
