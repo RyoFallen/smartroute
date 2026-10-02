@@ -81,4 +81,37 @@ describe('OptimizerService', () => {
       expect([...o.order].sort()).toEqual([...baseReq().cities].sort());
     }
   });
+
+  // #34. The first city in a visiting order is where the traveler flies out
+  // from: it has no stay. Every later flight leaves after the stay of the city
+  // it departs from. Pinned as a worked example rather than a re-derivation,
+  // because the oracle in triples.test.ts once agreed with a wrong rule.
+  describe('dates each flight by the stay of the city it leaves', () => {
+    // Make JFK > CDG > FCO the only cheap way through, so every option's
+    // first entry is that ordering and the dates are predictable.
+    const cheapPath = {
+      'JFK-CDG': { priceCents: 1_000, durationMin: 300, stops: 0 },
+      'CDG-FCO': { priceCents: 1_000, durationMin: 300, stops: 0 },
+    };
+    const departures = (res: Awaited<ReturnType<OptimizerService['optimize']>>) =>
+      res.options[0]!.flights.map((f) => `${f.origin}>${f.destination} ${f.depart.slice(0, 10)}`);
+
+    it('gives the origin no stay when it is pinned as startCity', async () => {
+      const res = await service(cheapPath).optimize(
+        baseReq({ cities: ['JFK', 'CDG', 'FCO'], perCityDays: [0, 4, 2], startCity: 'JFK' }),
+      );
+      expect(res.options[0]!.order).toEqual(['JFK', 'CDG', 'FCO']);
+      // Leave JFK on the departure date; leave CDG after its own four days.
+      expect(departures(res)).toEqual(['JFK>CDG 2026-06-01', 'CDG>FCO 2026-06-05']);
+    });
+
+    it('ignores the stay of whichever city the optimizer puts first', async () => {
+      const res = await service(cheapPath).optimize(
+        baseReq({ cities: ['JFK', 'CDG', 'FCO'], perCityDays: [1, 4, 2] }),
+      );
+      expect(res.options[0]!.order).toEqual(['JFK', 'CDG', 'FCO']);
+      // Not CDG>FCO on 06-02: that would hand CDG the origin's one day.
+      expect(departures(res)).toEqual(['JFK>CDG 2026-06-01', 'CDG>FCO 2026-06-05']);
+    });
+  });
 });

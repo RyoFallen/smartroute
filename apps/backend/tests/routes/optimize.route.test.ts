@@ -61,6 +61,36 @@ describe('POST /optimize', () => {
     expect(body.options[0].label).toBe('recommended');
   });
 
+  // #34: the first city is where the traveler flies out from, so it has no
+  // stay. Zero is allowed for the pinned startCity and for nothing else.
+  it('accepts a zero stay for the startCity the traveler flies out from', async () => {
+    const app = await buildServer({ withDb: true });
+    const res = await app.inject({
+      method: 'POST',
+      url: '/optimize',
+      headers: { authorization: 'Bearer good', 'content-type': 'application/json' },
+      payload: { ...legacyPayload, startCity: 'JFK', perCityDays: [0, 2, 2] },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json().options[0].order[0]).toBe('JFK');
+  });
+
+  it('400s on a zero stay for any city other than the startCity', async () => {
+    const app = await buildServer({ withDb: true });
+    for (const payload of [
+      { ...legacyPayload, perCityDays: [0, 2, 2] }, // no startCity at all
+      { ...legacyPayload, startCity: 'JFK', perCityDays: [0, 0, 2] }, // a visited city
+    ]) {
+      const res = await app.inject({
+        method: 'POST',
+        url: '/optimize',
+        headers: { authorization: 'Bearer good', 'content-type': 'application/json' },
+        payload,
+      });
+      expect(res.statusCode).toBe(400);
+    }
+  });
+
   it('accepts an explicit preset', async () => {
     const app = await buildServer({ withDb: true });
     const res = await app.inject({

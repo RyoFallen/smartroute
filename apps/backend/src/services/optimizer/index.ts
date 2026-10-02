@@ -87,6 +87,14 @@ export class OptimizerService {
   }
 }
 
+/**
+ * The priced legs of one visiting order.
+ *
+ * The first city is where the traveler flies out from and has no stay (#34):
+ * the first leg leaves on `departDate`, and every later leg leaves after the
+ * stay of the city it departs from. Advancing by the stay *before* each leg
+ * but the first is what makes a city's own CityStay the time spent in it.
+ */
 function legsFor(
   ordering: string[],
   req: Pick<OptimizeRequest, 'perCityDays' | 'cities' | 'departDate' | 'cabinClass'>,
@@ -97,17 +105,19 @@ function legsFor(
   for (let i = 0; i < ordering.length - 1; i++) {
     const origin = ordering[i]!;
     const destination = ordering[i + 1]!;
+    if (i > 0) date = new Date(date.getTime() + stayOf(req, origin) * 86400_000);
     const departDateStr = date.toISOString().slice(0, 10);
     const r = prices.get(
       keyOf({ origin, destination, departDate: departDateStr, cabinClass: req.cabinClass }),
     );
     if (!r) return out;
     out.push(r);
-    const idx = req.cities.indexOf(origin);
-    const stay = req.perCityDays[idx] ?? 1;
-    date = new Date(date.getTime() + stay * 86400_000);
   }
   return out;
+}
+
+function stayOf(req: Pick<OptimizeRequest, 'perCityDays' | 'cities'>, city: string): number {
+  return req.perCityDays[req.cities.indexOf(city)] ?? 1;
 }
 
 function pickBy<T>(arr: T[], score: (t: T) => number): T {

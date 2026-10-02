@@ -11,7 +11,11 @@ export const OptimizeRequest = z
     startCity: Iata.optional(),
     endCity: Iata.optional(),
     departDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-    perCityDays: z.array(z.number().int().min(1).max(30)),
+    // Days spent in each city, aligned with `cities`. The first city in a
+    // visiting order is where the traveler flies out from and has no stay
+    // (#34), so the pinned startCity may carry 0; every visited city needs at
+    // least a day (refined below).
+    perCityDays: z.array(z.number().int().min(0).max(30)),
     travelers: z.number().int().min(1).max(9),
     cabinClass: CabinClass,
     directOnly: z.boolean().default(false),
@@ -19,6 +23,10 @@ export const OptimizeRequest = z
   })
   .refine((v) => v.perCityDays.length === v.cities.length, {
     message: 'perCityDays length must match cities length',
+    path: ['perCityDays'],
+  })
+  .refine((v) => v.cities.every((c, i) => c === v.startCity || (v.perCityDays[i] ?? 0) >= 1), {
+    message: 'every city but the startCity needs a stay of at least one day',
     path: ['perCityDays'],
   })
   .refine((v) => !v.startCity || v.cities.includes(v.startCity), {

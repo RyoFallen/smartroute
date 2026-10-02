@@ -15,12 +15,18 @@ function triplesViaEnumeration(
 ): Set<string> {
   const out = new Set<string>();
   for (const ordering of enumerateOrderings(cities, { startCity, endCity })) {
+    // Walks each ordering the way a traveler would: fly out of the first
+    // city on the departure date, then leave each later city after its own
+    // stay (#34). Deliberately written as a walk rather than as subset sums,
+    // so it cannot share a mistake with the function it checks.
     let date = new Date(departDate);
     for (let i = 0; i < ordering.length - 1; i++) {
       const origin = ordering[i]!;
+      if (i > 0) {
+        const stay = perCityDays[cities.indexOf(origin)] ?? 1;
+        date = new Date(date.getTime() + stay * 86_400_000);
+      }
       out.add(`${origin}|${ordering[i + 1]}|${date.toISOString().slice(0, 10)}`);
-      const stay = perCityDays[cities.indexOf(origin)] ?? 1;
-      date = new Date(date.getTime() + stay * 86_400_000);
     }
   }
   return out;
