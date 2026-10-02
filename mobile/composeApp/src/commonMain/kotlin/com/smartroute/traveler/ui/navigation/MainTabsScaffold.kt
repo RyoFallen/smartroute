@@ -98,6 +98,9 @@ data class ResultsRoute(
     // primitives/lists. Converted back to OptimizePreset at the ResultsRoute
     // composable below.
     val preset: String,
+    // Where the traveler flies out from (#34). A plain String, never String?,
+    // for the same NavType reason as `preset`; empty means unpinned.
+    val startCity: String,
 )
 
 @Serializable
@@ -217,6 +220,7 @@ fun MainTabsScaffold(
                         state = configState,
                         onToggleCity = configViewModel::toggleCity,
                         onSetDays = configViewModel::setDays,
+                        onSetOrigin = configViewModel::setOrigin,
                         onSetPreset = configViewModel::setPreset,
                         onSetDirectOnly = configViewModel::setDirectOnly,
                         onSetDepartDate = configViewModel::setDepartDate,
@@ -229,6 +233,7 @@ fun MainTabsScaffold(
                                         departDate = request.departDate,
                                         directOnly = request.directOnly,
                                         preset = request.preset.name,
+                                        startCity = request.startCity.orEmpty(),
                                     ),
                                 )
                             }
@@ -247,6 +252,7 @@ fun MainTabsScaffold(
                             cabinClass = OptimizeRequestDto.DEFAULT_CABIN_CLASS,
                             directOnly = route.directOnly,
                             preset = OptimizePreset.valueOf(route.preset),
+                            startCity = route.startCity.ifEmpty { null },
                         )
                     val resultsViewModel = viewModel { ResultsViewModel(AppGraph.apiClient, request) }
                     val resultsState by resultsViewModel.state.collectAsState()

@@ -114,6 +114,8 @@
     <string name="explore_preset_balanced">Dengeli</string>
     <string name="explore_direct_only">Sadece direkt uçuşlar</string>
     <string name="explore_stay_days">gün</string>
+    <string name="explore_flying_from">✈ Kalkış şehri</string>
+    <string name="explore_fly_from_here">Buradan kalkış</string>
     <string name="explore_depart_date">Gidiş tarihi</string>
     <string name="explore_depart_date_placeholder">Bir tarih seç</string>
     <string name="explore_date_confirm">Tamam</string>

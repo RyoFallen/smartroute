@@ -42,7 +42,7 @@ private const val NO_ROUTE_JSON = """{"options": [], "reason": "No viable routes
 
 private const val TRIP_CREATED_JSON = """
 {"id": "trip_1", "name": "SOF → BEG", "startDate": "2026-08-01T00:00:00.000Z",
-  "endDate": "2026-08-06T00:00:00.000Z", "cabinClass": "ECONOMY", "travelers": 1,
+  "endDate": "2026-08-04T00:00:00.000Z", "cabinClass": "ECONOMY", "travelers": 1,
   "flights": [], "totalPriceCents": 84700,
   "createdAt": "2026-07-12T00:00:00Z", "updatedAt": "2026-07-12T00:00:00Z"}
 """
@@ -51,7 +51,8 @@ private val REQUEST =
     OptimizeRequestDto(
         cities = listOf("SOF", "BEG"),
         departDate = "2026-08-01",
-        perCityDays = listOf(2, 3),
+        perCityDays = listOf(0, 3),
+        startCity = "SOF",
         travelers = 1,
         cabinClass = "ECONOMY",
         directOnly = false,
@@ -121,7 +122,7 @@ class ResultsViewModelTest {
         }
 
     @Test
-    fun `selecting then saving creates a trip with endDate computed from CityStay`() =
+    fun `saving ends the trip after the stays of the cities visited, not the origin`() =
         runTest(dispatcher) {
             var createdBody: String? = null
             val vm =
@@ -148,8 +149,9 @@ class ResultsViewModelTest {
             val decoded =
                 Json { ignoreUnknownKeys = true }
                     .decodeFromString<CreateTripRequestDto>(createdBody!!)
-            // departDate 2026-08-01 + sum(perCityDays for order [SOF, BEG] = 2 + 3) = 2026-08-06
-            assertEquals("2026-08-06", decoded.endDate)
+            // #34: Sofia is where the traveler flies out from, so the trip ends
+            // after Belgrade's stay alone — 2026-08-01 + 3 days, not + 2 + 3.
+            assertEquals("2026-08-04", decoded.endDate)
             assertEquals("2026-08-01", decoded.startDate)
             assertEquals(listOf("SOF", "BEG"), decoded.cities)
         }

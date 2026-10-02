@@ -114,6 +114,8 @@
     <string name="explore_preset_balanced">Balanced</string>
     <string name="explore_direct_only">Direct flights only</string>
     <string name="explore_stay_days">days</string>
+    <string name="explore_flying_from">✈ Flying from</string>
+    <string name="explore_fly_from_here">Fly from here</string>
     <string name="explore_depart_date">Depart date</string>
     <string name="explore_depart_date_placeholder">Select a date</string>
     <string name="explore_date_confirm">OK</string>

@@ -52,6 +52,8 @@ import smartroute_mobile.composeapp.generated.resources.explore_depart_date_plac
 import smartroute_mobile.composeapp.generated.resources.explore_direct_only
 import smartroute_mobile.composeapp.generated.resources.explore_error_load
 import smartroute_mobile.composeapp.generated.resources.explore_find_routes
+import smartroute_mobile.composeapp.generated.resources.explore_fly_from_here
+import smartroute_mobile.composeapp.generated.resources.explore_flying_from
 import smartroute_mobile.composeapp.generated.resources.explore_preset_balanced
 import smartroute_mobile.composeapp.generated.resources.explore_preset_budget
 import smartroute_mobile.composeapp.generated.resources.explore_preset_comfort
@@ -77,6 +79,7 @@ fun TripConfigScreen(
     state: TripConfigUiState,
     onToggleCity: (CitySummaryDto) -> Unit,
     onSetDays: (String, Int) -> Unit,
+    onSetOrigin: (String) -> Unit,
     onSetPreset: (OptimizePreset) -> Unit,
     onSetDirectOnly: (Boolean) -> Unit,
     onSetDepartDate: (String) -> Unit,
@@ -101,6 +104,7 @@ fun TripConfigScreen(
                     state = state,
                     onToggleCity = onToggleCity,
                     onSetDays = onSetDays,
+                    onSetOrigin = onSetOrigin,
                     onSetPreset = onSetPreset,
                     onSetDirectOnly = onSetDirectOnly,
                     onSetDepartDate = onSetDepartDate,
@@ -115,6 +119,7 @@ private fun ReadyContent(
     state: TripConfigUiState.Ready,
     onToggleCity: (CitySummaryDto) -> Unit,
     onSetDays: (String, Int) -> Unit,
+    onSetOrigin: (String) -> Unit,
     onSetPreset: (OptimizePreset) -> Unit,
     onSetDirectOnly: (Boolean) -> Unit,
     onSetDepartDate: (String) -> Unit,
@@ -132,7 +137,14 @@ private fun ReadyContent(
         }
         items(state.cities, key = { it.iata }) { city ->
             val selected = state.selected.find { it.iata == city.iata }
-            CityRow(city = city, selected = selected, onToggle = { onToggleCity(city) }, onSetDays = onSetDays)
+            CityRow(
+                city = city,
+                selected = selected,
+                isOrigin = city.iata == state.originIata,
+                onToggle = { onToggleCity(city) },
+                onSetDays = onSetDays,
+                onSetOrigin = { onSetOrigin(city.iata) },
+            )
         }
         item {
             if (state.selected.size !in 2..8) {
@@ -191,8 +203,10 @@ private fun ReadyContent(
 private fun CityRow(
     city: CitySummaryDto,
     selected: SelectedCity?,
+    isOrigin: Boolean,
     onToggle: () -> Unit,
     onSetDays: (String, Int) -> Unit,
+    onSetOrigin: () -> Unit,
 ) {
     Column(
         modifier =
@@ -216,7 +230,14 @@ private fun CityRow(
                         MaterialTheme.colorScheme.onSurface
                     },
             )
-            if (selected != null) {
+            if (selected != null && isOrigin) {
+                // Only flown out of, so there is no stay to set (#34).
+                Text(
+                    text = stringResource(Res.string.explore_flying_from),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            } else if (selected != null) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = { onSetDays(city.iata, (selected.days - 1).coerceAtLeast(1)) }) {
                         Text("−")
@@ -226,6 +247,11 @@ private fun CityRow(
                         Text("+")
                     }
                 }
+            }
+        }
+        if (selected != null && !isOrigin) {
+            TextButton(onClick = onSetOrigin) {
+                Text(stringResource(Res.string.explore_fly_from_here))
             }
         }
     }

@@ -32,7 +32,8 @@ sealed interface ResultsUiState {
 /**
  * Runs the optimize request built by trip configuration, renders the route
  * options, and saves the selected one as a trip. `endDate` is computed as
- * `departDate + sum(CityStay for the selected order)` — the CityStay values
+ * `departDate + sum(CityStay for every city after the first)` — the first is
+ * only flown out of (#34) — and the CityStay values
  * come from [request], keyed by city, not by the option's (possibly
  * reordered) visiting sequence.
  */
@@ -79,7 +80,9 @@ class ResultsViewModel(
     }
 
     private fun tripRequestFor(option: RouteOptionDto): CreateTripRequestDto {
-        val totalStayDays = option.order.sumOf { stayDaysByCity.getValue(it) }
+        // The first city is where the traveler flies out from and has no stay
+        // (#34): the trip ends once the cities after it have had theirs.
+        val totalStayDays = option.order.drop(1).sumOf { stayDaysByCity.getValue(it) }
         val endDate = LocalDate.parse(request.departDate).plus(DatePeriod(days = totalStayDays))
         return CreateTripRequestDto(
             name = option.order.joinToString(" → "),

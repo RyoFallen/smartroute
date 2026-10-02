@@ -146,6 +146,42 @@ class TripConfigViewModelTest {
         }
 
     @Test
+    fun `the first city picked is where the traveler flies out from`() =
+        runTest(dispatcher) {
+            val vm = viewModel { json(CITIES_JSON) }
+            vm.load()
+            vm.state.first { it is TripConfigUiState.Ready }
+            vm.toggleCity(CitySummaryDto("SOF", "Sofia", "Bulgaria"))
+            vm.toggleCity(CitySummaryDto("BEG", "Belgrade", "Serbia"))
+            vm.state.first { (it as? TripConfigUiState.Ready)?.selected?.size == 2 }
+
+            assertEquals("SOF", (vm.state.value as TripConfigUiState.Ready).originIata)
+        }
+
+    @Test
+    fun `setOrigin moves the departure city, and removing it hands the role on`() =
+        runTest(dispatcher) {
+            val vm = viewModel { json(CITIES_JSON) }
+            vm.load()
+            vm.state.first { it is TripConfigUiState.Ready }
+            vm.toggleCity(CitySummaryDto("SOF", "Sofia", "Bulgaria"))
+            vm.toggleCity(CitySummaryDto("BEG", "Belgrade", "Serbia"))
+            vm.toggleCity(CitySummaryDto("TIA", "Tirana", "Albania"))
+            vm.state.first { (it as? TripConfigUiState.Ready)?.selected?.size == 3 }
+
+            vm.setOrigin("TIA")
+            assertEquals("TIA", (vm.state.value as TripConfigUiState.Ready).originIata)
+
+            // Deselecting the origin must not leave the trip without one.
+            vm.toggleCity(CitySummaryDto("TIA", "Tirana", "Albania"))
+            assertEquals("SOF", (vm.state.value as TripConfigUiState.Ready).originIata)
+
+            vm.toggleCity(CitySummaryDto("SOF", "Sofia", "Bulgaria"))
+            vm.toggleCity(CitySummaryDto("BEG", "Belgrade", "Serbia"))
+            assertNull((vm.state.value as TripConfigUiState.Ready).originIata)
+        }
+
+    @Test
     fun `buildRequest reflects selection, per-city stay, preset and directOnly`() =
         runTest(dispatcher) {
             val vm = viewModel { json(CITIES_JSON) }
@@ -154,7 +190,7 @@ class TripConfigViewModelTest {
             vm.toggleCity(CitySummaryDto("SOF", "Sofia", "Bulgaria"))
             vm.toggleCity(CitySummaryDto("BEG", "Belgrade", "Serbia"))
             vm.state.first { (it as? TripConfigUiState.Ready)?.selected?.size == 2 }
-            vm.setDays("SOF", 4)
+            vm.setDays("BEG", 4)
             vm.setPreset(OptimizePreset.BUDGET)
             vm.setDirectOnly(true)
             vm.setDepartDate("2026-08-01")
@@ -162,7 +198,10 @@ class TripConfigViewModelTest {
             val request = vm.buildRequest()
 
             assertEquals(listOf("SOF", "BEG"), request?.cities)
-            assertEquals(listOf(4, 2), request?.perCityDays)
+            // #34: the traveler flies out of Sofia, so it is pinned first and
+            // has no stay; only the cities they visit carry days.
+            assertEquals("SOF", request?.startCity)
+            assertEquals(listOf(0, 4), request?.perCityDays)
             assertEquals("2026-08-01", request?.departDate)
             assertEquals(OptimizePreset.BUDGET, request?.preset)
             assertEquals(true, request?.directOnly)

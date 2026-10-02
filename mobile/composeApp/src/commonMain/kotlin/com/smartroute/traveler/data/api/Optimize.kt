@@ -6,7 +6,11 @@ import kotlinx.serialization.Serializable
 
 /**
  * Mirrors the shared OptimizeRequest schema (packages/shared/src/optimize.ts).
- * startCity/endCity pinning isn't exposed by this app (see ADR/spec for Phase 8).
+ *
+ * [startCity] is where the traveler flies out from: the optimizer keeps it
+ * first and gives it no stay, so its [perCityDays] entry is 0 (#34). It is
+ * null-defaulted so an unset value is omitted rather than sent as `null`,
+ * which the backend schema rejects. endCity pinning is not exposed.
  */
 @Serializable
 data class OptimizeRequestDto(
@@ -17,6 +21,7 @@ data class OptimizeRequestDto(
     val cabinClass: String,
     val directOnly: Boolean,
     val preset: OptimizePreset,
+    val startCity: String? = null,
 ) {
     companion object {
         /** Neither is exposed by this app's UI yet — see the Phase 8 spec's Out of Scope. */
