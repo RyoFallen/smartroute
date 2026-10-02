@@ -65,6 +65,9 @@ interface Row {
   category: AttractionCategory;
   hours: HoursBasis;
   visitMinutesCurated: boolean;
+  visitMinutes: number | null;
+  /** `published` or `judgement` where curated; null on the category default. */
+  visitBasis: 'published' | 'judgement' | null;
 }
 
 function collect(): Row[] {
@@ -83,6 +86,8 @@ function collect(): Row[] {
       category: a.category,
       hours: basis.get(attractionKey(c.iata, a.name)) ?? 'undecided',
       visitMinutesCurated: a.visitMinutes != null,
+      visitMinutes: a.visitMinutes ?? null,
+      visitBasis: a.visitMinutesProvenance?.basis ?? null,
     })),
   );
 }
@@ -202,6 +207,25 @@ function render(rows: Row[]): string {
     `Curated per attraction: **${curated} of ${total}** (${pct(curated, total)}). The remaining`,
     `**${total - curated}** fall back to the per-\`AttractionCategory\` default at read time.`,
   );
+  out.push('');
+  const published = rows.filter((r) => r.visitBasis === 'published').length;
+  const judgement = rows.filter((r) => r.visitBasis === 'judgement').length;
+  out.push(
+    `Of the curated values, **${published}** quote a visit length the operator publishes and`,
+    `**${judgement}** are our own judgement, each with its rationale beside it in`,
+    '`attractions.json` (`visitMinutesProvenance`). Operators almost never publish one: three of 52',
+    'official sites did (`2026-08-18-opening-hours-citations.md` §6). A judgement value overrides the',
+    'default only where the default is visibly wrong for that attraction — usually because the',
+    'category describes the outside of a building whose ticketed inside is what the hours encode.',
+  );
+  out.push('');
+  out.push('| City | Attraction | Category | Default | Curated | Basis |');
+  out.push('| ---- | ---------- | -------- | ------: | ------: | ----- |');
+  for (const r of rows.filter((x) => x.visitBasis !== null)) {
+    out.push(
+      `| ${r.city} | ${r.name} | ${r.category} | ${DEFAULT_VISIT_MINUTES[r.category]} | ${r.visitMinutes} | ${r.visitBasis} |`,
+    );
+  }
   out.push('');
   out.push(
     'No Places provider publishes a typical-visit-duration field — verified across Google Places,',

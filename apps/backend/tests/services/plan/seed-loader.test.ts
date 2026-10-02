@@ -136,7 +136,16 @@ describe('loadSeed', () => {
       {
         ...fixture[0]!,
         attractions: fixture[0]!.attractions.map((a, i) =>
-          i === 0 ? { ...a, visitMinutes: 180 } : a,
+          i === 0
+            ? {
+                ...a,
+                visitMinutes: 180,
+                visitMinutesProvenance: {
+                  basis: 'judgement',
+                  rationale: 'A fixed test visit length.',
+                },
+              }
+            : a,
         ),
       },
     ];

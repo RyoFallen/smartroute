@@ -37,6 +37,41 @@
   ],
   "entries": [
     {
+      "basis": "unknown",
+      "cityIata": "IST",
+      "attraction": "Blue Mosque (Sultanahmet Camii)",
+      "rationale": "Working mosque under Diyanet; no operator site publishes tourist visiting hours. `sultanahmetcamii.org` redirects away and `suleymaniyecamii.org` now serves an unrelated gambling page — neither is citable."
+    },
+    {
+      "basis": "unknown",
+      "cityIata": "IST",
+      "attraction": "Basilica Cistern",
+      "rationale": "Operator site states \"The Basilica Cistern is temporarily closed to visitors\" while the same page still shows \"Visiting Hours 09.00 – 22.00\" (yerebatan.com, 2026-08-18). Contradictory; no defensible schedule."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "IST",
+      "attraction": "Galata Tower",
+      "openingHours": "08:30-23:00",
+      "source": "https://galatakulesi.gov.tr/",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "unknown",
+      "cityIata": "IST",
+      "attraction": "Süleymaniye Mosque",
+      "rationale": "Working mosque; no official operator page publishing visiting hours could be found. See ⚑1."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "IST",
+      "attraction": "Dolmabahçe Palace",
+      "openingHours": "Tu-Su 09:00-17:00; Jan 01 off",
+      "source": "https://www.millisaraylar.gov.tr/saraylar/dolmabahce-sarayi",
+      "retrieved": "2026-08-18",
+      "note": "Also closed on the first day of Ramazan and Kurban Bayramı; those move yearly and are not encoded."
+    },
+    {
       "basis": "always-open",
       "cityIata": "IST",
       "attraction": "İstiklal Street & Taksim",
@@ -44,9 +79,88 @@
     },
     {
       "basis": "always-open",
+      "cityIata": "IST",
+      "attraction": "Hippodrome & Sultanahmet Square",
+      "rationale": "Open public square (Sultanahmet Meydanı) with the obelisks in situ; no gates, no admission, no operator."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "BER",
+      "attraction": "Brandenburg Gate",
+      "rationale": "Free-standing city gate on Pariser Platz; no enclosure, no admission, no operator."
+    },
+    {
+      "basis": "unknown",
+      "cityIata": "BER",
+      "attraction": "Reichstag Building",
+      "rationale": "Bundestag publishes only \"Last admission: 21.45 hrs\" plus closure dates for the dome — no opening time on any page reached. Booking is compulsory and slot-based, so a clock window would misrepresent access anyway."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BER",
+      "attraction": "Museum Island",
+      "openingHours": "Tu-Su 10:00-18:00",
+      "source": "https://www.smb.museum/en/plan-your-visit/opening-hours/",
+      "retrieved": "2026-08-18",
+      "note": "Envelope of the open SMB museums; the Pergamonmuseum is closed for construction."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "BER",
+      "attraction": "Memorial to the Murdered Jews of Europe",
+      "rationale": "The field of 2,711 stelae is open-air and, per the operator, \"24 hours a day accessible\" — it is what almost every visitor experiences. The Ort der Information underneath has its own hours (Tu-Su 10:00-18:00, stiftung-denkmal.de, retrieved 2026-08-18) but is not the visit this attraction stands for."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "BER",
+      "attraction": "East Side Gallery",
+      "rationale": "1.3 km open-air painted wall segment along Mühlenstraße; a public pavement, not a venue."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BER",
+      "attraction": "Berlin Wall Memorial — Bernauer Straße",
+      "openingHours": "Mo-Su 08:00-22:00",
+      "source": "https://www.stiftung-berliner-mauer.de/en/berlin-wall-memorial/visit/information",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "always-open",
       "cityIata": "BER",
       "attraction": "Checkpoint Charlie",
       "rationale": "An open-air street site at the Friedrichstraße crossing — the reconstructed guardhouse and signage stand in the public roadway. The adjacent private museum is ticketed, but it is not this attraction."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BER",
+      "attraction": "Berliner Dom",
+      "openingHours": "Mo-Sa 09:00-19:00; Su 12:00-19:00",
+      "source": "https://berlinerdom.de/termine/",
+      "retrieved": "2026-08-18",
+      "note": "Derived from fourteen consecutive Dom-Besichtigung calendar entries, 18–31 Aug 2026."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BER",
+      "attraction": "TV Tower — Alexanderplatz",
+      "openingHours": "09:00-23:00",
+      "source": "https://tv-turm.de/en/",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "BER",
+      "attraction": "Tiergarten",
+      "rationale": "Ungated 210 ha city park, crossed by public roads and paths; no closing time published."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BER",
+      "attraction": "Charlottenburg Palace",
+      "openingHours": "Apr-Oct Tu-Su 10:00-17:30; Nov-Dec Tu-Su 10:00-16:30; Dec 24,Dec 25 off",
+      "source": "https://www.spsg.de/schloesser-gaerten/objekt/schloss-charlottenburg-altes-schloss/",
+      "retrieved": "2026-08-18",
+      "note": "January–March was not yet published by SPSG when retrieved, so it reads as closed."
     },
     {
       "basis": "always-open",
@@ -56,9 +170,374 @@
     },
     {
       "basis": "always-open",
+      "cityIata": "WAW",
+      "attraction": "Old Town Market Square",
+      "rationale": "Rynek Starego Miasta is an open public square; no gates, no admission."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "WAW",
+      "attraction": "Royal Castle",
+      "openingHours": "Tu-Su 10:00-18:00",
+      "source": "https://www.zamek-krolewski.pl/en/godziny-otwarcia-i-ceny-biletow",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "WAW",
+      "attraction": "Łazienki Park",
+      "openingHours": "Mo-Su 06:00-22:00",
+      "source": "https://www.lazienki-krolewskie.pl/en/zwiedzanie/godziny-otwarcia",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "WAW",
+      "attraction": "Warsaw Uprising Museum",
+      "openingHours": "Mo 08:00-18:00; We-Fr 08:00-18:00; Sa-Su 10:00-18:00; Tu off",
+      "source": "https://www.1944.pl/en/article/visit-us,4993.html",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "WAW",
+      "attraction": "POLIN Museum of the History of Polish Jews",
+      "openingHours": "Mo 10:00-18:00; We-Fr 10:00-18:00; Sa 10:00-20:00; Su 10:00-18:00; Tu off",
+      "source": "https://polin.pl/pl/zaplanuj-wizyte",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "WAW",
+      "attraction": "Palace of Culture and Science",
+      "openingHours": "10:00-20:00",
+      "source": "https://pkin.pl/en/visiting-pkin/",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "WAW",
+      "attraction": "Wilanów Palace",
+      "openingHours": "Th-Tu 10:00-16:00; We 10:00-18:00; Nov 01 off; Dec 14-Dec 31 off",
+      "source": "https://www.wilanow-palac.pl/godziny-otwarcia",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "WAW",
+      "attraction": "Copernicus Science Centre",
+      "openingHours": "Jun 29-Aug 31 Mo-Th 09:00-19:00; Jun 29-Aug 31 Fr 09:00-20:00; Jun 29-Aug 31 Sa-Su 09:00-19:00",
+      "source": "https://www.kopernik.org.pl/en/visit/opening-hours",
+      "retrieved": "2026-08-18",
+      "note": "Only the 29 Jun – 31 Aug season was published when retrieved; the qualifier is kept so the rest of the year reads as unknown-closed rather than over-claimed."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "WAW",
+      "attraction": "Krakowskie Przedmieście",
+      "rationale": "Public street forming part of the Royal Route; walkable at all hours."
+    },
+    {
+      "basis": "unknown",
+      "cityIata": "WAW",
+      "attraction": "Holy Cross Church",
+      "rationale": "The parish publishes Mass times (Sun 6:00–19:00, weekdays 6:00–19:00) and confession hours, but no tourist visiting hours. Deriving a window from Mass times would be inference, not a source."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "WAW",
+      "attraction": "Warsaw Barbican",
+      "rationale": "A walk-through gate in the Old Town walls, free and permanently open. The interior exhibition runs only We,Sa 13:00-17:00 from late May to 30 September (muzeumwarszawy.pl/en/barbakan, retrieved 2026-08-18); encoding it would make the gate look near-inaccessible when it is not."
+    },
+    {
+      "basis": "unknown",
+      "cityIata": "BUD",
+      "attraction": "Hungarian Parliament Building",
+      "rationale": "`parlament.hu` and `latogatokozpont.parlament.hu` both serve a CAPTCHA challenge (\"Validation needed due to : Policy constraints\") ahead of all content. No official schedule reachable."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BUD",
+      "attraction": "Buda Castle",
+      "openingHours": "Mo-Su 10:00-18:00",
+      "source": "https://www.varmuzeum.hu/en/visit/",
+      "retrieved": "2026-08-18",
+      "note": "Encodes the BTM Castle Museum; the castle hill and courtyards are open-air."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BUD",
+      "attraction": "Fisherman's Bastion",
+      "openingHours": "Jan 02-May 31 09:00-19:00; Jun 01-Sep 30 09:00-21:00; Oct 01-Dec 23 09:00-19:00",
+      "source": "https://www.fishermansbastion.com/",
+      "retrieved": "2026-08-18",
+      "note": "Encodes the ticketed upper turrets; the lower terraces are free all year."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BUD",
+      "attraction": "Matthias Church",
+      "openingHours": "09:00-17:00",
+      "source": "https://www.matyas-templom.hu/en/",
+      "retrieved": "2026-08-18",
+      "note": "Single-day reading: the site shows only \"We are open today: 09:00 – 17:00\" and publishes no weekly schedule."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BUD",
+      "attraction": "St. Stephen's Basilica",
+      "openingHours": "Mo-Sa 09:00-18:00; Su 13:00-18:00",
+      "source": "https://www.bazilikabudapest.hu/en/",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "BUD",
+      "attraction": "Széchenyi Chain Bridge",
+      "rationale": "Public road-and-pedestrian bridge over the Danube; permanently open, no admission."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BUD",
+      "attraction": "Széchenyi Thermal Baths",
+      "openingHours": "Mo-Th 07:00-20:00; Fr 07:00-22:00; Sa-Su 08:00-20:00",
+      "source": "https://www.szechenyifurdo.hu/nyitvatartas",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "always-open",
       "cityIata": "BUD",
       "attraction": "Heroes' Square",
       "rationale": "A public square at the end of Andrássy Avenue, open on all sides and continuously accessible."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BUD",
+      "attraction": "Great Market Hall",
+      "openingHours": "Mo-Fr 06:00-18:00; Sa 06:00-16:00; Su 10:00-16:00; Jan 01,Mar 15,May 01,Aug 20,Oct 23,Nov 01,Dec 25,Dec 26 off",
+      "source": "https://www.piaconline.hu/nyitvatartas",
+      "retrieved": "2026-08-18",
+      "rewrittenFrom": "Hivatalos ünnep-, illetve munkaszüneti napokon ZÁRVA!"
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "BUD",
+      "attraction": "Gellért Hill & Citadella",
+      "rationale": "Public hillside park with open paths and viewpoints; no gate, no admission. The Citadella fortress itself is a separate, long-running reconstruction site."
+    },
+    {
+      "basis": "unknown",
+      "cityIata": "BUD",
+      "attraction": "Dohány Street Synagogue",
+      "rationale": "The operator (Milev / Hungarian Jewish Museum) site `milev.hu` links only a generic \"Plan your visit\" page with no hours; `dohanystreetsynagogue.hu` does not resolve; `greatsynagogue.hu` is a frameset of unclear provenance and was not treated as official."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "BUD",
+      "attraction": "Shoes on the Danube Bank",
+      "rationale": "Open-air memorial on the Pest embankment promenade; no enclosure, no admission."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "LHR",
+      "attraction": "Tower of London",
+      "openingHours": "Mo-Su 09:00-17:30",
+      "source": "https://www.hrp.org.uk/tower-of-london/visit/",
+      "retrieved": "2026-08-18",
+      "note": "Derived from a rolling 7-day widget (17–23 Aug 2026); the winter schedule is unverified."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "LHR",
+      "attraction": "Tower Bridge",
+      "openingHours": "09:30-18:00; Jan 01 10:00-18:00; Dec 24-Dec 26 off",
+      "source": "https://www.towerbridge.org.uk/plan-your-visit",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "LHR",
+      "attraction": "British Museum",
+      "openingHours": "Mo-Th 10:00-17:00; Fr 10:00-20:30; Sa-Su 10:00-17:00; Dec 24-Dec 26 off",
+      "source": "https://www.britishmuseum.org/visit",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "LHR",
+      "attraction": "Westminster Abbey",
+      "openingHours": "Mo-Fr 09:30-15:30; Sa 09:00-15:00; Su off",
+      "source": "https://www.westminster-abbey.org/visit-us/opening-times",
+      "retrieved": "2026-08-18",
+      "note": "Derived from schema.org openingHoursSpecification embedded for 19 Aug – 1 Sep 2026; no Sunday entry, so Su off."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "LHR",
+      "attraction": "Big Ben & Houses of Parliament",
+      "rationale": "The dominant component — the Elizabeth Tower and the Palace frontage seen from Parliament Square and Westminster Bridge — is public street. Palace tours exist but Parliament publishes only a booking calendar, no weekly schedule, so the ticketed part could not be encoded anyway."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "LHR",
+      "attraction": "Buckingham Palace",
+      "openingHours": "Jul 09-Aug 31 09:30-19:30; Sep 01-Sep 27 Th-Mo 09:30-18:30",
+      "source": "https://www.rct.uk/visit/buckingham-palace",
+      "retrieved": "2026-08-18",
+      "note": "Summer opening; the dates are set per year and are 2026 values."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "LHR",
+      "attraction": "London Eye",
+      "openingHours": "10:00-20:30",
+      "source": "https://www.londoneye.com/plan-your-visit/before-you-visit/opening-hours/",
+      "retrieved": "2026-08-18",
+      "note": "Single-day reading from the \"Open today\" banner on 2026-08-18; the operator says closing varies between 18:00 and 20:30 through the year."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "LHR",
+      "attraction": "National Gallery & Trafalgar Square",
+      "openingHours": "Mo-Th 10:00-19:00; Fr 10:00-21:00; Sa-Su 10:00-19:00; Dec 24-Dec 26,Jan 01 off",
+      "source": "https://www.nationalgallery.org.uk/visiting",
+      "retrieved": "2026-08-18",
+      "note": "Encodes the gallery; Trafalgar Square itself is open public space."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "LHR",
+      "attraction": "St Paul's Cathedral",
+      "openingHours": "Mo-Sa 08:30-16:30; Su off",
+      "source": "https://www.stpauls.co.uk/visits/visits/sightseeing-opening-hours",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "LHR",
+      "attraction": "Hyde Park",
+      "openingHours": "05:00-24:00",
+      "source": "https://www.royalparks.org.uk/visit/parks/hyde-park",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "LHR",
+      "attraction": "Borough Market",
+      "openingHours": "Tu-Fr 10:00-17:00; Sa 09:00-17:00; Su 10:00-16:00; Mo off",
+      "source": "https://www.boroughmarket.org.uk/visit-us/",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "LHR",
+      "attraction": "Natural History Museum",
+      "openingHours": "10:00-17:50; Dec 24-Dec 26 off",
+      "source": "https://www.nhm.ac.uk/visit.html",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "CDG",
+      "attraction": "Eiffel Tower",
+      "openingHours": "09:00-24:00",
+      "source": "https://www.toureiffel.paris/en/rates-opening-times",
+      "retrieved": "2026-08-18",
+      "note": "Single-day reading: the operator publishes only a per-date calendar; this is the value shown for 2026-08-18 (a summer day)."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "CDG",
+      "attraction": "Louvre Museum",
+      "openingHours": "Mo,Th,Sa,Su 09:00-18:00; We,Fr 09:00-21:00; Tu off; Jan 01,May 01,Dec 25 off",
+      "source": "https://www.louvre.fr/en/visit/hours-admission",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "CDG",
+      "attraction": "Notre-Dame Cathedral",
+      "openingHours": "Mo-We,Fr 07:50-19:00; Th 07:50-22:00; Sa-Su 08:15-19:30",
+      "source": "https://www.notredamedeparis.fr/en/visit/practical-information/opening-hours/",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "unknown",
+      "cityIata": "CDG",
+      "attraction": "Sacré-Cœur & Montmartre",
+      "rationale": "The basilica's own \"Opening hours and access\" page could not be reached (404 on every path tried from `sacre-coeur-montmartre.com`); the homepage carries no times. Compound name, so a wrong value is doubly costly."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "CDG",
+      "attraction": "Arc de Triomphe",
+      "openingHours": "Apr 01-Sep 30 We-Mo 10:00-23:00; Apr 01-Sep 30 Tu 11:00-23:00; Oct 01-Mar 31 We-Mo 10:00-22:30; Oct 01-Mar 31 Tu 11:00-22:30; May 01,May 08,Jul 14 off",
+      "source": "https://www.paris-arc-de-triomphe.fr/en/visit/practical-information",
+      "retrieved": "2026-08-18",
+      "note": "Opens an hour later on Tuesdays. The 11 Nov morning-only closure is not expressible and is dropped."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "CDG",
+      "attraction": "Champs-Élysées",
+      "rationale": "Public avenue; walkable at all hours, no admission."
+    },
+    {
+      "basis": "unknown",
+      "cityIata": "CDG",
+      "attraction": "Musée d'Orsay",
+      "rationale": "`musee-orsay.fr` returns HTTP 403 on every hours-bearing path (`/en/visit`, `/fr/articles/acces-horaires-tarifs-197704`) through both fetch routes. No official value obtained."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "CDG",
+      "attraction": "Sainte-Chapelle",
+      "openingHours": "Apr 01-Sep 30 09:00-19:00; Oct 01-Mar 31 09:00-17:00; Jan 01,May 01,Dec 25 off",
+      "source": "https://www.sainte-chapelle.fr/en/visit/practical-information",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "CDG",
+      "attraction": "Luxembourg Gardens",
+      "openingHours": "Jan 01-Feb 15 08:15-17:00; Feb 16-Mar 15 07:45-18:15; Mar 16-Apr 15 07:30-20:00; Apr 16-Jun 15 07:30-21:15; Jun 16-Aug 15 07:30-21:00; Aug 16-Sep 30 07:30-19:45; Oct 01-Oct 31 07:45-18:15; Nov 01-Dec 31 08:00-16:45",
+      "source": "https://jardin.senat.fr/infos-pratiques/horaires-douverture.html",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "CDG",
+      "attraction": "Panthéon",
+      "openingHours": "Apr 01-Sep 30 10:00-18:30; Oct 01-Mar 31 10:00-18:00; Jan 01,May 01,Dec 25 off",
+      "source": "https://www.paris-pantheon.fr/en/visit/practical-information",
+      "retrieved": "2026-08-18",
+      "note": "Opens at 12:00 on the first working Monday of each month; not encoded."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "CDG",
+      "attraction": "Trocadéro",
+      "rationale": "Place du Trocadéro and the Jardins du Trocadéro esplanade are open public space; the viewpoint over the Eiffel Tower is a pavement."
+    },
+    {
+      "basis": "unknown",
+      "cityIata": "FCO",
+      "attraction": "Colosseum",
+      "rationale": "`colosseo.it` and `parcocolosseo.it` (both `2.42.229.247`) refused TCP connections on every attempt from this environment. DNS resolves; the host does not accept the connection. No aggregator substituted."
+    },
+    {
+      "basis": "unknown",
+      "cityIata": "FCO",
+      "attraction": "Roman Forum & Palatine Hill",
+      "rationale": "Same operator and same host as the Colosseum; unreachable for the same reason."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "FCO",
+      "attraction": "Pantheon",
+      "openingHours": "09:00-19:00; Jan 01,Aug 15,Dec 25 off",
+      "source": "https://www.pantheonroma.com/en/openings-info/",
+      "retrieved": "2026-08-18"
     },
     {
       "basis": "always-open",
@@ -79,10 +558,137 @@
       "rationale": "A public square. Its fountains and the surrounding cafés are visited from the open piazza, which has no closing time."
     },
     {
+      "basis": "sourced",
+      "cityIata": "FCO",
+      "attraction": "Vatican Museums & Sistine Chapel",
+      "openingHours": "Mo-Sa 08:00-20:00; Su off; Jan 01,Jan 06,Feb 11,Mar 19,Apr 06,May 01,Jun 29,Aug 14,Aug 15,Nov 01,Dec 08,Dec 25,Dec 26 off",
+      "source": "https://www.museivaticani.va/content/museivaticani/en/info/orari-musei-vaticani.html",
+      "retrieved": "2026-08-18",
+      "note": "Apr 06 is Easter Monday 2026 and moves yearly. The free last-Sunday opening is not encoded."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "FCO",
+      "attraction": "St. Peter's Basilica",
+      "openingHours": "07:00-20:00",
+      "source": "https://www.basilicasanpietro.va/en/opening-hours",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "unknown",
+      "cityIata": "FCO",
+      "attraction": "Castel Sant'Angelo",
+      "rationale": "`castelsantangelo.cultura.gov.it` did not resolve/connect from this environment; the `cultura.gov.it` estate was unreachable throughout."
+    },
+    {
+      "basis": "unknown",
+      "cityIata": "FCO",
+      "attraction": "Galleria Borghese",
+      "rationale": "`galleriaborghese.it` 301-redirects to `galleriaborghese.cultura.gov.it`, which refused the connection (`ECONNREFUSED 2.42.228.88:443`)."
+    },
+    {
+      "basis": "unknown",
+      "cityIata": "FCO",
+      "attraction": "Campo de' Fiori",
+      "rationale": "Open square hosting a morning produce market. No operator website exists — the market is run by Roma Capitale with no per-market hours page found. Not marked `always-open` because a MARKET's value is the stalls, and they are not always there."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "FCO",
+      "attraction": "Trastevere",
+      "rationale": "A neighbourhood, not a venue; its streets and piazzas are public and permanently accessible."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BCN",
+      "attraction": "Sagrada Família",
+      "openingHours": "Nov-Feb Mo-Sa 09:00-18:00; Nov-Feb Su 10:30-18:00; Mar,Oct Mo-Fr 09:00-19:00; Mar,Oct Sa 09:00-18:00; Mar,Oct Su 10:30-19:00; Apr-Sep Mo-Fr 09:00-20:00; Apr-Sep Sa 09:00-18:00; Apr-Sep Su 10:30-20:00",
+      "source": "https://sagradafamilia.org/en/schedules-how-to-get",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BCN",
+      "attraction": "Park Güell",
+      "openingHours": "09:30-19:30",
+      "source": "https://parkguell.barcelona/en/planning-your-visit/prices-and-times",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BCN",
+      "attraction": "Casa Batlló",
+      "openingHours": "09:00-22:30",
+      "source": "https://www.casabatllo.es/en/tickets/",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BCN",
+      "attraction": "Casa Milà — La Pedrera",
+      "openingHours": "09:00-20:30",
+      "source": "https://www.lapedrera.com/en/visits",
+      "retrieved": "2026-08-18"
+    },
+    {
       "basis": "always-open",
       "cityIata": "BCN",
       "attraction": "La Rambla",
       "rationale": "A public pedestrian boulevard. The market and venues along it keep their own hours; the promenade itself is never closed."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BCN",
+      "attraction": "Gothic Quarter & Barcelona Cathedral",
+      "openingHours": "Mo-Fr 09:30-18:30; Sa 09:30-17:15; Su 14:00-17:00",
+      "source": "https://catedralbcn.org/en/tourist-visit/visiting-hours/",
+      "retrieved": "2026-08-18",
+      "note": "Encodes the cathedral; the Barri Gòtic streets are open public space."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BCN",
+      "attraction": "La Boqueria Market",
+      "openingHours": "Mo-Sa 08:00-20:30",
+      "source": "https://www.boqueria.barcelona",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BCN",
+      "attraction": "Picasso Museum",
+      "openingHours": "Mar 31-Sep 27 Tu-We 09:00-20:00; Mar 31-Sep 27 Th-Sa 09:00-21:00; Mar 31-Sep 27 Su 09:00-20:00; Sep 29-Mar 29 Tu-Su 10:00-19:00; Mo off; Jan 01,May 01,Jun 24,Dec 25 off",
+      "source": "https://museupicassobcn.cat/en/plan-your-visit/buy-tickets-and-opening-hours",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BCN",
+      "attraction": "Montjuïc & Magic Fountain",
+      "openingHours": "Jun 03-Sep 27 We-Su 21:30-22:30",
+      "source": "https://www.barcelona.cat/es/que-hacer-en-bcn/fuente-magica/horarios-de-la-fuente-magica",
+      "retrieved": "2026-08-18",
+      "note": "Encodes the fountain show, summer season only; the winter schedule was not on the page."
+    },
+    {
+      "basis": "sourced",
+      "cityIata": "BCN",
+      "attraction": "Palau de la Música Catalana",
+      "openingHours": "09:00-15:30",
+      "source": "https://www.palaumusica.cat/en/visites/guided-tour_1174259",
+      "retrieved": "2026-08-18"
+    },
+    {
+      "basis": "unknown",
+      "cityIata": "BCN",
+      "attraction": "Bunkers del Carmel",
+      "rationale": "No official Barcelona City Council or MUHBA page for Turó de la Rovira was reachable (`barcelona.cat` returned HTTP 418 to one route and 404 to the guessed paths). The site has had council-imposed night closures, so `always-open` would be an unverified claim."
+    },
+    {
+      "basis": "always-open",
+      "cityIata": "BCN",
+      "attraction": "Barcelona Beach — Barceloneta",
+      "rationale": "Public urban beach and promenade; open at all hours, no admission. (Lifeguard cover is seasonal, which is a safety fact, not an opening time.)"
     }
   ]
 }

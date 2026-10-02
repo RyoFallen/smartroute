@@ -9,114 +9,27 @@ assumption.
 `pnpm --filter @smartroute/backend exec tsx scripts/attraction-data-coverage.ts` after changing
 any seed file.
 
-Across **95 attractions** in **8 cities**.
+Across **94 attractions** in **8 cities**.
 
 ## OpeningHours
 
-| Basis                                |  Count |   Share |
-| ------------------------------------ | -----: | ------: |
-| OSM-sourced                          |      5 |      5% |
-| Manually filled, with a cited source |      0 |      0% |
-| Genuinely unconstrained (`24/7`)     |      8 |      8% |
-| Deliberately left unknown            |      0 |      0% |
-| Not yet examined                     |     82 |     86% |
-| **Decided**                          | **13** | **14%** |
+| Basis                                |  Count |    Share |
+| ------------------------------------ | -----: | -------: |
+| OSM-sourced                          |      5 |       5% |
+| Manually filled, with a cited source |     50 |      53% |
+| Genuinely unconstrained (`24/7`)     |     24 |      26% |
+| Deliberately left unknown            |     15 |      16% |
+| Not yet examined                     |      0 |       0% |
+| **Decided**                          | **94** | **100%** |
 
 The three hand-made bases are distinct on purpose. "Genuinely unconstrained" is a fact about the
 attraction — a square has no gates. "Deliberately left unknown" is a fact about our data — we
 looked and there was nothing to record. "Not yet examined" is neither, and is the number that
 has to reach zero before the dataset is finished.
 
-## Still to decide (82)
-
-| City | Attraction                                 | Category   |
-| ---- | ------------------------------------------ | ---------- |
-| IST  | Blue Mosque (Sultanahmet Camii)            | RELIGIOUS  |
-| IST  | Basilica Cistern                           | HISTORICAL |
-| IST  | Galata Tower                               | VIEWPOINT  |
-| IST  | Süleymaniye Mosque                         | RELIGIOUS  |
-| IST  | Dolmabahçe Palace                          | HISTORICAL |
-| IST  | Hippodrome & Sultanahmet Square            | HISTORICAL |
-| BER  | Brandenburg Gate                           | LANDMARK   |
-| BER  | Reichstag Building                         | LANDMARK   |
-| BER  | Museum Island                              | MUSEUM     |
-| BER  | Memorial to the Murdered Jews of Europe    | HISTORICAL |
-| BER  | East Side Gallery                          | HISTORICAL |
-| BER  | Berlin Wall Memorial — Bernauer Straße     | HISTORICAL |
-| BER  | Berliner Dom                               | RELIGIOUS  |
-| BER  | TV Tower — Alexanderplatz                  | VIEWPOINT  |
-| BER  | Tiergarten                                 | PARK       |
-| BER  | Charlottenburg Palace                      | HISTORICAL |
-| WAW  | Old Town Market Square                     | LANDMARK   |
-| WAW  | Royal Castle                               | HISTORICAL |
-| WAW  | Łazienki Park                              | PARK       |
-| WAW  | Warsaw Uprising Museum                     | MUSEUM     |
-| WAW  | POLIN Museum of the History of Polish Jews | MUSEUM     |
-| WAW  | Palace of Culture and Science              | VIEWPOINT  |
-| WAW  | Wilanów Palace                             | HISTORICAL |
-| WAW  | Copernicus Science Centre                  | MUSEUM     |
-| WAW  | Krakowskie Przedmieście                    | LANDMARK   |
-| WAW  | Holy Cross Church                          | RELIGIOUS  |
-| WAW  | Warsaw Barbican                            | HISTORICAL |
-| BUD  | Hungarian Parliament Building              | LANDMARK   |
-| BUD  | Buda Castle                                | HISTORICAL |
-| BUD  | Fisherman's Bastion                        | VIEWPOINT  |
-| BUD  | Matthias Church                            | RELIGIOUS  |
-| BUD  | St. Stephen's Basilica                     | RELIGIOUS  |
-| BUD  | Széchenyi Chain Bridge                     | LANDMARK   |
-| BUD  | Széchenyi Thermal Baths                    | LANDMARK   |
-| BUD  | Great Market Hall                          | MARKET     |
-| BUD  | Gellért Hill & Citadella                   | VIEWPOINT  |
-| BUD  | Dohány Street Synagogue                    | RELIGIOUS  |
-| BUD  | Shoes on the Danube Bank                   | HISTORICAL |
-| LHR  | Tower of London                            | HISTORICAL |
-| LHR  | Tower Bridge                               | LANDMARK   |
-| LHR  | British Museum                             | MUSEUM     |
-| LHR  | Westminster Abbey                          | RELIGIOUS  |
-| LHR  | Big Ben & Houses of Parliament             | LANDMARK   |
-| LHR  | Buckingham Palace                          | LANDMARK   |
-| LHR  | London Eye                                 | VIEWPOINT  |
-| LHR  | National Gallery & Trafalgar Square        | MUSEUM     |
-| LHR  | St Paul's Cathedral                        | RELIGIOUS  |
-| LHR  | Hyde Park                                  | PARK       |
-| LHR  | Borough Market                             | MARKET     |
-| LHR  | Natural History Museum                     | MUSEUM     |
-| CDG  | Eiffel Tower                               | LANDMARK   |
-| CDG  | Louvre Museum                              | MUSEUM     |
-| CDG  | Notre-Dame Cathedral                       | RELIGIOUS  |
-| CDG  | Sacré-Cœur & Montmartre                    | RELIGIOUS  |
-| CDG  | Arc de Triomphe                            | LANDMARK   |
-| CDG  | Champs-Élysées                             | LANDMARK   |
-| CDG  | Musée d'Orsay                              | MUSEUM     |
-| CDG  | Sainte-Chapelle                            | RELIGIOUS  |
-| CDG  | Luxembourg Gardens                         | PARK       |
-| CDG  | Panthéon                                   | HISTORICAL |
-| CDG  | Centre Pompidou                            | MUSEUM     |
-| CDG  | Trocadéro                                  | VIEWPOINT  |
-| FCO  | Colosseum                                  | HISTORICAL |
-| FCO  | Roman Forum & Palatine Hill                | HISTORICAL |
-| FCO  | Pantheon                                   | HISTORICAL |
-| FCO  | Vatican Museums & Sistine Chapel           | MUSEUM     |
-| FCO  | St. Peter's Basilica                       | RELIGIOUS  |
-| FCO  | Castel Sant'Angelo                         | HISTORICAL |
-| FCO  | Galleria Borghese                          | MUSEUM     |
-| FCO  | Campo de' Fiori                            | MARKET     |
-| FCO  | Trastevere                                 | LANDMARK   |
-| BCN  | Sagrada Família                            | RELIGIOUS  |
-| BCN  | Park Güell                                 | PARK       |
-| BCN  | Casa Batlló                                | LANDMARK   |
-| BCN  | Casa Milà — La Pedrera                     | LANDMARK   |
-| BCN  | Gothic Quarter & Barcelona Cathedral       | HISTORICAL |
-| BCN  | La Boqueria Market                         | MARKET     |
-| BCN  | Picasso Museum                             | MUSEUM     |
-| BCN  | Montjuïc & Magic Fountain                  | VIEWPOINT  |
-| BCN  | Palau de la Música Catalana                | LANDMARK   |
-| BCN  | Bunkers del Carmel                         | VIEWPOINT  |
-| BCN  | Barcelona Beach — Barceloneta              | PARK       |
-
 ## Assumed opening windows
 
-Scheduled against an assumed window: **82 of 95** (86%) — every Attraction whose `OpeningHours` we do not
+Scheduled against an assumed window: **15 of 94** (16%) — every Attraction whose `OpeningHours` we do not
 hold, whether it was deliberately left unknown or has not been examined yet. Each affected
 VisitSlot is returned with `hoursAssumed` set and is badged in the app, so a traveler can tell
 an opening time we know from one we guessed.
@@ -135,13 +48,13 @@ fact rather than a guess, is itself only ever flagged, and a guess must not outr
 
 | AttractionCategory | Assumed open | Assumed close | Attractions using it |
 | ------------------ | ------------ | ------------- | -------------------: |
-| MUSEUM             | 10:00        | 18:00         |                   13 |
-| HISTORICAL         | 09:00        | 18:00         |                   19 |
-| RELIGIOUS          | 08:00        | 18:00         |                   14 |
-| MARKET             | 09:00        | 19:00         |                    4 |
-| PARK               | 08:00        | 20:00         |                    6 |
-| VIEWPOINT          | 09:00        | 21:00         |                    9 |
-| LANDMARK           | 08:00        | 20:00         |                   17 |
+| MUSEUM             | 10:00        | 18:00         |                    2 |
+| HISTORICAL         | 09:00        | 18:00         |                    4 |
+| RELIGIOUS          | 08:00        | 18:00         |                    5 |
+| MARKET             | 09:00        | 19:00         |                    1 |
+| PARK               | 08:00        | 20:00         |                    0 |
+| VIEWPOINT          | 09:00        | 21:00         |                    1 |
+| LANDMARK           | 08:00        | 20:00         |                    2 |
 
 Attractions whose hours we _do_ hold — including the ones recorded as genuinely unconstrained
 (`24/7`) — are never touched by this table and never marked as assumed. Note also what this
@@ -150,8 +63,34 @@ on, not which hour of it (see `closures.ts`).
 
 ## VisitDuration
 
-Curated per attraction: **0 of 95** (0%). The remaining
-**95** fall back to the per-`AttractionCategory` default at read time.
+Curated per attraction: **16 of 94** (17%). The remaining
+**78** fall back to the per-`AttractionCategory` default at read time.
+
+Of the curated values, **2** quote a visit length the operator publishes and
+**14** are our own judgement, each with its rationale beside it in
+`attractions.json` (`visitMinutesProvenance`). Operators almost never publish one: three of 52
+official sites did (`2026-08-18-opening-hours-citations.md` §6). A judgement value overrides the
+default only where the default is visibly wrong for that attraction — usually because the
+category describes the outside of a building whose ticketed inside is what the hours encode.
+
+| City | Attraction                       | Category   | Default | Curated | Basis     |
+| ---- | -------------------------------- | ---------- | ------: | ------: | --------- |
+| IST  | Topkapı Palace                   | HISTORICAL |      90 |     180 | judgement |
+| BER  | Reichstag Building               | LANDMARK   |      30 |      60 | judgement |
+| BUD  | Széchenyi Thermal Baths          | LANDMARK   |      30 |     120 | judgement |
+| LHR  | Tower of London                  | HISTORICAL |      90 |     180 | published |
+| LHR  | Tower Bridge                     | LANDMARK   |      30 |      75 | judgement |
+| LHR  | Buckingham Palace                | LANDMARK   |      30 |     120 | judgement |
+| CDG  | Eiffel Tower                     | LANDMARK   |      30 |     120 | judgement |
+| CDG  | Louvre Museum                    | MUSEUM     |     120 |     180 | judgement |
+| CDG  | Arc de Triomphe                  | LANDMARK   |      30 |      60 | judgement |
+| FCO  | Roman Forum & Palatine Hill      | HISTORICAL |      90 |     150 | judgement |
+| FCO  | Vatican Museums & Sistine Chapel | MUSEUM     |     120 |     180 | judgement |
+| FCO  | Trastevere                       | LANDMARK   |      30 |      90 | judgement |
+| BCN  | Sagrada Família                  | RELIGIOUS  |      45 |      90 | judgement |
+| BCN  | Casa Batlló                      | LANDMARK   |      30 |      75 | judgement |
+| BCN  | Casa Milà — La Pedrera           | LANDMARK   |      30 |      75 | judgement |
+| BCN  | Palau de la Música Catalana      | LANDMARK   |      30 |      50 | published |
 
 No Places provider publishes a typical-visit-duration field — verified across Google Places,
 Foursquare, OpenTripMap and OSM in `2026-08-09-places-api-selection.md` — so both the curated
@@ -160,13 +99,13 @@ rather than a sourced figure.
 
 | AttractionCategory | Default minutes | Attractions using it |
 | ------------------ | --------------: | -------------------: |
-| MUSEUM             |             120 |                   13 |
-| HISTORICAL         |              90 |                   21 |
-| RELIGIOUS          |              45 |                   16 |
+| MUSEUM             |             120 |                   10 |
+| HISTORICAL         |              90 |                   18 |
+| RELIGIOUS          |              45 |                   15 |
 | PARK               |              60 |                    6 |
 | VIEWPOINT          |              45 |                    9 |
 | MARKET             |              60 |                    6 |
-| LANDMARK           |              30 |                   24 |
+| LANDMARK           |              30 |                   14 |
 
 The values separate enclosed, ticketed visits from pass-through stops: an afternoon in a museum,
 five minutes photographing a fountain. They are deliberately conservative, and a curated

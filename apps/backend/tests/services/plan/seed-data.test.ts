@@ -6,7 +6,7 @@ import {
   OsmOpeningHoursFile,
   resolveOpeningHours,
 } from '../../../src/services/plan/seed-opening-hours.js';
-import { SeedFile } from '../../../src/services/plan/seed-schema.js';
+import { SeedAttraction, SeedFile } from '../../../src/services/plan/seed-schema.js';
 import { MAX_EXACT_TOUR_NODES } from '../../../src/services/itinerary/tour.js';
 
 // ESM project — no __dirname; resolve relative to this file via import.meta.url
@@ -103,6 +103,7 @@ describe('attractions seed data', () => {
       'description',
       'tags',
       'visitMinutes',
+      'visitMinutesProvenance',
     ]);
     for (const city of raw as { iata: string; attractions: Record<string, unknown>[] }[]) {
       for (const a of city.attractions) {
@@ -111,6 +112,44 @@ describe('attractions seed data', () => {
         }
       }
     }
+  });
+  it('states the basis of every curated VisitDuration', () => {
+    // Operators almost never publish a visit length, so most curated values are
+    // our own estimate. The thesis has to be able to count which is which.
+    for (const c of cities) {
+      for (const a of c.attractions.filter((x) => x.visitMinutes !== undefined)) {
+        expect(a.visitMinutesProvenance, `${c.iata}/${a.name}`).toBeDefined();
+      }
+    }
+  });
+
+  it('rejects a VisitDuration without its provenance, and provenance without a value', () => {
+    const base = {
+      name: 'X',
+      category: 'MUSEUM',
+      rank: 1,
+      lat: 0,
+      lon: 0,
+      description: 'A test attraction.',
+      tags: ['art'],
+    };
+    const provenance = { basis: 'judgement', rationale: 'Long enough to be a real rationale.' };
+    expect(SeedAttraction.safeParse({ ...base, visitMinutes: 90 }).success).toBe(false);
+    expect(SeedAttraction.safeParse({ ...base, visitMinutesProvenance: provenance }).success).toBe(
+      false,
+    );
+    expect(
+      SeedAttraction.safeParse({ ...base, visitMinutes: 90, visitMinutesProvenance: provenance })
+        .success,
+    ).toBe(true);
+    // A judgement cites nothing — a URL on one would dress an estimate up as a source.
+    expect(
+      SeedAttraction.safeParse({
+        ...base,
+        visitMinutes: 90,
+        visitMinutesProvenance: { ...provenance, source: 'https://example.com' },
+      }).success,
+    ).toBe(false);
   });
 });
 

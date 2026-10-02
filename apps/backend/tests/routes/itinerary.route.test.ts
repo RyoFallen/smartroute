@@ -95,6 +95,10 @@ function seedAttractions(
     description: 'A test attraction description.',
     tags: ['history'],
     visitMinutes: 60,
+    visitMinutesProvenance: {
+      basis: 'judgement' as const,
+      rationale: 'A fixed test visit length.',
+    },
   }));
 }
 

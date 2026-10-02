@@ -93,6 +93,13 @@ const ManualEntry = z.discriminatedUnion('basis', [
     retrieved: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'expected an ISO date, e.g. 2026-08-09'),
     /** See `OsmOpeningHoursFile.rewrittenFrom` — same purpose, same PH/SH case. */
     rewrittenFrom: z.string().min(1).optional(),
+    /**
+     * What a reader must know before trusting the value: that it is one day's
+     * reading rather than a published weekly rule, that a season was not yet
+     * published, that a published rule could not be expressed. The value itself
+     * stays exactly what the source supports; the caveat lives beside it.
+     */
+    note: z.string().min(1).optional(),
   })
     // Strict so a mistyped key in a hand-edited file fails on the typo rather
     // than on the required field it was meant to be.

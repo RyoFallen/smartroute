@@ -34,7 +34,12 @@
         "lat": 41.0115,
         "lon": 28.9833,
         "description": "Sprawling court of the Ottoman sultans for 400 years, with treasury, harem and Bosphorus views.",
-        "tags": ["history", "architecture", "views"]
+        "tags": ["history", "architecture", "views"],
+        "visitMinutes": 180,
+        "visitMinutesProvenance": {
+          "basis": "judgement",
+          "rationale": "Four courtyards of palace complex plus the Harem and Treasury; the HISTORICAL default of 90 covers barely half of it."
+        }
       },
       {
         "name": "Basilica Cistern",
@@ -145,7 +150,12 @@
         "lat": 52.5186,
         "lon": 13.3762,
         "description": "Seat of the German parliament crowned by Norman Foster's glass dome, which visitors can climb for city views.",
-        "tags": ["history", "architecture", "views"]
+        "tags": ["history", "architecture", "views"],
+        "visitMinutes": 60,
+        "visitMinutesProvenance": {
+          "basis": "judgement",
+          "rationale": "Security screening, the lift and the dome ramp; the dome's own audioguide runs 20 minutes (bundestag.de, retrieved 2026-08-18) before the queue at either end."
+        }
       },
       {
         "name": "Museum Island",
@@ -421,7 +431,12 @@
         "lat": 47.5188,
         "lon": 19.0822,
         "description": "Grand neo-Baroque spa complex with steaming outdoor pools, Europe's largest medicinal thermal bath.",
-        "tags": ["architecture", "history"]
+        "tags": ["architecture", "history"],
+        "visitMinutes": 120,
+        "visitMinutesProvenance": {
+          "basis": "judgement",
+          "rationale": "A bathing visit — changing, several indoor and outdoor pools. The LANDMARK default of 30 is a category mismatch rather than an estimate."
+        }
       },
       {
         "name": "Heroes' Square",
@@ -487,7 +502,14 @@
         "lat": 51.5081,
         "lon": -0.0759,
         "description": "Nearly 1,000-year-old riverside fortress guarding the Crown Jewels, once a royal palace and prison.",
-        "tags": ["history", "architecture", "photography"]
+        "tags": ["history", "architecture", "photography"],
+        "visitMinutes": 180,
+        "visitMinutesProvenance": {
+          "basis": "published",
+          "source": "https://www.hrp.org.uk/tower-of-london/visit/",
+          "retrieved": "2026-08-18",
+          "quote": "We recommend allowing at least three hours, dependent on queues"
+        }
       },
       {
         "name": "Tower Bridge",
@@ -496,7 +518,12 @@
         "lat": 51.5055,
         "lon": -0.0754,
         "description": "Iconic Victorian bascule bridge over the Thames with twin towers and a high-level glass walkway.",
-        "tags": ["architecture", "views", "photography"]
+        "tags": ["architecture", "views", "photography"],
+        "visitMinutes": 75,
+        "visitMinutesProvenance": {
+          "basis": "judgement",
+          "rationale": "The hours encode the ticketed exhibition — high-level walkways and Victorian engine rooms — not the free crossing that LANDMARK's 30 would fit."
+        }
       },
       {
         "name": "British Museum",
@@ -532,7 +559,12 @@
         "lat": 51.5014,
         "lon": -0.1419,
         "description": "Official London residence of the British monarch, fronted by the daily Changing of the Guard.",
-        "tags": ["history", "architecture", "photography"]
+        "tags": ["history", "architecture", "photography"],
+        "visitMinutes": 120,
+        "visitMinutesProvenance": {
+          "basis": "judgement",
+          "rationale": "The operator publishes 1 hour 30 minutes for its winter guided tour (rct.uk, retrieved 2026-08-18); the summer self-guided State Rooms route the hours encode ends through the garden and runs longer."
+        }
       },
       {
         "name": "London Eye",
@@ -607,7 +639,12 @@
         "lat": 48.8584,
         "lon": 2.2945,
         "description": "Paris's 330 m wrought-iron icon, built for the 1889 World's Fair, with viewing decks over the city.",
-        "tags": ["views", "architecture", "photography"]
+        "tags": ["views", "architecture", "photography"],
+        "visitMinutes": 120,
+        "visitMinutesProvenance": {
+          "basis": "judgement",
+          "rationale": "A ticketed ascent by lift or stairs to two or three levels, with a queue at each; LANDMARK's 30 does not cover going up."
+        }
       },
       {
         "name": "Louvre Museum",
@@ -616,7 +653,12 @@
         "lat": 48.8606,
         "lon": 2.3376,
         "description": "World's most-visited museum, home to the Mona Lisa and Venus de Milo behind a glass pyramid.",
-        "tags": ["art", "history", "architecture"]
+        "tags": ["art", "history", "architecture"],
+        "visitMinutes": 180,
+        "visitMinutesProvenance": {
+          "basis": "judgement",
+          "rationale": "The largest art museum in the dataset by a wide margin; 120 minutes is spent mostly reaching the headline works through the crowds."
+        }
       },
       {
         "name": "Notre-Dame Cathedral",
@@ -643,7 +685,12 @@
         "lat": 48.8738,
         "lon": 2.295,
         "description": "Monumental triumphal arch honouring Napoleon's armies, with a rooftop terrace over twelve radiating avenues.",
-        "tags": ["history", "architecture", "views"]
+        "tags": ["history", "architecture", "views"],
+        "visitMinutes": 60,
+        "visitMinutesProvenance": {
+          "basis": "judgement",
+          "rationale": "The hours encode the rooftop climb — a spiral staircase to the terrace and back — rather than the monument seen from the roundabout that LANDMARK's 30 fits."
+        }
       },
       {
         "name": "Champs-Élysées",
@@ -691,18 +738,9 @@
         "tags": ["history", "architecture"]
       },
       {
-        "name": "Centre Pompidou",
-        "category": "MUSEUM",
-        "rank": 11,
-        "lat": 48.8607,
-        "lon": 2.3522,
-        "description": "Radical inside-out building housing Europe's largest modern art museum and a rooftop city view.",
-        "tags": ["art", "architecture", "views"]
-      },
-      {
         "name": "Trocadéro",
         "category": "VIEWPOINT",
-        "rank": 12,
+        "rank": 11,
         "lat": 48.8616,
         "lon": 2.2893,
         "description": "Terraced plaza across the Seine offering the classic head-on panorama of the Eiffel Tower.",
@@ -736,7 +774,12 @@
         "lat": 41.8925,
         "lon": 12.4853,
         "description": "Ruined heart of ancient Rome, a sprawl of temples and arches beside the hill where emperors lived.",
-        "tags": ["history", "architecture", "nature"]
+        "tags": ["history", "architecture", "nature"],
+        "visitMinutes": 150,
+        "visitMinutesProvenance": {
+          "basis": "judgement",
+          "rationale": "Two adjoining open-air archaeological areas on one ticket, both covered on foot; one HISTORICAL default of 90 models only one of them."
+        }
       },
       {
         "name": "Pantheon",
@@ -781,7 +824,12 @@
         "lat": 41.9065,
         "lon": 12.4536,
         "description": "Papal art collection culminating in Michelangelo's frescoed Sistine Chapel ceiling and Last Judgment.",
-        "tags": ["art", "history", "religious"]
+        "tags": ["art", "history", "religious"],
+        "visitMinutes": 180,
+        "visitMinutesProvenance": {
+          "basis": "judgement",
+          "rationale": "A one-way route through the papal galleries that only ends at the Sistine Chapel, with no short way through; the MUSEUM default of 120 leaves no time for the collections it passes."
+        }
       },
       {
         "name": "St. Peter's Basilica",
@@ -826,7 +874,12 @@
         "lat": 41.8896,
         "lon": 12.4695,
         "description": "Atmospheric riverside quarter of cobbled lanes, ivy-draped houses and traditional Roman trattorias.",
-        "tags": ["food", "history", "photography"]
+        "tags": ["food", "history", "photography"],
+        "visitMinutes": 90,
+        "visitMinutesProvenance": {
+          "basis": "judgement",
+          "rationale": "A neighbourhood walked through rather than a stop; LANDMARK's 30 fits a single sight."
+        }
       }
     ]
   },
@@ -847,7 +900,12 @@
         "lat": 41.4036,
         "lon": 2.1744,
         "description": "Gaudí's still-unfinished basilica, a soaring forest of organic stone columns and luminous stained glass.",
-        "tags": ["religious", "architecture", "art"]
+        "tags": ["religious", "architecture", "art"],
+        "visitMinutes": 90,
+        "visitMinutesProvenance": {
+          "basis": "judgement",
+          "rationale": "A timed-entry ticketed basilica with an audio-guided interior visit, not a drop-in church; the RELIGIOUS default of 45 fits a parish church, not this."
+        }
       },
       {
         "name": "Park Güell",
@@ -865,7 +923,12 @@
         "lat": 41.3917,
         "lon": 2.1649,
         "description": "Gaudí's fantastical townhouse on Passeig de Gràcia, with a scaly roof and bone-like balconies.",
-        "tags": ["architecture", "art", "history"]
+        "tags": ["architecture", "art", "history"],
+        "visitMinutes": 75,
+        "visitMinutesProvenance": {
+          "basis": "judgement",
+          "rationale": "A ticketed house-museum whose visit is an interior route over several floors to the roof terrace; LANDMARK's 30 fits a façade seen from the street."
+        }
       },
       {
         "name": "Casa Milà — La Pedrera",
@@ -874,7 +937,12 @@
         "lat": 41.3953,
         "lon": 2.162,
         "description": "Gaudí's wave-fronted stone apartment block crowned by a rooftop of sculptural chimneys.",
-        "tags": ["architecture", "art", "views"]
+        "tags": ["architecture", "art", "views"],
+        "visitMinutes": 75,
+        "visitMinutesProvenance": {
+          "basis": "judgement",
+          "rationale": "A ticketed interior visit through the apartment, attic exhibition and rooftop; LANDMARK's 30 fits the façade, which is not what the hours describe."
+        }
       },
       {
         "name": "La Rambla",
@@ -928,7 +996,14 @@
         "lat": 41.3875,
         "lon": 2.1751,
         "description": "Dazzling Modernista concert hall with a stained-glass skylight and richly ornamented mosaic interior.",
-        "tags": ["architecture", "art", "history"]
+        "tags": ["architecture", "art", "history"],
+        "visitMinutes": 50,
+        "visitMinutesProvenance": {
+          "basis": "published",
+          "source": "https://www.palaumusica.cat/en/visites/guided-tour_1174259",
+          "retrieved": "2026-08-18",
+          "quote": "Guided tour: 50 minutes"
+        }
       },
       {
         "name": "Bunkers del Carmel",
