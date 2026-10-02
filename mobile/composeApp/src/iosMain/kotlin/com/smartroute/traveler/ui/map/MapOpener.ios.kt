@@ -15,5 +15,10 @@ actual fun rememberMapOpener(): (lat: Double, lon: Double, label: String) -> Uni
                 NSURLQueryItem(name = "q", value = label),
             )
         val url = components.URL
-        if (url != null) UIApplication.sharedApplication.openURL(url)
+        // The options/completionHandler overload, never the one-argument
+        // `openURL(_:)`: current iOS (observed on 26.5) force-returns false for the
+        // deprecated form, so the tap silently does nothing (#32).
+        if (url != null) {
+            UIApplication.sharedApplication.openURL(url, options = emptyMap<Any?, Any>(), completionHandler = null)
+        }
     }
