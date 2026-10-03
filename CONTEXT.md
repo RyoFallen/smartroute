@@ -86,3 +86,35 @@ means a flight itinerary option on `POST /optimize`)
 The portion of a calendar day in which VisitSlots may be placed. Bounded by the traveler's wake-up
 time and, on arrival and departure days, by the flight times plus transfer buffers.
 _Avoid_: free time, availability
+
+### Benchmark
+
+**RecordedFare**:
+A real one-way economy price between two curated cities' benchmark airport lists on one date — the cheapest fare a public
+flight search's date grid shows, price only — read by hand and archived with a screenshot. It is the benchmark's only source of real prices, because the
+flight provider's test mode returns synthetic fares.
+_Avoid_: test fare, mock price (those are synthetic), quote
+
+**NaiveOrder**:
+The benchmark's baseline visiting order: start at the origin and always fly next to the nearest
+unvisited city by great-circle distance. It is what a sensible traveler does with a map, not the
+order the cities happen to be listed in.
+_Avoid_: entry order, user order, default order
+
+**CaptureSession**:
+One continuous, timestamped sitting on one day in which every RecordedFare for the 56 curated city
+pairs is read, followed by every scenario's competitor result. Prices from different sessions are
+never mixed within one scenario's measurement.
+_Avoid_: capture day (a day could hold two sessions), run, snapshot
+
+**BenchmarkScenario**:
+One frozen multi-city trip the benchmark prices: an origin with no stay, 4–7 visited curated cities
+of which one is the pinned end city, a fixed CityStay for each, and one fixed departure date. Only
+the order of the cities between the origin and the end city is optimized.
+_Avoid_: test case, trip (a Trip is a traveler's saved plan), query
+
+**CompetitorResult**:
+Kiwi.com Nomad's cheapest all-flight itinerary for one BenchmarkScenario in one CaptureSession,
+searched with the same airports, dates and stays. Its cheapest result in any transport mode is kept
+beside it as context, never as the compared price.
+_Avoid_: Nomad price (ambiguous between the two), competitor fare
