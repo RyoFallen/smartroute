@@ -53,6 +53,8 @@ export interface GaResult {
   best: GaCandidate | null;
   /** Every distinct feasible ordering the GA evaluated. */
   evaluated: GaCandidate[];
+  /** Distinct orderings evaluated, infeasible ones included. */
+  ordersEvaluated: number;
   generations: number;
   timedOut: boolean;
 }
@@ -90,6 +92,7 @@ export function runGa(input: GaInput, opts: GaOptions = {}): GaResult {
     return {
       best: archiveBest(archive, input.weights),
       evaluated: feasible(archive),
+      ordersEvaluated: archive.size,
       generations: 0,
       timedOut: false,
     };
@@ -152,6 +155,7 @@ export function runGa(input: GaInput, opts: GaOptions = {}): GaResult {
   return {
     best: archiveBest(archive, input.weights),
     evaluated: feasible(archive),
+    ordersEvaluated: archive.size,
     generations,
     timedOut,
   };

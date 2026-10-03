@@ -14,13 +14,33 @@ import { orderingKey, runGa, type GaCandidate, type GaOptions } from './ga.js';
 import { scoreOrdering } from './score.js';
 import { collectPriceTriples } from './triples.js';
 
+/**
+ * Where the optimizer's prices come from: `FlightService` in production, or
+ * anything with its `getPrices` shape — the competitor benchmark passes one
+ * built from a CaptureSession's RecordedFares, so it never touches the price
+ * cache (ADR-0006).
+ */
+export type PriceSource = Pick<FlightService, 'getPrices'>;
+
+/** One optimize call, plus how much of the search space the GA looked at. */
+export interface OptimizeSearch {
+  response: OptimizeResponse;
+  /** Distinct visiting orders the GA evaluated, feasible or not. */
+  ordersEvaluated: number;
+}
+
 export class OptimizerService {
   constructor(
-    private readonly flights: FlightService,
+    private readonly flights: PriceSource,
     private readonly ga: GaOptions = {},
   ) {}
 
   async optimize(req: OptimizeRequest): Promise<OptimizeResponse> {
+    return (await this.search(req)).response;
+  }
+
+  /** `optimize`, also reporting the GA's search effort (the benchmark's measure). */
+  async search(req: OptimizeRequest): Promise<OptimizeSearch> {
     const triples = collectPriceTriples(req);
     const { prices, partial, staleCache } = await this.flights.getPrices(triples);
 
@@ -42,8 +62,9 @@ export class OptimizerService {
       this.ga,
     );
 
+    const ordersEvaluated = result.ordersEvaluated;
     if (!result.best) {
-      return {
+      const response: OptimizeResponse = {
         options: [],
         reason: req.directOnly
           ? 'No direct-only routes available; try disabling directOnly.'
@@ -51,6 +72,7 @@ export class OptimizerService {
         ...(partial && { partial }),
         ...(staleCache && { staleCache }),
       };
+      return { response, ordersEvaluated };
     }
 
     const labeled: Array<{ label: RouteLabel; pick: GaCandidate }> = [
@@ -79,11 +101,12 @@ export class OptimizerService {
       });
     }
 
-    return {
+    const response: OptimizeResponse = {
       options,
       ...(partial && { partial }),
       ...(staleCache && { staleCache }),
     };
+    return { response, ordersEvaluated };
   }
 }
 
@@ -94,8 +117,12 @@ export class OptimizerService {
  * the first leg leaves on `departDate`, and every later leg leaves after the
  * stay of the city it departs from. Advancing by the stay *before* each leg
  * but the first is what makes a city's own CityStay the time spent in it.
+ *
+ * Exported as the one leg-dating rule: the benchmark prices its NaiveOrder and
+ * every brute-force order with it rather than with a copy (the #34 lesson).
+ * Fewer legs than `ordering.length - 1` means a price is missing: infeasible.
  */
-function legsFor(
+export function legsFor(
   ordering: string[],
   req: Pick<OptimizeRequest, 'perCityDays' | 'cities' | 'departDate' | 'cabinClass'>,
   prices: Map<string, PriceResult>,
