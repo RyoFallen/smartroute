@@ -15,9 +15,14 @@ const SCENARIO_SIZES = [4, 5, 6, 7] as const;
 const SCENARIOS_PER_SIZE = 5;
 const MIN_STAY_DAYS = 2;
 const MAX_STAY_DAYS = 4;
-/** Every departure falls 2–8 weeks out from all three CaptureSessions. */
-const FIRST_DEPARTURE = '2026-11-14';
-const LAST_DEPARTURE = '2026-12-08';
+/**
+ * Every flight of every scenario — the first and the last alike — falls in this
+ * window, 2–8 weeks out from all three CaptureSessions (13, 22, 31 Oct 2026).
+ * It is 25 days, and the longest flown span (six 4-day stays before the end
+ * city) is 24, so every scenario has at least one departure date that fits.
+ */
+const FIRST_FLIGHT = '2026-11-14';
+const LAST_FLIGHT = '2026-12-08';
 
 export const BenchmarkScenario = z.object({
   id: z.string(),
@@ -50,8 +55,8 @@ const DAY_MS = 86_400_000;
 export function drawScenarios(seed: number): BenchmarkScenario[] {
   const rng = mulberry32(seed);
   const randomInt = (n: number): number => Math.floor(rng() * n);
-  const firstMs = Date.parse(FIRST_DEPARTURE);
-  const windowDays = (Date.parse(LAST_DEPARTURE) - firstMs) / DAY_MS + 1;
+  const firstMs = Date.parse(FIRST_FLIGHT);
+  const windowDays = (Date.parse(LAST_FLIGHT) - firstMs) / DAY_MS + 1;
 
   const out: BenchmarkScenario[] = [];
   for (const size of SCENARIO_SIZES) {
@@ -69,7 +74,13 @@ export function drawScenarios(seed: number): BenchmarkScenario[] {
         city,
         stayDays: MIN_STAY_DAYS + randomInt(MAX_STAY_DAYS - MIN_STAY_DAYS + 1),
       }));
-      const departDate = new Date(firstMs + randomInt(windowDays) * DAY_MS)
+      // The last flight leaves after every visited city's stay but the end
+      // city's, so the departure is drawn uniformly from the days that still
+      // land it inside the window.
+      const flownDays = visited
+        .filter((v) => v.city !== endCity)
+        .reduce((n, v) => n + v.stayDays, 0);
+      const departDate = new Date(firstMs + randomInt(windowDays - flownDays) * DAY_MS)
         .toISOString()
         .slice(0, 10);
       out.push({

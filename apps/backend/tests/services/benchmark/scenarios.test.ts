@@ -1,6 +1,10 @@
 import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
-import { BENCHMARK_CITIES, drawScenarios } from '../../../src/services/benchmark/index.js';
+import {
+  BENCHMARK_CITIES,
+  drawScenarios,
+  fareChecklist,
+} from '../../../src/services/benchmark/index.js';
 import { SeedFile } from '../../../src/services/plan/seed-schema.js';
 
 // Properties are checked over many seeds, not one, so a rule the draw only
@@ -38,10 +42,16 @@ describe('drawScenarios', () => {
     expect(new Set(stays)).toEqual(new Set([2, 3, 4]));
   });
 
-  it('departs inside 14 Nov – 8 Dec 2026, reaching both ends of the window', () => {
-    const dates = all.map((s) => s.departDate).sort();
+  it('flies every leg inside 14 Nov – 8 Dec 2026, reaching both ends of the window', () => {
+    // Not just the first flight: every fare a scenario needs must be 2–8 weeks
+    // out from all three CaptureSessions, so the last flight is capped too.
+    // Dates come from the optimizer's own rule, via the checklist.
+    const dates = fareChecklist(all)
+      .pairs.flatMap((p) => p.dates)
+      .sort();
     expect(dates[0]).toBe('2026-11-14');
     expect(dates.at(-1)).toBe('2026-12-08');
+    for (const s of all) expect(s.departDate >= '2026-11-14').toBe(true);
   });
 
   it('pins the same 8 cities the seed data curates', () => {
