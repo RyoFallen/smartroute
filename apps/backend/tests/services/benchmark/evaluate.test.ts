@@ -55,7 +55,11 @@ function handFares(): Fares {
 
 /** A session file holding `fares`, one grid per directed pair. */
 function session(fares: Fares, date = '2026-10-13'): SessionFile {
-  const grids = new Map<string, SessionFile['grids'][number]>();
+  // Raw JSON, as transcribed; SessionFile.parse checks it.
+  const grids = new Map<
+    string,
+    { origin: string; destination: string; screenshotAt: string; fares: object[] }
+  >();
   for (const [leg, priceCents] of Object.entries(fares)) {
     const [pair, day] = leg.split(' ') as [string, string];
     const [origin, destination] = pair.split('-') as [string, string];
@@ -77,18 +81,56 @@ function session(fares: Fares, date = '2026-10-13'): SessionFile {
 const SEEDS = Array.from({ length: 30 }, (_, i) => i + 1);
 
 describe('SessionFile', () => {
+  const grid = { origin: 'IST', destination: 'BER', screenshotAt: '2026-10-13T09:00:00+02:00' };
+  const file = (gridFields: object, extra: object = {}) => ({
+    date: '2026-10-13',
+    startedAt: '2026-10-13T09:00:00+02:00',
+    endedAt: '2026-10-13T12:30:00+02:00',
+    grids: [{ ...grid, ...gridFields }],
+    ...extra,
+  });
+  const fare = (f: object) => ({ fares: [f] });
+
   it('requires "no fare" to be written down, not left out', () => {
-    const grid = { origin: 'IST', destination: 'BER', screenshotAt: '2026-10-13T09:00:00+02:00' };
-    const file = (fare: object) => ({
-      date: '2026-10-13',
-      startedAt: '2026-10-13T09:00:00+02:00',
-      endedAt: '2026-10-13T12:30:00+02:00',
-      grids: [{ ...grid, fares: [fare] }],
-    });
-    expect(SessionFile.safeParse(file({ date: '2026-11-20', priceCents: null })).success).toBe(
-      true,
+    expect(
+      SessionFile.safeParse(file(fare({ date: '2026-11-20', priceCents: null }))).success,
+    ).toBe(true);
+    expect(SessionFile.safeParse(file(fare({ date: '2026-11-20' }))).success).toBe(false);
+  });
+
+  it('rejects a mistyped field rather than dropping it', () => {
+    expect(
+      SessionFile.safeParse(file(fare({ date: '2026-11-20', priceCents: 1_000, price: 10 })))
+        .success,
+    ).toBe(false);
+  });
+
+  it('rejects a grid between cities that are not curated', () => {
+    const typo = { origin: 'ISt', ...fare({ date: '2026-11-20', priceCents: 1_000 }) };
+    expect(SessionFile.safeParse(file(typo)).success).toBe(false);
+  });
+
+  it('holds the spot-checks and notes the protocol transcribes', () => {
+    const parsed = SessionFile.parse(
+      file(
+        { item: 'G01', ...fare({ date: '2026-11-20', priceCents: 1_000 }) },
+        {
+          spotChecks: [
+            {
+              item: 'L01',
+              origin: 'IST',
+              destination: 'BER',
+              date: '2026-11-20',
+              livePriceCents: 1_200,
+              screenshotAt: '2026-10-13T12:10:00+02:00',
+            },
+          ],
+          notes: ['N04: Modify journey used, Rome showed 3–5 nights'],
+        },
+      ),
     );
-    expect(SessionFile.safeParse(file({ date: '2026-11-20' })).success).toBe(false);
+    expect(parsed.spotChecks[0]!.livePriceCents).toBe(1_200);
+    expect(parsed.grids[0]!.item).toBe('G01');
   });
 });
 
@@ -100,9 +142,13 @@ describe('evaluateBenchmark', () => {
     const result = report.sessions[0]!.scenarios[0]!;
     expect(result.optimum).toEqual({
       priceCents: 4_000,
-      order: ['IST', 'FCO', 'BER', 'CDG', 'WAW'],
+      orders: [['IST', 'FCO', 'BER', 'CDG', 'WAW']],
     });
-    expect(result.gaPricesCents).toEqual(SEEDS.map(() => 4_000));
+    expect(result.gaRuns.map((r) => r.seed)).toEqual(SEEDS);
+    for (const run of result.gaRuns) {
+      expect(run.priceCents).toBe(4_000);
+      expect(run.order).toEqual(['IST', 'FCO', 'BER', 'CDG', 'WAW']);
+    }
     expect(result.gaMedianCents).toBe(4_000);
     expect(result.hitRate).toBe(1);
     expect(result.totalOrders).toBe(6);
@@ -124,9 +170,28 @@ describe('evaluateBenchmark', () => {
     // Of the four left, only IST BER FCO CDG WAW keeps a cheap leg (CDG-WAW 29).
     expect(result.optimum).toEqual({
       priceCents: 31_000,
-      order: ['IST', 'BER', 'FCO', 'CDG', 'WAW'],
+      orders: [['IST', 'BER', 'FCO', 'CDG', 'WAW']],
     });
     expect(result.gaMedianCents).toBe(31_000);
+    expect(result.hitRate).toBe(1);
+  });
+
+  it('keeps every order tied at the optimum, and counts a run at that price as a hit', async () => {
+    // With IST-FCO 20 gone, a cheap FCO-WAW 29 brings IST BER CDG FCO WAW and
+    // IST CDG BER FCO WAW down to €310 too: three orders tie.
+    const report = await evaluateBenchmark(
+      [SCENARIO],
+      [session({ ...handFares(), 'IST-FCO 20': null, 'FCO-WAW 29': 1_000 })],
+      { seeds: SEEDS },
+    );
+
+    const result = report.sessions[0]!.scenarios[0]!;
+    expect(result.optimum!.priceCents).toBe(31_000);
+    expect([...result.optimum!.orders].map((o) => o.join(' ')).sort()).toEqual([
+      'IST BER CDG FCO WAW',
+      'IST BER FCO CDG WAW',
+      'IST CDG BER FCO WAW',
+    ]);
     expect(result.hitRate).toBe(1);
   });
 

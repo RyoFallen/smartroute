@@ -14,30 +14,19 @@
  * `--check` must compare like with like.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
-import { isDeepStrictEqual } from 'node:util';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import * as prettier from 'prettier';
 import {
-  ScenarioFile,
-  drawScenarios,
   fareChecklist,
   type BenchmarkScenario,
   type FareChecklist,
 } from '../../src/services/benchmark/index.js';
+import { BENCHMARK_DOCS, loadFrozenScenarios } from './frozen-scenarios.js';
 
-const here = path.dirname(fileURLToPath(import.meta.url));
-const docs = path.resolve(here, '../../../../docs/benchmark');
-const scenariosPath = path.join(docs, 'scenarios.json');
+const docs = BENCHMARK_DOCS;
 const notePath = path.join(docs, 'fare-checklist.md');
 
-const file = ScenarioFile.parse(JSON.parse(readFileSync(scenariosPath, 'utf8')));
-if (!isDeepStrictEqual(file.scenarios, drawScenarios(file.seed))) {
-  console.error(
-    `scenarios.json does not match what seed ${file.seed} draws — it was edited by hand.`,
-  );
-  process.exit(1);
-}
+const file = loadFrozenScenarios();
 
 /**
  * The day the last flight leaves, read off the scenario's own checklist rather

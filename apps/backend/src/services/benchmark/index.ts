@@ -5,9 +5,11 @@
 export { BENCHMARK_AIRPORTS, type BenchmarkAirport } from './airports.js';
 export { fareChecklist, type FareChecklist, type PairFares } from './checklist.js';
 export {
+  BENCHMARK_SEEDS,
   evaluateBenchmark,
   type BenchmarkReport,
   type EvaluateOptions,
+  type GaRun,
   type ScenarioResult,
   type SessionResult,
 } from './evaluate.js';

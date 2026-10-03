@@ -13,23 +13,18 @@
  * formats through Prettier so `--check` compares like with like.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
-import { isDeepStrictEqual } from 'node:util';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import * as prettier from 'prettier';
 import { mulberry32 } from '../../src/services/optimizer/ga.js';
 import {
   BENCHMARK_AIRPORTS,
   BENCHMARK_CITIES,
-  ScenarioFile,
-  drawScenarios,
   fareChecklist,
   type BenchmarkScenario,
 } from '../../src/services/benchmark/index.js';
+import { BENCHMARK_DOCS, loadFrozenScenarios } from './frozen-scenarios.js';
 
-const here = path.dirname(fileURLToPath(import.meta.url));
-const docs = path.resolve(here, '../../../../docs/benchmark');
-const scenariosPath = path.join(docs, 'scenarios.json');
+const docs = BENCHMARK_DOCS;
 const notePath = path.join(docs, 'capture-sheet.md');
 
 /** The three CaptureSessions (#35). */
@@ -41,13 +36,7 @@ const SPOT_CHECKS_PER_SESSION = 10;
  */
 const SPOT_CHECK_SEED = 20261013;
 
-const file = ScenarioFile.parse(JSON.parse(readFileSync(scenariosPath, 'utf8')));
-if (!isDeepStrictEqual(file.scenarios, drawScenarios(file.seed))) {
-  console.error(
-    `scenarios.json does not match what seed ${file.seed} draws — it was edited by hand.`,
-  );
-  process.exit(1);
-}
+const file = loadFrozenScenarios();
 
 function airports(city: string) {
   const list = BENCHMARK_AIRPORTS[city as keyof typeof BENCHMARK_AIRPORTS];

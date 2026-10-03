@@ -12,22 +12,18 @@
  * incomplete transcription can never quietly change a reported number.
  */
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { isDeepStrictEqual } from 'node:util';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import * as prettier from 'prettier';
 import {
-  ScenarioFile,
   SessionFile,
-  drawScenarios,
+  BENCHMARK_SEEDS,
   evaluateBenchmark,
   type BenchmarkReport,
+  type ScenarioResult,
 } from '../../src/services/benchmark/index.js';
+import { BENCHMARK_DOCS, loadFrozenScenarios } from './frozen-scenarios.js';
 
-const SEEDS = Array.from({ length: 30 }, (_, i) => i + 1);
-
-const here = path.dirname(fileURLToPath(import.meta.url));
-const docs = path.resolve(here, '../../../../docs/benchmark');
+const docs = BENCHMARK_DOCS;
 const argValue = (flag: string) => {
   const i = process.argv.indexOf(flag);
   return i === -1 ? undefined : process.argv[i + 1];
@@ -35,15 +31,7 @@ const argValue = (flag: string) => {
 const sessionsDir = path.resolve(argValue('--sessions') ?? path.join(docs, 'sessions'));
 const outPath = path.resolve(argValue('--out') ?? path.join(docs, 'report.md'));
 
-const file = ScenarioFile.parse(
-  JSON.parse(readFileSync(path.join(docs, 'scenarios.json'), 'utf8')),
-);
-if (!isDeepStrictEqual(file.scenarios, drawScenarios(file.seed))) {
-  console.error(
-    `scenarios.json does not match what seed ${file.seed} draws — it was edited by hand.`,
-  );
-  process.exit(1);
-}
+const file = loadFrozenScenarios();
 
 const sessionFiles = existsSync(sessionsDir)
   ? readdirSync(sessionsDir)
@@ -58,7 +46,7 @@ const sessions = sessionFiles.map((f) =>
   SessionFile.parse(JSON.parse(readFileSync(path.join(sessionsDir, f), 'utf8'))),
 );
 
-const report = await evaluateBenchmark(file.scenarios, sessions, { seeds: SEEDS });
+const report = await evaluateBenchmark(file.scenarios, sessions, { seeds: BENCHMARK_SEEDS });
 if (report.refused.length > 0) {
   for (const { date, problems } of report.refused) {
     console.error(`Session ${date} refused:`);
@@ -69,6 +57,13 @@ if (report.refused.length > 0) {
 
 const eur = (cents: number | null) => (cents === null ? '—' : `€${(cents / 100).toFixed(2)}`);
 const pct = (share: number | null) => (share === null ? '—' : `${Math.round(share * 100)}%`);
+
+/** The first optimal order, with how many others tie with it. */
+function optimumOrder(optimum: ScenarioResult['optimum']): string {
+  if (!optimum) return '—';
+  const [first, ...tied] = optimum.orders;
+  return first!.join(' → ') + (tied.length > 0 ? ` (+${tied.length} tied)` : '');
+}
 
 function render(r: BenchmarkReport): string {
   const out: string[] = [];
@@ -81,7 +76,7 @@ function render(r: BenchmarkReport): string {
   out.push('');
   out.push(
     `Every BenchmarkScenario (seed **${file.seed}**) is priced from each session's RecordedFares by`,
-    `the shipped \`optimize()\` path, run ${SEEDS.length} times with seeds 1–${SEEDS.length}, and by`,
+    `the shipped \`optimize()\` path, run ${BENCHMARK_SEEDS.length} times with seeds 1–${BENCHMARK_SEEDS.length}, and by`,
     'brute force over every order of the cities between the origin and the end city. Prices are',
     'EUR, price only (ADR-0006).',
   );
@@ -98,7 +93,7 @@ function render(r: BenchmarkReport): string {
     );
     for (const s of session.scenarios) {
       out.push(
-        `| ${s.scenarioId} | ${s.visitedCount} | ${s.totalOrders} | ${s.feasibleOrders} | ${s.ordersEvaluatedMedian} | ${eur(s.optimum?.priceCents ?? null)} | ${eur(s.gaMedianCents)} | ${pct(s.hitRate)} | ${s.optimum?.order.join(' → ') ?? '—'} |`,
+        `| ${s.scenarioId} | ${s.visitedCount} | ${s.totalOrders} | ${s.feasibleOrders} | ${s.ordersEvaluatedMedian} | ${eur(s.optimum?.priceCents ?? null)} | ${eur(s.gaMedianCents)} | ${pct(s.hitRate)} | ${optimumOrder(s.optimum)} |`,
       );
     }
     out.push('');

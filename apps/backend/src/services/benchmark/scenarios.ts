@@ -24,6 +24,8 @@ const MAX_STAY_DAYS = 4;
 const FIRST_FLIGHT = '2026-11-14';
 const LAST_FLIGHT = '2026-12-08';
 
+export const IsoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+
 export const BenchmarkScenario = z.object({
   id: z.string(),
   /** Where the traveler flies out from; it carries no stay. */
@@ -32,7 +34,7 @@ export const BenchmarkScenario = z.object({
   visited: z.array(z.object({ city: z.string(), stayDays: z.number().int() })),
   /** The pinned last city, one of `visited`. */
   endCity: z.string(),
-  departDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  departDate: IsoDate,
 });
 export type BenchmarkScenario = z.infer<typeof BenchmarkScenario>;
 

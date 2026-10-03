@@ -3,43 +3,73 @@ import { keyOf } from '../flights/cache.js';
 import type { PriceResult } from '../flights/provider.js';
 import type { PriceSource } from '../optimizer/index.js';
 import type { FareChecklist } from './checklist.js';
+import { BENCHMARK_CITIES, IsoDate } from './scenarios.js';
 
-const IsoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+const City = z.enum(BENCHMARK_CITIES);
+/** A capture-sheet item ID (G07, N12, L03), so a value traces back to its screenshot. */
+const Item = z.string().regex(/^[GNL]\d{2}[a-z]?$/);
 const Timestamp = z.string().datetime({ offset: true });
 
 /** One day of one date grid. */
-const RecordedFare = z.object({
-  date: IsoDate,
-  /**
-   * EUR minor units. `null` is "no fare": the grid showed no price that day.
-   * It must be written down — a day left out is a missing transcription, not
-   * a missing flight, and refuses the session.
-   */
-  priceCents: z.number().int().positive().nullable(),
-});
+const RecordedFare = z
+  .object({
+    date: IsoDate,
+    /**
+     * EUR minor units. `null` is "no fare": the grid showed no price that day.
+     * It must be written down — a day left out is a missing transcription, not
+     * a missing flight, and refuses the session.
+     */
+    priceCents: z.number().int().positive().nullable(),
+  })
+  .strict();
 
-/** One Google Flights date-grid screenshot: a directed city pair's RecordedFares. */
-const Grid = z.object({
-  /** Curated city codes, each standing for that city's benchmark airport list. */
-  origin: z.string(),
-  destination: z.string(),
-  /** When the grid was screenshotted, from the screenshot itself. */
-  screenshotAt: Timestamp,
-  fares: z.array(RecordedFare),
-});
+/**
+ * One Google Flights date-grid screenshot: a directed city pair's RecordedFares.
+ * A retake replaces the earlier screenshot's values, it never adds to them — a
+ * fare recorded twice refuses the session.
+ */
+const Grid = z
+  .object({
+    item: Item.optional(),
+    /** Curated city codes, each standing for that city's benchmark airport list. */
+    origin: City,
+    destination: City,
+    /** When the grid was screenshotted, from the screenshot itself. */
+    screenshotAt: Timestamp,
+    fares: z.array(RecordedFare),
+  })
+  .strict();
+
+/** A live search for one checklist fare, to measure how far the grid's cached price drifts. */
+const SpotCheck = z
+  .object({
+    item: Item.optional(),
+    origin: City,
+    destination: City,
+    date: IsoDate,
+    /** The cheapest live one-way price, EUR minor units; null if the search found no flight. */
+    livePriceCents: z.number().int().positive().nullable(),
+    screenshotAt: Timestamp,
+  })
+  .strict();
 
 /**
  * One transcribed CaptureSession (#35): docs/benchmark/sessions/<date>.json.
  * Its fares are only ever used for this session's measurements.
  */
-export const SessionFile = z.object({
-  date: IsoDate,
-  startedAt: Timestamp,
-  endedAt: Timestamp,
-  grids: z.array(Grid),
-  /** Kiwi.com Nomad's results, one per scenario; shaped by the Nomad comparison (#40). */
-  competitorResults: z.array(z.unknown()).default([]),
-});
+export const SessionFile = z
+  .object({
+    date: IsoDate,
+    startedAt: Timestamp,
+    endedAt: Timestamp,
+    grids: z.array(Grid),
+    /** Kiwi.com Nomad's results, one per scenario; shaped by the Nomad comparison (#40). */
+    competitorResults: z.array(z.unknown()).default([]),
+    spotChecks: z.array(SpotCheck).default([]),
+    /** The session's notes.txt exceptions, one per line, each led by its item ID. */
+    notes: z.array(z.string()).default([]),
+  })
+  .strict();
 export type SessionFile = z.infer<typeof SessionFile>;
 
 /**
@@ -87,19 +117,11 @@ export function sessionProblems(session: SessionFile, checklist: FareChecklist):
  * needing it comes up a leg short and is infeasible: the product's rule.
  */
 export function recordedFareSource(session: SessionFile): PriceSource {
-  const byKey = new Map<
-    string,
-    { origin: string; destination: string; date: string; priceCents: number }
-  >();
+  const priceOf = new Map<string, number>();
   for (const grid of session.grids) {
     for (const fare of grid.fares) {
       if (fare.priceCents === null) continue;
-      byKey.set(`${grid.origin}|${grid.destination}|${fare.date}`, {
-        origin: grid.origin,
-        destination: grid.destination,
-        date: fare.date,
-        priceCents: fare.priceCents,
-      });
+      priceOf.set(fareLabel(grid.origin, grid.destination, fare.date), fare.priceCents);
     }
   }
 
@@ -107,14 +129,14 @@ export function recordedFareSource(session: SessionFile): PriceSource {
     async getPrices(queries) {
       const prices = new Map<string, PriceResult>();
       for (const q of queries) {
-        const fare = byKey.get(`${q.origin}|${q.destination}|${q.departDate}`);
-        if (!fare || q.cabinClass !== 'ECONOMY') continue;
+        const priceCents = priceOf.get(fareLabel(q.origin, q.destination, q.departDate));
+        if (priceCents === undefined || q.cabinClass !== 'ECONOMY') continue;
         prices.set(keyOf(q), {
           origin: q.origin,
           destination: q.destination,
           departDate: q.departDate,
           cabinClass: q.cabinClass,
-          priceCents: fare.priceCents,
+          priceCents,
           durationMin: PLACEHOLDER_DURATION_MIN,
           stops: 0,
           carrier: null,

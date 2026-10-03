@@ -8,9 +8,22 @@ import { fareChecklist } from './checklist.js';
 import { optimizerInput, type BenchmarkScenario } from './scenarios.js';
 import { recordedFareSource, sessionProblems, type SessionFile } from './session.js';
 
+/** #35: the GA runs once per seed 1–30, each with `mulberry32(seed)`. */
+export const BENCHMARK_SEEDS = Array.from({ length: 30 }, (_, i) => i + 1);
+
 export interface EvaluateOptions {
-  /** One GA run per seed, each with `mulberry32(seed)` (#35: seeds 1–30). */
+  /** One GA run per seed, each with `mulberry32(seed)`. */
   seeds: number[];
+}
+
+/** One GA run: the shipped `optimize()` path with one seed. */
+export interface GaRun {
+  seed: number;
+  /** The `recommended` option's price and order; null where it found no route. */
+  priceCents: number | null;
+  order: string[] | null;
+  /** Distinct orders this run evaluated, feasible or not. */
+  ordersEvaluated: number;
 }
 
 /** One BenchmarkScenario priced from one CaptureSession's RecordedFares. */
@@ -21,13 +34,22 @@ export interface ScenarioResult {
   totalOrders: number;
   /** Orders whose every leg has a RecordedFare. */
   feasibleOrders: number;
-  /** The brute-force cheapest order; null when no order is feasible. */
-  optimum: { priceCents: number; order: string[] } | null;
-  /** The GA's recommended price per seed, in seed order; null where it found no route. */
-  gaPricesCents: (number | null)[];
-  /** Median over the runs that found a route. */
+  /**
+   * The brute-force cheapest price and every order that reaches it, in
+   * enumeration order; null when no order is feasible.
+   */
+  optimum: { priceCents: number; orders: string[][] } | null;
+  /** In seed order. */
+  gaRuns: GaRun[];
+  /**
+   * Median price over every run, a run that found no route ranking above any
+   * price; null if the median lands on such a run.
+   */
   gaMedianCents: number | null;
-  /** Share of runs whose price equals the optimum's. */
+  /**
+   * Share of runs that reached the optimum's price. Price, not order: a run
+   * that picks another order tied at the optimum price has found the optimum.
+   */
   hitRate: number | null;
   ordersEvaluatedMedian: number;
 }
@@ -47,8 +69,10 @@ export interface BenchmarkReport {
 /**
  * The competitor benchmark's numbers (#35, ADR-0006): every scenario priced
  * from every session's RecordedFares, by the shipped `optimize()` path once
- * per seed and by brute force over every order. Pure data, no clock, so the
- * same inputs and seeds give the same report; rendering is the script's job.
+ * per seed and by brute force over every order. Plain data, and the same
+ * inputs and seeds give the same report: the GA's only clock is its 30 s
+ * safety timeout, which a ≤720-order scenario never comes near. Rendering is
+ * the script's job.
  */
 export async function evaluateBenchmark(
   scenarios: BenchmarkScenario[],
@@ -97,35 +121,41 @@ async function evaluateScenario(
     if (legs.length !== order.length - 1) continue;
     feasibleOrders++;
     const priceCents = scoreOrdering(legs).totalCostCents;
-    if (!optimum || priceCents < optimum.priceCents) optimum = { priceCents, order };
+    if (!optimum || priceCents < optimum.priceCents) optimum = { priceCents, orders: [order] };
+    else if (priceCents === optimum.priceCents) optimum.orders.push(order);
   }
 
-  const gaPricesCents: (number | null)[] = [];
-  const ordersEvaluated: number[] = [];
+  const gaRuns: GaRun[] = [];
   for (const seed of seeds) {
     const optimizer = new OptimizerService(source, { rng: mulberry32(seed) });
-    const run = await optimizer.search(req);
-    const recommended = run.response.options.find((o) => o.label === 'recommended');
-    gaPricesCents.push(recommended?.totalPriceCents ?? null);
-    ordersEvaluated.push(run.ordersEvaluated);
+    const gaRun = await optimizer.optimizeWithStats(req);
+    const recommended = gaRun.response.options.find((o) => o.label === 'recommended');
+    gaRuns.push({
+      seed,
+      priceCents: recommended?.totalPriceCents ?? null,
+      order: recommended?.order ?? null,
+      ordersEvaluated: gaRun.ordersEvaluated,
+    });
   }
 
-  const found = gaPricesCents.filter((p): p is number => p !== null);
+  const noRoute = Number.POSITIVE_INFINITY;
+  const gaMedian = median(gaRuns.map((r) => r.priceCents ?? noRoute));
   return {
     scenarioId: s.id,
     visitedCount: s.visited.length,
     totalOrders: orders.length,
     feasibleOrders,
     optimum,
-    gaPricesCents,
-    gaMedianCents: found.length > 0 ? median(found) : null,
+    gaRuns,
+    gaMedianCents: gaMedian === noRoute ? null : gaMedian,
     hitRate: optimum
-      ? gaPricesCents.filter((p) => p === optimum.priceCents).length / seeds.length
+      ? gaRuns.filter((r) => r.priceCents === optimum.priceCents).length / gaRuns.length
       : null,
-    ordersEvaluatedMedian: median(ordersEvaluated),
+    ordersEvaluatedMedian: median(gaRuns.map((r) => r.ordersEvaluated)),
   };
 }
 
+/** The middle value, or the mean of the middle two (Infinity if either is). */
 function median(values: number[]): number {
   const sorted = [...values].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);

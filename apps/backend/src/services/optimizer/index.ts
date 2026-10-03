@@ -23,7 +23,7 @@ import { collectPriceTriples } from './triples.js';
 export type PriceSource = Pick<FlightService, 'getPrices'>;
 
 /** One optimize call, plus how much of the search space the GA looked at. */
-export interface OptimizeSearch {
+export interface OptimizeWithStats {
   response: OptimizeResponse;
   /** Distinct visiting orders the GA evaluated, feasible or not. */
   ordersEvaluated: number;
@@ -36,11 +36,11 @@ export class OptimizerService {
   ) {}
 
   async optimize(req: OptimizeRequest): Promise<OptimizeResponse> {
-    return (await this.search(req)).response;
+    return (await this.optimizeWithStats(req)).response;
   }
 
   /** `optimize`, also reporting the GA's search effort (the benchmark's measure). */
-  async search(req: OptimizeRequest): Promise<OptimizeSearch> {
+  async optimizeWithStats(req: OptimizeRequest): Promise<OptimizeWithStats> {
     const triples = collectPriceTriples(req);
     const { prices, partial, staleCache } = await this.flights.getPrices(triples);
 
@@ -62,7 +62,6 @@ export class OptimizerService {
       this.ga,
     );
 
-    const ordersEvaluated = result.ordersEvaluated;
     if (!result.best) {
       const response: OptimizeResponse = {
         options: [],
@@ -72,7 +71,7 @@ export class OptimizerService {
         ...(partial && { partial }),
         ...(staleCache && { staleCache }),
       };
-      return { response, ordersEvaluated };
+      return { response, ordersEvaluated: result.ordersEvaluated };
     }
 
     const labeled: Array<{ label: RouteLabel; pick: GaCandidate }> = [
@@ -106,7 +105,7 @@ export class OptimizerService {
       ...(partial && { partial }),
       ...(staleCache && { staleCache }),
     };
-    return { response, ordersEvaluated };
+    return { response, ordersEvaluated: result.ordersEvaluated };
   }
 }
 
