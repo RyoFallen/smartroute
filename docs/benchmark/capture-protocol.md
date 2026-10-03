@@ -19,13 +19,14 @@ city pairs, then one **CompetitorResult** per **BenchmarkScenario**.
    `capture-session-N-YYYY-MM-DD` (N = 1, 2, 3).
 4. **Google Flights**: open `https://www.google.com/travel/flights?hl=en&curr=EUR`. In the footer,
    check Language = English (United States), Location = **Poland**, Currency = **EUR**. Set
-   **One way**, **1** passenger, **Economy**. Leave stops, bags and every other filter at their
-   defaults.
+   **One way**, **1** passenger, **Economy**. Leave stops and every other filter at their
+   defaults. The date grid's prices are fares without checked bags. If the results page's Bags
+   filter has been touched, set it back to 0.
 5. **Kiwi.com**: open `https://www.kiwi.com/en/nomad`. In the header, check region = Polska
    (English) and currency = **EUR**. Change it there if needed (Currency tab → Euro). Passengers
    **1**, cabin and checked bags **0**, cabin **Economy**.
-6. Write the session start time, to the minute, at the top of a plain-text notes file in the
-   screenshot folder. Every exception goes in that file, one line each, with its item ID.
+6. Write the session start time, to the minute, at the top of `notes.txt` in the screenshot
+   folder. Every exception goes in that file, one line each, with its item ID.
 
 If Location or region ever shows something other than Poland, note it and set it back. The point
 of sale must be the same in all three sessions.
@@ -52,7 +53,9 @@ distances below are great-circle distances from those coordinates.
 | Warsaw (`WAW`)    | WAW 8, WMI 35                                  | RDO Radom 94, LCJ Łódź 124   |
 
 GRO is the closest call: it is 75 km out, and Kiwi.com files it under Girona, not Barcelona, so it
-stays out. The code in brackets is the one the benchmark uses for the city. It stands for the
+stays out. The same lists, with Kiwi.com's names for each airport, are `BENCHMARK_AIRPORTS` in
+`apps/backend/src/services/benchmark/airports.ts`. A test fails if this table and that list
+disagree. The code in brackets is the one the benchmark uses for the city. It stands for the
 whole airport list, never just that one airport.
 
 ## 3. Capture order
@@ -93,16 +96,19 @@ screenshot again.
 For each item, open its **open** link from the sheet. The link already holds the scenario's
 airports, departure day, end city and exact nights per city, sorted by Cheapest.
 
-1. Check the summary bar against the row: start city and **Start trip** date, each place with
+1. Check the summary bar against the row: start city and **Start trip** date (Istanbul's chips
+   read **IST** and **SAW**), each place with
    **Stay N nights** (one number, not a range), the end city last. Check that the sort says
    **Cheapest** and the prices are in **€**. If anything is wrong, fix it in Modify journey and
    note it.
 2. Wait for the results to finish loading, then screenshot the top of the list.
-3. Find the **first all-flight itinerary**. Nomad has no flights-only filter, so check each leg's
+3. Find the **first all-flight itinerary**, looking through every result Nomad lists (it stops
+   at "There are no more trips for these dates", usually after a handful). Nomad has no flights-only filter, so check each leg's
    carrier logo. If any logo is a bus or train company, or you cannot tell, press **Show
    details** on that result and screenshot it. The first result whose legs are all flights is
    the compared one. If it is not on screen yet, scroll to it and take another screenshot.
-4. If no listed result is all-flight, note "no all-flight result" for this item.
+4. If no listed result is all-flight, note "no all-flight result" for this item. It has no
+   compared price and is counted with the excluded results.
 
 A CompetitorResult records the following. All of it is read from the screenshots afterwards, so
 the screenshots must show it:
@@ -118,9 +124,10 @@ the screenshots must show it:
 
 Nomad counts a stay's nights from the day a leg **lands**, so a flight that lands after midnight
 pushes every later leg back a day. The benchmark compares **departure dates**. A CompetitorResult
-is valid only if each of its legs leaves on the day the scenario's CityStays give for Nomad's own
-order: the first leg on the departure day, each later leg the previous city's CityStay days
-after the leg before it. Record what Nomad shows. Validity is computed afterwards, never judged
+is valid only if each place's "Stay N nights" equals its CityStay **and** each leg leaves on the
+day the scenario's CityStays give for Nomad's own order: the first leg on the departure day, each
+later leg the previous city's CityStay days after the leg before it. The stays come from the
+link, so in practice it is the departure dates that catch a shifted result. Record what Nomad shows. Validity is computed afterwards, never judged
 during the session.
 
 ## 6. Live spot-checks (L01–L10)
@@ -132,7 +139,9 @@ For each row, on Google Flights with that row's airport lists:
 2. Screenshot the results list with the cheapest flight visible. Make sure the price is the
    cheapest for that day, or set the sort to price first.
 
-The thesis reports the difference between that live price and the same day's grid price.
+The thesis reports the difference between that live price and the same day's grid price. The
+spot-checks run last, so each one is taken 2–3 hours after its grid. The measured drift includes
+that gap, and the thesis says so.
 
 ## 7. Screenshots and naming
 

@@ -103,7 +103,7 @@ _Avoid_: entry order, user order, default order
 
 **CaptureSession**:
 One continuous, timestamped sitting on one day in which every RecordedFare for the 56 curated city
-pairs is read, followed by every scenario's competitor result. Prices from different sessions are
+pairs is read, followed by every scenario's competitor result and a few live spot-checks of the grid prices. Prices from different sessions are
 never mixed within one scenario's measurement.
 _Avoid_: capture day (a day could hold two sessions), run, snapshot
 

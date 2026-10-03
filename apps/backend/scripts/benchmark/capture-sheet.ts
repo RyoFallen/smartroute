@@ -19,6 +19,7 @@ import { fileURLToPath } from 'node:url';
 import * as prettier from 'prettier';
 import { mulberry32 } from '../../src/services/optimizer/ga.js';
 import {
+  BENCHMARK_AIRPORTS,
   BENCHMARK_CITIES,
   ScenarioFile,
   drawScenarios,
@@ -30,43 +31,6 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const docs = path.resolve(here, '../../../../docs/benchmark');
 const scenariosPath = path.join(docs, 'scenarios.json');
 const notePath = path.join(docs, 'capture-sheet.md');
-
-/**
- * Each curated city's benchmark airport list (capture-protocol.md § Airports),
- * with the slug Kiwi.com uses for the airport in a Nomad URL — read from
- * Kiwi's own locations API on 2026-10-03. IST's slug still says "ataturk";
- * it is Kiwi's slug for the new Istanbul Airport (IST), checked in the UI.
- */
-const AIRPORTS: Record<(typeof BENCHMARK_CITIES)[number], [iata: string, kiwiSlug: string][]> = {
-  BCN: [['BCN', 'barcelona-el-prat-barcelona-spain']],
-  BER: [['BER', 'berlin-brandenburg-berlin-germany']],
-  BUD: [['BUD', 'budapest-ferenc-liszt-international-budapest-hungary']],
-  CDG: [
-    ['CDG', 'charles-de-gaulle-paris-france'],
-    ['ORY', 'paris-orly-paris-france'],
-    ['BVA', 'beauvais-tille-paris-france'],
-  ],
-  FCO: [
-    ['FCO', 'leonardo-da-vinci-fiumicino-rome-italy'],
-    ['CIA', 'ciampino-g-b-pastine-international-rome-italy'],
-  ],
-  IST: [
-    ['IST', 'istanbul-ataturk-istanbul-turkey'],
-    ['SAW', 'sabiha-gokcen-international-istanbul-turkey'],
-  ],
-  LHR: [
-    ['LHR', 'heathrow-london-united-kingdom'],
-    ['LGW', 'gatwick-london-united-kingdom'],
-    ['STN', 'london-stansted-london-united-kingdom'],
-    ['LTN', 'luton-london-united-kingdom'],
-    ['LCY', 'london-city-london-united-kingdom'],
-    ['SEN', 'london-southend-london-united-kingdom'],
-  ],
-  WAW: [
-    ['WAW', 'warsaw-chopin-warsaw-poland'],
-    ['WMI', 'warsaw-modlin-warsaw-poland'],
-  ],
-};
 
 /** The three CaptureSessions (#35). */
 const SESSIONS = ['2026-10-13', '2026-10-22', '2026-10-31'] as const;
@@ -85,9 +49,16 @@ if (!isDeepStrictEqual(file.scenarios, drawScenarios(file.seed))) {
   process.exit(1);
 }
 
-const airports = (city: string) => AIRPORTS[city as keyof typeof AIRPORTS];
-const codes = (city: string) => airports(city).map(([iata]) => iata);
-const slugs = (city: string) => airports(city).map(([, slug]) => slug);
+function airports(city: string) {
+  const list = BENCHMARK_AIRPORTS[city as keyof typeof BENCHMARK_AIRPORTS];
+  if (!list) throw new Error(`${city} has no benchmark airport list`);
+  return list;
+}
+const codes = (city: string) => airports(city).map((a) => a.iata);
+const slugs = (city: string) => airports(city).map((a) => a.kiwiSlug);
+/** A sheet item's ID: its step's letter and its 1-based place in that step. */
+const itemId = (step: 'G' | 'N' | 'L', index: number) =>
+  `${step}${String(index + 1).padStart(2, '0')}`;
 
 /**
  * The Nomad search for a scenario, as the URL Nomad's own form produces
@@ -167,7 +138,7 @@ function render(): string {
   out.push('| ID | From | Airports | To | Airports |');
   out.push('| -- | ---- | -------- | -- | -------- |');
   pairs.forEach(([a, b], i) => {
-    const id = `G${String(i + 1).padStart(2, '0')}`;
+    const id = itemId('G', i);
     out.push(`| ${id} | ${a} | ${codes(a).join(', ')} | ${b} | ${codes(b).join(', ')} |`);
   });
   out.push('');
@@ -179,10 +150,12 @@ function render(): string {
     'city), confirm EUR and the Cheapest sort, then screenshot.',
   );
   out.push('');
-  out.push('| ID | Scenario | From | Departs | Places (nights) | Ends in | Search |');
+  out.push(
+    '| ID | Scenario | From | Departs | Places (CityStay days = Nomad nights) | Ends in | Search |',
+  );
   out.push('| -- | -------- | ---- | ------- | --------------- | ------- | ------ |');
   file.scenarios.forEach((s, i) => {
-    const id = `N${String(i + 1).padStart(2, '0')}`;
+    const id = itemId('N', i);
     const places = s.visited
       .filter((v) => v.city !== s.endCity)
       .map((v) => `${v.city} ${v.stayDays}`)
@@ -206,9 +179,7 @@ function render(): string {
     out.push('| ID | From | To | Date |');
     out.push('| -- | ---- | -- | ---- |');
     checks.forEach((c, i) => {
-      out.push(
-        `| L${String(i + 1).padStart(2, '0')} | ${c.origin} | ${c.destination} | ${c.date} |`,
-      );
+      out.push(`| ${itemId('L', i)} | ${c.origin} | ${c.destination} | ${c.date} |`);
     });
     out.push('');
   });
