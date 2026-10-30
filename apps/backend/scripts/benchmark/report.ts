@@ -57,6 +57,8 @@ if (report.refused.length > 0) {
 
 const eur = (cents: number | null) => (cents === null ? '—' : `€${(cents / 100).toFixed(2)}`);
 const pct = (share: number | null) => (share === null ? '—' : `${Math.round(share * 100)}%`);
+/** A saving to one decimal, signed so a GA that costs more reads as negative. */
+const savingPct = (share: number | null) => (share === null ? '—' : `${(share * 100).toFixed(1)}%`);
 
 /** The first optimal order, with how many others tie with it. */
 function optimumOrder(optimum: ScenarioResult['optimum']): string {
@@ -81,6 +83,14 @@ function render(r: BenchmarkReport): string {
     'EUR, price only (ADR-0006).',
   );
   out.push('');
+  out.push(
+    "Ordering value is the share of a baseline's price the GA median saves. The headline baseline is",
+    'the **NaiveOrder**: from the origin, the nearest unvisited city by great-circle distance between',
+    'the curated city coordinates, the end city last, ties to the lower IATA code. The mean over every',
+    'feasible order is given beside it for context; infeasible orders are left out of it and counted.',
+    'A NaiveOrder with a "no fare" leg has no price, so it has no saving.',
+  );
+  out.push('');
 
   for (const session of r.sessions) {
     out.push(`## CaptureSession ${session.date}`);
@@ -94,6 +104,25 @@ function render(r: BenchmarkReport): string {
     for (const s of session.scenarios) {
       out.push(
         `| ${s.scenarioId} | ${s.visitedCount} | ${s.totalOrders} | ${s.feasibleOrders} | ${s.ordersEvaluatedMedian} | ${eur(s.optimum?.priceCents ?? null)} | ${eur(s.gaMedianCents)} | ${pct(s.hitRate)} | ${optimumOrder(s.optimum)} |`,
+      );
+    }
+    out.push('');
+    out.push(`### Ordering value, ${session.date}`);
+    out.push('');
+    out.push(
+      '| Scenario | NaiveOrder | Naive price | GA saves vs naive | Mean (feasible / all) | GA saves vs mean |',
+    );
+    out.push(
+      '| -------- | ---------- | ----------: | ----------------: | --------------------: | ---------------: |',
+    );
+    for (const s of session.scenarios) {
+      const naivePrice = s.naive.priceCents === null ? 'no fare' : eur(s.naive.priceCents);
+      const mean =
+        s.meanCents === null
+          ? '—'
+          : `${eur(Math.round(s.meanCents))} (${s.feasibleOrders} / ${s.totalOrders})`;
+      out.push(
+        `| ${s.scenarioId} | ${s.naive.order.join(' → ')} | ${naivePrice} | ${savingPct(s.savingVsNaive)} | ${mean} | ${savingPct(s.savingVsMean)} |`,
       );
     }
     out.push('');

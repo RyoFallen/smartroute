@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 import {
   BENCHMARK_CITIES,
+  BENCHMARK_COORDINATES,
   drawScenarios,
   fareChecklist,
 } from '../../../src/services/benchmark/index.js';
@@ -60,5 +61,15 @@ describe('drawScenarios', () => {
     );
     const seeded = SeedFile.parse(raw).map((c) => c.iata);
     expect([...BENCHMARK_CITIES].sort()).toEqual([...seeded].sort());
+  });
+
+  it('measures the NaiveOrder on the coordinates the seed data curates', () => {
+    const raw: unknown = JSON.parse(
+      readFileSync(new URL('../../../prisma/seed/attractions.json', import.meta.url), 'utf8'),
+    );
+    const seeded = Object.fromEntries(
+      SeedFile.parse(raw).map((c) => [c.iata, { lat: c.lat, lon: c.lon }]),
+    );
+    expect(BENCHMARK_COORDINATES).toEqual(seeded);
   });
 });

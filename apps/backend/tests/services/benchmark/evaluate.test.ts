@@ -221,6 +221,74 @@ describe('evaluateBenchmark', () => {
     expect(report.refused[0]!.problems).toEqual(['IST → BER 2026-11-20 is recorded twice']);
   });
 
+  it('prices the NaiveOrder and the mean over all orders beside the GA', async () => {
+    // Great-circle km on the curated coordinates: from IST, FCO 1375 < BER 1738
+    // < CDG 2256 (WAW, 1386, is the end city and waits); from FCO, CDG 1105 <
+    // BER 1183. So the NaiveOrder is IST FCO CDG BER WAW, sharing only its first
+    // leg (IST-FCO 20) with the cheap order: 10 + 100 + 100 + 100 = €310.
+    // IST-BER 20 at €40 brings the two orders that start in BER to €340 and
+    // €250, so the six orders cost 340 + 250 + 400 + 400 + 40 + 310 = €1,740:
+    // a mean of €290.
+    const report = await evaluateBenchmark(
+      [SCENARIO],
+      [session({ ...handFares(), 'IST-BER 20': 4_000 })],
+      { seeds: SEEDS },
+    );
+
+    const result = report.sessions[0]!.scenarios[0]!;
+    expect(result.naive).toEqual({
+      order: ['IST', 'FCO', 'CDG', 'BER', 'WAW'],
+      priceCents: 31_000,
+    });
+    expect(result.meanCents).toBe(29_000);
+    expect(result.gaMedianCents).toBe(4_000);
+    expect(result.savingVsNaive).toBeCloseTo(27_000 / 31_000, 10);
+    expect(result.savingVsMean).toBeCloseTo(25_000 / 29_000, 10);
+  });
+
+  it('reports a NaiveOrder through a "no fare" leg as unpriced, and leaves it out of the mean', async () => {
+    // IST-FCO 20 is the NaiveOrder's first leg. The four orders left cost
+    // 400 + 310 + 400 + 400 = €1,510: a mean of €377.50 over 4, with 2 infeasible.
+    const report = await evaluateBenchmark(
+      [SCENARIO],
+      [session({ ...handFares(), 'IST-FCO 20': null })],
+      { seeds: SEEDS },
+    );
+
+    const result = report.sessions[0]!.scenarios[0]!;
+    expect(result.naive).toEqual({
+      order: ['IST', 'FCO', 'CDG', 'BER', 'WAW'],
+      priceCents: null,
+    });
+    expect(result.savingVsNaive).toBeNull();
+    expect(result.totalOrders - result.feasibleOrders).toBe(2);
+    expect(result.meanCents).toBe(37_750);
+    expect(result.savingVsMean).toBeCloseTo((37_750 - 31_000) / 37_750, 10);
+  });
+
+  it('keeps the end city last however near it is, and breaks a distance tie by IATA code', async () => {
+    // A hand-built map in degrees: WAW, the end city, is nearest the origin;
+    // BER and CDG are both 1° from IST. BER wins the tie, then FCO (1° from
+    // BER) beats CDG (√2°). Had CDG won, the order would be IST CDG BER FCO WAW.
+    const coordinates = {
+      IST: { lat: 0, lon: 0 },
+      WAW: { lat: 0, lon: 0.5 },
+      BER: { lat: 0, lon: 1 },
+      CDG: { lat: 1, lon: 0 },
+      FCO: { lat: 0, lon: 2 },
+    };
+    const report = await evaluateBenchmark([SCENARIO], [session(handFares())], {
+      seeds: SEEDS,
+      coordinates,
+    });
+
+    // IST BER FCO CDG WAW shares CDG-WAW 29 with the cheap order: €310.
+    expect(report.sessions[0]!.scenarios[0]!.naive).toEqual({
+      order: ['IST', 'BER', 'FCO', 'CDG', 'WAW'],
+      priceCents: 31_000,
+    });
+  });
+
   it('gives an identical report for the same inputs and seeds', async () => {
     const sessions = [
       session(handFares()),
