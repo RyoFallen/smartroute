@@ -126,6 +126,35 @@ function render(r: BenchmarkReport): string {
       );
     }
     out.push('');
+
+    const n = session.nomad;
+    out.push(`### Versus Kiwi.com Nomad, ${session.date}`);
+    out.push('');
+    out.push(
+      `GA median at or below Nomad's cheapest all-flight price in **${n.wins} of ${n.valid}** valid`,
+      `results (win rate ${pct(n.winRate)}); median saving **${savingPct(n.medianSaving)}**. Nomad flew the`,
+      `GA's order in ${n.orderMatches} of ${n.valid}. Excluded (dates or stays differ, or no all-flight`,
+      `result): ${n.excluded}. Missing: ${n.missing}.`,
+    );
+    out.push('');
+    out.push(
+      '| Scenario | Status | Nomad all-flight | GA median | GA saves | Same order | Nomad order | Any-mode (context) |',
+    );
+    out.push(
+      '| -------- | ------ | ---------------: | --------: | -------: | ---------- | ----------- | ------------------ |',
+    );
+    for (const s of session.scenarios) {
+      const c = s.competitor;
+      const status = c.status === 'invalid' ? `invalid: ${c.problems.join('; ')}` : c.status;
+      const same = c.orderMatchesGa === null ? '—' : c.orderMatchesGa ? 'yes' : 'no';
+      const anyMode = c.anyMode
+        ? `${eur(c.anyMode.priceCents)} (${[...new Set(c.anyMode.modes)].join(', ')})`
+        : '—';
+      out.push(
+        `| ${s.scenarioId} | ${status} | ${eur(c.priceCents)} | ${eur(s.gaMedianCents)} | ${savingPct(c.saving)} | ${same} | ${c.order?.join(' → ') ?? '—'} | ${anyMode} |`,
+      );
+    }
+    out.push('');
   }
   return out.join('\n');
 }

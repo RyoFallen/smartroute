@@ -53,6 +53,50 @@ const SpotCheck = z
   })
   .strict();
 
+/** How one leg of a Nomad itinerary travels, read off its carrier logo or Show details. */
+export const TransportMode = z.enum(['flight', 'bus', 'train', 'ferry']);
+
+/**
+ * One scenario's Kiwi.com Nomad capture, as Nomad showed it (capture-protocol
+ * § 5). Nothing here is judged during the session: whether the dates and stays
+ * match the scenario's is computed afterwards, by the Nomad comparison (#40).
+ */
+const CompetitorResult = z
+  .object({
+    item: Item.optional(),
+    scenarioId: z.string(),
+    /** When the results list was screenshotted, from the screenshot itself. */
+    capturedAt: Timestamp,
+    /**
+     * The first itinerary under Cheapest whose every leg is a flight: the
+     * compared price. Null when no listed result is all-flight, which excludes
+     * the scenario from this session's comparison.
+     */
+    allFlight: z
+      .object({
+        /** EUR minor units, as listed. */
+        priceCents: z.number().int().positive(),
+        /** Nomad's city order, origin to end city, by curated city code. */
+        order: z.array(City),
+        /** Each leg's departure date, in order. */
+        legDates: z.array(IsoDate),
+        /** Each place's "Stay N nights", in Nomad's order (not the end city). */
+        stays: z.array(z.object({ city: City, nights: z.number().int().nonnegative() }).strict()),
+      })
+      .strict()
+      .nullable(),
+    /** The first result overall, whatever its transport: context, never compared. */
+    anyMode: z
+      .object({
+        priceCents: z.number().int().positive(),
+        /** Each leg's transport, in order. */
+        modes: z.array(TransportMode),
+      })
+      .strict(),
+  })
+  .strict();
+export type CompetitorResult = z.infer<typeof CompetitorResult>;
+
 /**
  * One transcribed CaptureSession (#35): docs/benchmark/sessions/<date>.json.
  * Its fares are only ever used for this session's measurements.
@@ -63,8 +107,8 @@ export const SessionFile = z
     startedAt: Timestamp,
     endedAt: Timestamp,
     grids: z.array(Grid),
-    /** Kiwi.com Nomad's results, one per scenario; shaped by the Nomad comparison (#40). */
-    competitorResults: z.array(z.unknown()).default([]),
+    /** Kiwi.com Nomad's results, at most one per scenario. */
+    competitorResults: z.array(CompetitorResult).default([]),
     spotChecks: z.array(SpotCheck).default([]),
     /** The session's notes.txt exceptions, one per line, each led by its item ID. */
     notes: z.array(z.string()).default([]),

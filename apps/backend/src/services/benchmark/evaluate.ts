@@ -6,9 +6,22 @@ import { scoreOrdering } from '../optimizer/score.js';
 import { collectPriceTriples } from '../optimizer/triples.js';
 import type { Coordinate } from '../itinerary/walking.js';
 import { fareChecklist } from './checklist.js';
+import {
+  compareWithNomad,
+  competitorProblems,
+  nomadSummary,
+  type CompetitorComparison,
+  type NomadSummary,
+} from './competitor.js';
 import { BENCHMARK_COORDINATES, naiveOrder } from './naive.js';
 import { optimizerInput, type BenchmarkScenario } from './scenarios.js';
-import { recordedFareSource, sessionProblems, type SessionFile } from './session.js';
+import {
+  recordedFareSource,
+  sessionProblems,
+  type CompetitorResult,
+  type SessionFile,
+} from './session.js';
+import { median } from './stats.js';
 
 /** #35: the GA runs once per seed 1–30, each with `mulberry32(seed)`. */
 export const BENCHMARK_SEEDS = Array.from({ length: 30 }, (_, i) => i + 1);
@@ -69,6 +82,11 @@ export interface ScenarioResult {
    * that picks another order tied at the optimum price has found the optimum.
    */
   hitRate: number | null;
+  /**
+   * The order the most runs recommended, ties to the lowest seed: the GA's
+   * order for comparing routes with Nomad. Null if no run found a route.
+   */
+  gaOrder: string[] | null;
   ordersEvaluatedMedian: number;
   /**
    * Ordering value (#39): the share of the NaiveOrder's (headline) or the
@@ -77,11 +95,15 @@ export interface ScenarioResult {
    */
   savingVsNaive: number | null;
   savingVsMean: number | null;
+  /** Against this session's Kiwi.com Nomad capture (#40). */
+  competitor: CompetitorComparison;
 }
 
 export interface SessionResult {
   date: string;
   scenarios: ScenarioResult[];
+  /** Win rate, savings and order agreement against Nomad, over valid results only. */
+  nomad: NomadSummary;
 }
 
 export interface BenchmarkReport {
@@ -108,7 +130,10 @@ export async function evaluateBenchmark(
   const report: BenchmarkReport = { sessions: [], refused: [] };
 
   for (const session of [...sessions].sort((a, b) => a.date.localeCompare(b.date))) {
-    const problems = sessionProblems(session, checklist);
+    const problems = [
+      ...sessionProblems(session, checklist),
+      ...competitorProblems(session, scenarios),
+    ];
     if (problems.length > 0) {
       report.refused.push({ date: session.date, problems });
       continue;
@@ -116,9 +141,14 @@ export async function evaluateBenchmark(
     const source = recordedFareSource(session);
     const results: ScenarioResult[] = [];
     for (const s of scenarios) {
-      results.push(await evaluateScenario(s, source, seeds, coordinates));
+      const nomad = session.competitorResults.find((r) => r.scenarioId === s.id);
+      results.push(await evaluateScenario(s, source, nomad, seeds, coordinates));
     }
-    report.sessions.push({ date: session.date, scenarios: results });
+    report.sessions.push({
+      date: session.date,
+      scenarios: results,
+      nomad: nomadSummary(results.map((r) => r.competitor)),
+    });
   }
 
   return report;
@@ -127,6 +157,7 @@ export async function evaluateBenchmark(
 async function evaluateScenario(
   s: BenchmarkScenario,
   source: PriceSource,
+  nomad: CompetitorResult | undefined,
   seeds: number[],
   coordinates: Record<string, Coordinate>,
 ): Promise<ScenarioResult> {
@@ -177,6 +208,7 @@ async function evaluateScenario(
   const meanCents = feasibleOrders > 0 ? totalCents / feasibleOrders : null;
   const naive = naiveOrder(s, coordinates);
   const naivePriceCents = priceOf(naive);
+  const gaOrder = mostRecommended(gaRuns);
   return {
     scenarioId: s.id,
     visitedCount: s.visited.length,
@@ -190,7 +222,9 @@ async function evaluateScenario(
     hitRate: optimum
       ? gaRuns.filter((r) => r.priceCents === optimum.priceCents).length / gaRuns.length
       : null,
+    gaOrder,
     ordersEvaluatedMedian: median(gaRuns.map((r) => r.ordersEvaluated)),
+    competitor: compareWithNomad(s, nomad, { medianCents: gaMedianCents, order: gaOrder }),
     savingVsNaive: saving(gaMedianCents, naivePriceCents),
     savingVsMean: saving(gaMedianCents, meanCents),
   };
@@ -201,9 +235,16 @@ function saving(cents: number | null, baseline: number | null): number | null {
   return cents === null || baseline === null ? null : (baseline - cents) / baseline;
 }
 
-/** The middle value, or the mean of the middle two (Infinity if either is). */
-function median(values: number[]): number {
-  const sorted = [...values].sort((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 1 ? sorted[mid]! : (sorted[mid - 1]! + sorted[mid]!) / 2;
+/** The order the most runs recommended; on a tie, the one the lowest seed reached first. */
+function mostRecommended(runs: GaRun[]): string[] | null {
+  const counts = new Map<string, { order: string[]; n: number }>();
+  for (const r of runs) {
+    if (!r.order) continue;
+    const entry = counts.get(r.order.join()) ?? { order: r.order, n: 0 };
+    entry.n++;
+    counts.set(r.order.join(), entry);
+  }
+  let best: { order: string[]; n: number } | null = null;
+  for (const entry of counts.values()) if (!best || entry.n > best.n) best = entry;
+  return best?.order ?? null;
 }

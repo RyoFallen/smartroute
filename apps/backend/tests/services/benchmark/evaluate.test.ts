@@ -300,3 +300,153 @@ describe('evaluateBenchmark', () => {
     expect(a.sessions.map((s) => s.date)).toEqual(['2026-10-13', '2026-10-22']);
   });
 });
+
+describe('evaluateBenchmark against Kiwi.com Nomad', () => {
+  // Five copies of SCENARIO, so one session holds a result of every kind. The
+  // GA median is €40 in each, on IST FCO BER CDG WAW: legs on the 20th, 24th,
+  // 26th and 29th, staying FCO 4, BER 2, CDG 3 nights.
+  const scenarios = ['H1', 'H2', 'H3', 'H4', 'H5'].map((id) => ({ ...SCENARIO, id }));
+  const GA_ORDER = ['IST', 'FCO', 'BER', 'CDG', 'WAW'];
+  const gaItinerary = {
+    order: GA_ORDER,
+    legDates: ['2026-11-20', '2026-11-24', '2026-11-26', '2026-11-29'],
+    stays: [
+      { city: 'FCO', nights: 4 },
+      { city: 'BER', nights: 2 },
+      { city: 'CDG', nights: 3 },
+    ],
+  };
+  const flights = { priceCents: 9_000, modes: ['flight', 'flight', 'flight', 'flight'] };
+  const at = '2026-10-31T11:00:00+01:00';
+
+  function withNomad(results: object[]): SessionFile {
+    return SessionFile.parse({ ...session(handFares()), competitorResults: results });
+  }
+
+  const results = [
+    // €50 on the GA's own order; the any-mode result, by bus, is cheaper still
+    // and must not be the one compared.
+    {
+      scenarioId: 'H1',
+      capturedAt: at,
+      allFlight: { priceCents: 5_000, ...gaItinerary },
+      anyMode: { priceCents: 2_500, modes: ['flight', 'bus', 'flight', 'flight'] },
+    },
+    // €32 on IST BER CDG FCO WAW: legs on the 20th, 22nd, 25th and 29th.
+    {
+      scenarioId: 'H2',
+      capturedAt: at,
+      allFlight: {
+        priceCents: 3_200,
+        order: ['IST', 'BER', 'CDG', 'FCO', 'WAW'],
+        legDates: ['2026-11-20', '2026-11-22', '2026-11-25', '2026-11-29'],
+        stays: [
+          { city: 'BER', nights: 2 },
+          { city: 'CDG', nights: 3 },
+          { city: 'FCO', nights: 4 },
+        ],
+      },
+      anyMode: flights,
+    },
+    // The GA's order, but the last leg left a day late: a past-midnight landing.
+    {
+      scenarioId: 'H3',
+      capturedAt: at,
+      allFlight: {
+        priceCents: 1_000,
+        ...gaItinerary,
+        legDates: ['2026-11-20', '2026-11-24', '2026-11-26', '2026-11-30'],
+      },
+      anyMode: flights,
+    },
+    // H4 has no capture at all.
+    { scenarioId: 'H5', capturedAt: at, allFlight: null, anyMode: flights },
+  ];
+
+  it('compares valid results only: win rate, median savings and order agreement', async () => {
+    const report = await evaluateBenchmark(scenarios, [withNomad(results)], { seeds: SEEDS });
+    const [h1, h2, h3, h4, h5] = report.sessions[0]!.scenarios.map((r) => r.competitor);
+
+    expect(h1).toMatchObject({ status: 'valid', priceCents: 5_000, gaWins: true, saving: 0.2 });
+    expect(h1!.orderMatchesGa).toBe(true);
+    expect(h1!.anyMode).toEqual({
+      priceCents: 2_500,
+      modes: ['flight', 'bus', 'flight', 'flight'],
+    });
+    // (32 − 40) / 32: Nomad is cheaper, so the GA loses by a quarter.
+    expect(h2).toMatchObject({ status: 'valid', gaWins: false, saving: -0.25 });
+    expect(h2!.orderMatchesGa).toBe(false);
+    expect(h3).toMatchObject({ status: 'invalid', gaWins: null, saving: null });
+    expect(h3!.problems).toEqual(['leg CDG → WAW leaves 2026-11-30, the stays give 2026-11-29']);
+    expect(h4).toMatchObject({ status: 'missing', gaWins: null });
+    expect(h5).toMatchObject({ status: 'no-all-flight', gaWins: null });
+
+    // Two valid: one win, savings 0.2 and −0.25, so a median of −0.025.
+    const nomad = report.sessions[0]!.nomad;
+    expect(nomad).toMatchObject({ valid: 2, excluded: 2, missing: 1, wins: 1, orderMatches: 1 });
+    expect(nomad.winRate).toBe(0.5);
+    expect(nomad.medianSaving).toBeCloseTo(-0.025, 10);
+  });
+
+  it('marks a result invalid when its stays differ, and says which', async () => {
+    const stays = [
+      { city: 'FCO', nights: 4 },
+      { city: 'BER', nights: 3 },
+      { city: 'CDG', nights: 3 },
+    ];
+    const report = await evaluateBenchmark(
+      [SCENARIO],
+      [
+        withNomad([
+          {
+            scenarioId: 'H1',
+            capturedAt: at,
+            allFlight: { priceCents: 5_000, ...gaItinerary, stays },
+            anyMode: flights,
+          },
+        ]),
+      ],
+      { seeds: SEEDS },
+    );
+
+    const c = report.sessions[0]!.scenarios[0]!.competitor;
+    expect(c.status).toBe('invalid');
+    expect(c.problems).toEqual(['BER: Stay 3 nights, CityStay 2']);
+    expect(report.sessions[0]!.nomad).toMatchObject({ valid: 0, excluded: 1, winRate: null });
+  });
+
+  it("marks a result invalid when its order is not the scenario's cities", async () => {
+    const report = await evaluateBenchmark(
+      [SCENARIO],
+      [
+        withNomad([
+          {
+            scenarioId: 'H1',
+            capturedAt: at,
+            allFlight: {
+              priceCents: 5_000,
+              ...gaItinerary,
+              order: ['IST', 'FCO', 'BER', 'WAW', 'CDG'],
+            },
+            anyMode: flights,
+          },
+        ]),
+      ],
+      { seeds: SEEDS },
+    );
+    expect(report.sessions[0]!.scenarios[0]!.competitor.status).toBe('invalid');
+  });
+
+  it('refuses a session with two results for one scenario, or one for no scenario', async () => {
+    const report = await evaluateBenchmark(
+      scenarios,
+      [withNomad([results[0]!, results[0]!, { ...results[1]!, scenarioId: 'S99' }])],
+      { seeds: SEEDS },
+    );
+    expect(report.sessions).toEqual([]);
+    expect(report.refused[0]!.problems).toEqual([
+      'H1 has two CompetitorResults',
+      'CompetitorResult for unknown S99',
+    ]);
+  });
+});
