@@ -18,7 +18,9 @@ import {
   SessionFile,
   BENCHMARK_SEEDS,
   evaluateBenchmark,
+  type AcrossSessions,
   type BenchmarkReport,
+  type GroupSummary,
   type ScenarioResult,
 } from '../../src/services/benchmark/index.js';
 import { BENCHMARK_DOCS, loadFrozenScenarios } from './frozen-scenarios.js';
@@ -60,6 +62,21 @@ const pct = (share: number | null) => (share === null ? '—' : `${Math.round(sh
 /** A saving to one decimal, signed so a GA that costs more reads as negative. */
 const savingPct = (share: number | null) => (share === null ? '—' : `${(share * 100).toFixed(1)}%`);
 
+/** Milliseconds below a second (the GA usually takes a few), seconds above. */
+const secs = (ms: number | null) =>
+  ms === null ? '—' : ms < 1000 ? `${ms.toFixed(1)} ms` : `${(ms / 1000).toFixed(2)} s`;
+
+/** An across-session median, flagged with how many sessions it covers when fewer than all. */
+function across(a: AcrossSessions, of: number, fmt: (v: number | null) => string): string {
+  return fmt(a.value) + (a.value !== null && a.sessions < of ? ` (${a.sessions}/${of})` : '');
+}
+
+function groupRow(g: GroupSummary): string {
+  const label = g.visitedCount === null ? '**All**' : `origin + ${g.visitedCount}`;
+  const nomad = `${g.nomad.wins}/${g.nomad.compared} (${pct(g.nomad.winRate)})`;
+  return `| ${label} | ${g.scenarios} | ${savingPct(g.savingVsNaive)} | ${savingPct(g.savingVsMean)} | ${savingPct(g.optimalityGap)} | ${pct(g.hitRate)} | ${pct(g.ordersEvaluatedShare)} | ${nomad} | ${savingPct(g.nomad.medianSaving)} | ${secs(g.gaMs)} | ${secs(g.maxGaMs)} |`;
+}
+
 /** The first optimal order, with how many others tie with it. */
 function optimumOrder(optimum: ScenarioResult['optimum']): string {
   if (!optimum) return '—';
@@ -92,18 +109,81 @@ function render(r: BenchmarkReport): string {
   );
   out.push('');
 
+  const sm = r.summary;
+  const n = sm.sessions.length;
+  out.push('## Protocol');
+  out.push('');
+  out.push(
+    `- **Scenarios:** ${file.scenarios.length} BenchmarkScenarios drawn with seed **${file.seed}** by`,
+    '  `drawScenarios`, frozen in [`scenarios.json`](scenarios.json) before any price was seen.',
+    `- **CaptureSessions:** ${sm.sessions.join(', ') || 'none'}; each one continuous sitting,`,
+    '  run to [`capture-protocol.md`](capture-protocol.md).',
+    '- **Airports:** each city is one explicit airport list, identical on Google Flights and Nomad',
+    '  ([`capture-protocol.md` § 2](capture-protocol.md#2-airports), `BENCHMARK_AIRPORTS`).',
+    '- **Scope:** price only, one-way economy, 1 adult, no checked bags, EUR. Duration and stops are',
+    '  not recorded, so the `time` and `comfort` presets are out of scope (ADR-0006).',
+    "- **Timing:** the GA's own wall-clock time per `optimize()` call on in-memory RecordedFares;",
+    '  provider latency is excluded. The target is < 10 s. Timing is the only figure that differs',
+    '  between otherwise identical runs.',
+  );
+  out.push('');
+
+  out.push(`## Across all ${n} sessions`);
+  out.push('');
+  out.push(
+    'Each scenario\'s figure is the median across sessions. Where a session has no value (a "no fare"',
+    'NaiveOrder, an excluded or missing Nomad result) the median is over the sessions that have one,',
+    'shown as (sessions/total). A scenario beats Nomad when its median saving against Nomad is ≥ 0;',
+    'the win rate counts scenarios with a valid Nomad result in at least one session.',
+  );
+  out.push('');
+  out.push(
+    `**Headline:** the GA saves a median **${savingPct(sm.overall.savingVsNaive)}** against the NaiveOrder,`,
+    `and matches or beats Kiwi.com Nomad in **${sm.overall.nomad.wins} of ${sm.overall.nomad.compared}**`,
+    `scenarios (${pct(sm.overall.nomad.winRate)}). The slowest scenario's median GA time is`,
+    `${secs(sm.overall.maxGaMs)}.`,
+  );
+  out.push('');
+  out.push('### By size');
+  out.push('');
+  out.push(
+    '| Size | Scenarios | vs NaiveOrder | vs mean | Optimality gap | Hit rate | Orders evaluated | Beats Nomad | vs Nomad | GA time | Slowest |',
+  );
+  out.push(
+    '| ---- | --------: | ------------: | ------: | -------------: | -------: | ---------------: | ----------: | -------: | ------: | ------: |',
+  );
+  for (const g of sm.bySize) out.push(groupRow(g));
+  out.push(groupRow(sm.overall));
+  out.push('');
+  out.push('### By scenario');
+  out.push('');
+  out.push(
+    '| Scenario | Visited | GA median | vs NaiveOrder | vs mean | Optimality gap | Hit rate | Orders evaluated | vs Nomad | Same order as Nomad | GA time |',
+  );
+  out.push(
+    '| -------- | ------: | --------: | ------------: | ------: | -------------: | -------: | ---------------: | -------: | ------------------: | ------: |',
+  );
+  for (const s of sm.scenarios) {
+    const evaluated =
+      s.ordersEvaluated.value === null ? '—' : `${s.ordersEvaluated.value} / ${s.totalOrders}`;
+    out.push(
+      `| ${s.scenarioId} | ${s.visitedCount} | ${across(s.gaMedianCents, n, eur)} | ${across(s.savingVsNaive, n, savingPct)} | ${across(s.savingVsMean, n, savingPct)} | ${across(s.optimalityGap, n, savingPct)} | ${across(s.hitRate, n, pct)} | ${evaluated} | ${across(s.nomadSaving, n, savingPct)} | ${s.nomadOrderMatches}/${s.nomadSaving.sessions} | ${secs(s.gaMs.value)} |`,
+    );
+  }
+  out.push('');
+
   for (const session of r.sessions) {
     out.push(`## CaptureSession ${session.date}`);
     out.push('');
     out.push(
-      '| Scenario | Visited | Orders | Feasible | GA evaluated (median) | Optimum | GA median | Hit rate | Optimum order |',
+      '| Scenario | Visited | Orders | Feasible | GA evaluated (median) | Optimum | GA median | Gap | Hit rate | GA time | Optimum order |',
     );
     out.push(
-      '| -------- | ------: | -----: | -------: | --------------------: | ------: | --------: | -------: | ------------- |',
+      '| -------- | ------: | -----: | -------: | --------------------: | ------: | --------: | --: | -------: | ------: | ------------- |',
     );
     for (const s of session.scenarios) {
       out.push(
-        `| ${s.scenarioId} | ${s.visitedCount} | ${s.totalOrders} | ${s.feasibleOrders} | ${s.ordersEvaluatedMedian} | ${eur(s.optimum?.priceCents ?? null)} | ${eur(s.gaMedianCents)} | ${pct(s.hitRate)} | ${optimumOrder(s.optimum)} |`,
+        `| ${s.scenarioId} | ${s.visitedCount} | ${s.totalOrders} | ${s.feasibleOrders} | ${s.ordersEvaluatedMedian} | ${eur(s.optimum?.priceCents ?? null)} | ${eur(s.gaMedianCents)} | ${savingPct(s.optimalityGap)} | ${pct(s.hitRate)} | ${secs(s.gaMsMedian)} | ${optimumOrder(s.optimum)} |`,
       );
     }
     out.push('');

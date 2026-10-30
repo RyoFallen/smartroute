@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   SessionFile,
   evaluateBenchmark,
+  fareChecklist,
   type BenchmarkScenario,
 } from '../../../src/services/benchmark/index.js';
 
@@ -79,6 +80,12 @@ function session(fares: Fares, date = '2026-10-13'): SessionFile {
 }
 
 const SEEDS = Array.from({ length: 30 }, (_, i) => i + 1);
+
+const TIMING = new Set(['ms', 'gaMsMedian', 'gaMs', 'maxGaMs']);
+/** A report with every wall-clock figure dropped. */
+function withoutTiming(report: unknown): unknown {
+  return JSON.parse(JSON.stringify(report, (k, v: unknown) => (TIMING.has(k) ? undefined : v)));
+}
 
 describe('SessionFile', () => {
   const grid = { origin: 'IST', destination: 'BER', screenshotAt: '2026-10-13T09:00:00+02:00' };
@@ -296,28 +303,34 @@ describe('evaluateBenchmark', () => {
     ];
     const a = await evaluateBenchmark([SCENARIO], sessions, { seeds: SEEDS });
     const b = await evaluateBenchmark([SCENARIO], sessions, { seeds: SEEDS });
-    expect(a).toEqual(b);
+    // Wall-clock times are the only figures allowed to differ.
+    expect(withoutTiming(a)).toEqual(withoutTiming(b));
     expect(a.sessions.map((s) => s.date)).toEqual(['2026-10-13', '2026-10-22']);
   });
 });
 
+/**
+ * SCENARIO's cheap order as Nomad would list it, for hand-built
+ * CompetitorResults: legs on the 20th, 24th, 26th and 29th, staying FCO 4,
+ * BER 2, CDG 3 nights.
+ */
+const GA_ORDER = ['IST', 'FCO', 'BER', 'CDG', 'WAW'];
+const gaItinerary = {
+  order: GA_ORDER,
+  legDates: ['2026-11-20', '2026-11-24', '2026-11-26', '2026-11-29'],
+  stays: [
+    { city: 'FCO', nights: 4 },
+    { city: 'BER', nights: 2 },
+    { city: 'CDG', nights: 3 },
+  ],
+};
+const flights = { priceCents: 9_000, modes: ['flight', 'flight', 'flight', 'flight'] };
+const at = '2026-10-31T11:00:00+01:00';
+
 describe('evaluateBenchmark against Kiwi.com Nomad', () => {
   // Five copies of SCENARIO, so one session holds a result of every kind. The
-  // GA median is €40 in each, on IST FCO BER CDG WAW: legs on the 20th, 24th,
-  // 26th and 29th, staying FCO 4, BER 2, CDG 3 nights.
+  // GA median is €40 in each, on GA_ORDER.
   const scenarios = ['H1', 'H2', 'H3', 'H4', 'H5'].map((id) => ({ ...SCENARIO, id }));
-  const GA_ORDER = ['IST', 'FCO', 'BER', 'CDG', 'WAW'];
-  const gaItinerary = {
-    order: GA_ORDER,
-    legDates: ['2026-11-20', '2026-11-24', '2026-11-26', '2026-11-29'],
-    stays: [
-      { city: 'FCO', nights: 4 },
-      { city: 'BER', nights: 2 },
-      { city: 'CDG', nights: 3 },
-    ],
-  };
-  const flights = { priceCents: 9_000, modes: ['flight', 'flight', 'flight', 'flight'] };
-  const at = '2026-10-31T11:00:00+01:00';
 
   function withNomad(results: object[]): SessionFile {
     return SessionFile.parse({ ...session(handFares()), competitorResults: results });
@@ -448,5 +461,97 @@ describe('evaluateBenchmark against Kiwi.com Nomad', () => {
       'H1 has two CompetitorResults',
       'CompetitorResult for unknown S99',
     ]);
+  });
+});
+
+describe('evaluateBenchmark across CaptureSessions', () => {
+  // A second, size-5 scenario where every leg costs €100: every order costs
+  // €500, so the GA, the optimum, the NaiveOrder and the mean all agree and
+  // every saving is 0. None of its legs is one of SCENARIO's cheap ones.
+  const FLAT: BenchmarkScenario = {
+    id: 'H2',
+    origin: 'BER',
+    visited: ['BUD', 'CDG', 'FCO', 'IST', 'WAW'].map((city) => ({ city, stayDays: 2 })),
+    endCity: 'WAW',
+    departDate: '2026-11-20',
+  };
+  const flat: Fares = {};
+  for (const p of fareChecklist([FLAT]).pairs) {
+    for (const date of p.dates) flat[`${p.origin}-${p.destination} ${date.slice(8)}`] = 10_000;
+  }
+  const nomad = (priceCents: number) => ({
+    scenarioId: 'H1',
+    capturedAt: at,
+    allFlight: { priceCents, ...gaItinerary },
+    anyMode: flights,
+  });
+  const withResults = (file: SessionFile, results: object[]) =>
+    SessionFile.parse({ ...file, competitorResults: results });
+
+  // H1 in each session, by hand (see the tests above for each fare table):
+  //   31 Oct  GA €40,  NaiveOrder €310, mean €310,    Nomad €50: saves 0.2
+  //    7 Nov  GA €310, NaiveOrder no fare, mean €377.50, no Nomad capture
+  //   14 Nov  GA €40,  NaiveOrder €310, mean €290,    Nomad €45: saves 1/9
+  const sessions = [
+    withResults(session({ ...flat, ...handFares() }, '2026-10-31'), [nomad(5_000)]),
+    session({ ...flat, ...handFares(), 'IST-FCO 20': null }, '2026-11-07'),
+    withResults(session({ ...flat, ...handFares(), 'IST-BER 20': 4_000 }, '2026-11-14'), [
+      nomad(4_500),
+    ]),
+  ];
+
+  it("takes each metric's median over the sessions that have it, and says how many", async () => {
+    const { summary } = await evaluateBenchmark([SCENARIO, FLAT], sessions, { seeds: SEEDS });
+
+    expect(summary.sessions).toEqual(['2026-10-31', '2026-11-07', '2026-11-14']);
+    const h1 = summary.scenarios[0]!;
+    expect(h1.gaMedianCents).toEqual({ value: 4_000, sessions: 3 });
+    expect(h1.optimalityGap).toEqual({ value: 0, sessions: 3 });
+    expect(h1.hitRate).toEqual({ value: 1, sessions: 3 });
+    expect(h1.ordersEvaluated).toEqual({ value: 6, sessions: 3 });
+    // The 7 Nov NaiveOrder has no price, so two sessions, both 27/31.
+    expect(h1.savingVsNaive.sessions).toBe(2);
+    expect(h1.savingVsNaive.value).toBeCloseTo(27 / 31, 10);
+    // 27/31, 6,750/37,750 and 25/29: the middle one is 25/29.
+    expect(h1.savingVsMean.sessions).toBe(3);
+    expect(h1.savingVsMean.value).toBeCloseTo(25 / 29, 10);
+    // Two valid Nomad results: (0.2 + 1/9) / 2.
+    expect(h1.nomadSaving.sessions).toBe(2);
+    expect(h1.nomadSaving.value).toBeCloseTo((0.2 + 1 / 9) / 2, 10);
+    expect(h1.beatsNomad).toBe(true);
+    expect(h1.nomadOrderMatches).toBe(2);
+
+    const h2 = summary.scenarios[1]!;
+    expect(h2.gaMedianCents).toEqual({ value: 50_000, sessions: 3 });
+    expect(h2.savingVsNaive).toEqual({ value: 0, sessions: 3 });
+    expect(h2.nomadSaving).toEqual({ value: null, sessions: 0 });
+    expect(h2.beatsNomad).toBeNull();
+  });
+
+  it('breaks the figures down by size and gives overall headlines', async () => {
+    const { summary } = await evaluateBenchmark([SCENARIO, FLAT], sessions, { seeds: SEEDS });
+
+    const [four, five] = summary.bySize;
+    expect(four).toMatchObject({ visitedCount: 4, scenarios: 1, optimalityGap: 0 });
+    expect(four!.savingVsNaive).toBeCloseTo(27 / 31, 10);
+    expect(four!.savingVsMean).toBeCloseTo(25 / 29, 10);
+    expect(four!.nomad).toMatchObject({ compared: 1, wins: 1, winRate: 1 });
+    expect(five).toMatchObject({ visitedCount: 5, scenarios: 1, savingVsNaive: 0 });
+    expect(five!.nomad).toMatchObject({ compared: 0, wins: 0, winRate: null, medianSaving: null });
+
+    // The median of 27/31 and 0, and a win rate over the one compared scenario.
+    expect(summary.overall.visitedCount).toBeNull();
+    expect(summary.overall.scenarios).toBe(2);
+    expect(summary.overall.savingVsNaive).toBeCloseTo(27 / 62, 10);
+    expect(summary.overall.nomad.winRate).toBe(1);
+  });
+
+  it('times the GA on every scenario, well inside the 10 s target', async () => {
+    const { summary } = await evaluateBenchmark([SCENARIO, FLAT], sessions, { seeds: SEEDS });
+    for (const s of summary.scenarios) {
+      expect(s.gaMs.sessions).toBe(3);
+      expect(s.gaMs.value).toBeGreaterThan(0);
+    }
+    expect(summary.overall.maxGaMs).toBeLessThan(10_000);
   });
 });

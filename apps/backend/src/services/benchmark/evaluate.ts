@@ -21,6 +21,7 @@ import {
   type CompetitorResult,
   type SessionFile,
 } from './session.js';
+import { summarize, type BenchmarkSummary } from './summary.js';
 import { median } from './stats.js';
 
 /** #35: the GA runs once per seed 1–30, each with `mulberry32(seed)`. */
@@ -44,6 +45,12 @@ export interface GaRun {
   order: string[] | null;
   /** Distinct orders this run evaluated, feasible or not. */
   ordersEvaluated: number;
+  /**
+   * Wall-clock milliseconds for the whole `optimize()` call. Prices come from
+   * memory, so this is the GA's own time with no provider latency. It is the
+   * only figure that may differ between otherwise identical runs.
+   */
+  ms: number;
 }
 
 /** One BenchmarkScenario priced from one CaptureSession's RecordedFares. */
@@ -88,6 +95,13 @@ export interface ScenarioResult {
    */
   gaOrder: string[] | null;
   ordersEvaluatedMedian: number;
+  /** Median of the runs' `ms`. */
+  gaMsMedian: number;
+  /**
+   * Optimality gap: how far the GA median sits above the brute-force optimum,
+   * as a share of the optimum (0 when it finds it). Null without both.
+   */
+  optimalityGap: number | null;
   /**
    * Ordering value (#39): the share of the NaiveOrder's (headline) or the
    * mean's price that the GA median saves, e.g. 0.25 for 25% cheaper; negative
@@ -111,15 +125,17 @@ export interface BenchmarkReport {
   sessions: SessionResult[];
   /** Sessions not evaluated, with why — a missing fare must never quietly change a result. */
   refused: { date: string; problems: string[] }[];
+  /** Every metric as the median across the evaluated sessions, per scenario, per size and overall. */
+  summary: BenchmarkSummary;
 }
 
 /**
  * The competitor benchmark's numbers (#35, ADR-0006): every scenario priced
  * from every session's RecordedFares, by the shipped `optimize()` path once
  * per seed and by brute force over every order. Plain data, and the same
- * inputs and seeds give the same report: the GA's only clock is its 30 s
- * safety timeout, which a ≤720-order scenario never comes near. Rendering is
- * the script's job.
+ * inputs and seeds give the same report apart from the measured wall-clock
+ * times: the GA's only clock is its 30 s safety timeout, which a ≤720-order
+ * scenario never comes near. Rendering is the script's job.
  */
 export async function evaluateBenchmark(
   scenarios: BenchmarkScenario[],
@@ -127,7 +143,8 @@ export async function evaluateBenchmark(
   { seeds, coordinates = BENCHMARK_COORDINATES }: EvaluateOptions,
 ): Promise<BenchmarkReport> {
   const checklist = fareChecklist(scenarios);
-  const report: BenchmarkReport = { sessions: [], refused: [] };
+  const sessionResults: SessionResult[] = [];
+  const refused: BenchmarkReport['refused'] = [];
 
   for (const session of [...sessions].sort((a, b) => a.date.localeCompare(b.date))) {
     const problems = [
@@ -135,7 +152,7 @@ export async function evaluateBenchmark(
       ...competitorProblems(session, scenarios),
     ];
     if (problems.length > 0) {
-      report.refused.push({ date: session.date, problems });
+      refused.push({ date: session.date, problems });
       continue;
     }
     const source = recordedFareSource(session);
@@ -144,14 +161,14 @@ export async function evaluateBenchmark(
       const nomad = session.competitorResults.find((r) => r.scenarioId === s.id);
       results.push(await evaluateScenario(s, source, nomad, seeds, coordinates));
     }
-    report.sessions.push({
+    sessionResults.push({
       date: session.date,
       scenarios: results,
       nomad: nomadSummary(results.map((r) => r.competitor)),
     });
   }
 
-  return report;
+  return { sessions: sessionResults, refused, summary: summarize(scenarios, sessionResults) };
 }
 
 async function evaluateScenario(
@@ -192,13 +209,16 @@ async function evaluateScenario(
   const gaRuns: GaRun[] = [];
   for (const seed of seeds) {
     const optimizer = new OptimizerService(source, { rng: mulberry32(seed) });
+    const started = performance.now();
     const gaRun = await optimizer.optimizeWithStats(req);
+    const ms = performance.now() - started;
     const recommended = gaRun.response.options.find((o) => o.label === 'recommended');
     gaRuns.push({
       seed,
       priceCents: recommended?.totalPriceCents ?? null,
       order: recommended?.order ?? null,
       ordersEvaluated: gaRun.ordersEvaluated,
+      ms,
     });
   }
 
@@ -224,6 +244,11 @@ async function evaluateScenario(
       : null,
     gaOrder,
     ordersEvaluatedMedian: median(gaRuns.map((r) => r.ordersEvaluated)),
+    gaMsMedian: median(gaRuns.map((r) => r.ms)),
+    optimalityGap:
+      gaMedianCents === null || !optimum
+        ? null
+        : (gaMedianCents - optimum.priceCents) / optimum.priceCents,
     competitor: compareWithNomad(s, nomad, { medianCents: gaMedianCents, order: gaOrder }),
     savingVsNaive: saving(gaMedianCents, naivePriceCents),
     savingVsMean: saving(gaMedianCents, meanCents),

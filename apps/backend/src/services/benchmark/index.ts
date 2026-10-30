@@ -15,5 +15,11 @@ export {
   type SessionResult,
 } from './evaluate.js';
 export { BENCHMARK_COORDINATES } from './naive.js';
+export {
+  type AcrossSessions,
+  type BenchmarkSummary,
+  type GroupSummary,
+  type ScenarioSummary,
+} from './summary.js';
 export { BENCHMARK_CITIES, BenchmarkScenario, ScenarioFile, drawScenarios } from './scenarios.js';
 export { SessionFile, type CompetitorResult } from './session.js';
