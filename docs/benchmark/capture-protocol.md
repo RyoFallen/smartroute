@@ -1,7 +1,7 @@
 # CaptureSession protocol
 
 How to run one **CaptureSession** of the competitor benchmark (#35, ADR-0006). All three sessions
-(**Tue 13 Oct, Thu 22 Oct, Sat 31 Oct 2026**) follow this page with no changes. A session takes
+(**Sat 31 Oct, Sat 7 Nov, Sat 14 Nov 2026**) follow this page with no changes. A session takes
 about 3½ hours. The working list of every screenshot, in order, is
 [`capture-sheet.md`](capture-sheet.md). Keep it open next to the browser.
 
@@ -78,8 +78,8 @@ For each odd item on the sheet:
 1. In **From**, delete whatever is there, press the **+** at the end of the field, and tick each
    airport of the From city. Then press the ✓. Do the same in **To** for the To city.
 2. Open **Departure**. Use the arrows until **November and December** are side by side. The grid
-   then covers the checklist's whole range, 14 Nov – 8 Dec 2026, for every pair.
-3. Wait until the prices stop filling in. Every day from 14 Nov to 8 Dec should show a price or be
+   then covers the checklist's whole range, 28 Nov – 22 Dec 2026, for every pair.
+3. Wait until the prices stop filling in. Every day from 28 Nov to 22 Dec should show a price or be
    blank. Then screenshot. The screenshot must show the From and To chips and both months.
 
 For the even item after it, close the grid, press **⇄** (swap), reopen Departure on Nov–Dec, and
@@ -146,7 +146,7 @@ that gap, and the thesis says so.
 ## 7. Screenshots and naming
 
 - After each screenshot, rename the file by **putting the item ID and a space in front of**
-  macOS's own name. For example, `G07 Screenshot 2026-10-13 at 09.41.05.png`. Do not change the
+  macOS's own name. For example, `G07 Screenshot 2026-10-31 at 09.41.05.png`. Do not change the
   rest: the name carries the capture time to the second.
 - A retake gets the same ID with a letter: `G07b …`. The latest letter is the one used. Keep the
   others.
@@ -172,7 +172,7 @@ that gap, and the thesis says so.
 ## 9. Session-prep checks (done 2026-10-03)
 
 All checks were done in Chrome (signed out, region Poland) on 2026-10-03. None fails, so nothing is
-blocking 13 Oct.
+blocking 31 Oct.
 
 | Check                                                                        | Result | What was seen                                                                                                                                                                                                                                                                                                                                 |
 | ---------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -181,7 +181,7 @@ blocking 13 Oct.
 | Nomad accepts the same multi-airport selection                               | Pass   | Each place, the start and the end are chip fields that take several airports (e.g. "Already included: SAW, IST"). The URL lists them comma-separated. The largest scenario (S16: IST, SAW → 6 places with up to 6 airports each → BCN) loaded from its sheet link and returned all-flight results whose dates matched its stays.              |
 | Nomad can pin the end city                                                   | Pass   | "Return to a different location" with an airport list as the end. In the URL the end is the second segment.                                                                                                                                                                                                                                   |
 | Google Flights' one-way date grid takes multi-airport origin and destination | Pass   | **+** in a field switches to tick boxes. WAW + WMI → LHR, LGW, STN, LTN, LCY, SEN gave a priced date grid in EUR.                                                                                                                                                                                                                             |
-| Google Flights' grid shows the needed months                                 | Pass   | The grid shows two months side by side. Paging once gives November and December together, with a price on every day of both months for the pair tried, so one screenshot covers 14 Nov – 8 Dec.                                                                                                                                               |
+| Google Flights' grid shows the needed months                                 | Pass   | The grid shows two months side by side. Paging once gives November and December together, with a price on every day of both months for the pair tried, so one screenshot covers the whole window (then 14 Nov – 8 Dec; since the 2026-10-30 reschedule, 28 Nov – 22 Dec).                                                                     |
 | Both sites can show EUR                                                      | Pass   | Google: `curr=EUR` in the URL, confirmed in the footer. Kiwi: header → Currency → Euro, which persists in the profile.                                                                                                                                                                                                                        |
 
 Google Flights offers no stable shareable link for a multi-airport search (its `q=` links did not

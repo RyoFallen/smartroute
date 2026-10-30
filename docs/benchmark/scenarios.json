@@ -1,275 +1,275 @@
 {
-  "seed": 20261003,
+  "seed": 20261030,
   "scenarios": [
     {
       "id": "S01",
-      "origin": "LHR",
+      "origin": "WAW",
       "visited": [
-        { "city": "BCN", "stayDays": 3 },
-        { "city": "BER", "stayDays": 4 },
+        { "city": "BUD", "stayDays": 4 },
+        { "city": "CDG", "stayDays": 3 },
         { "city": "FCO", "stayDays": 2 },
-        { "city": "IST", "stayDays": 3 }
+        { "city": "IST", "stayDays": 2 }
       ],
-      "endCity": "BCN",
-      "departDate": "2026-11-29"
+      "endCity": "FCO",
+      "departDate": "2026-11-28"
     },
     {
       "id": "S02",
-      "origin": "WAW",
+      "origin": "FCO",
       "visited": [
-        { "city": "BCN", "stayDays": 3 },
-        { "city": "BUD", "stayDays": 3 },
+        { "city": "BUD", "stayDays": 2 },
         { "city": "CDG", "stayDays": 2 },
-        { "city": "FCO", "stayDays": 2 }
+        { "city": "LHR", "stayDays": 3 },
+        { "city": "WAW", "stayDays": 3 }
       ],
-      "endCity": "CDG",
-      "departDate": "2026-11-16"
+      "endCity": "BUD",
+      "departDate": "2026-12-08"
     },
     {
       "id": "S03",
-      "origin": "BCN",
+      "origin": "BUD",
       "visited": [
         { "city": "BER", "stayDays": 3 },
-        { "city": "BUD", "stayDays": 2 },
-        { "city": "CDG", "stayDays": 4 },
-        { "city": "WAW", "stayDays": 2 }
+        { "city": "IST", "stayDays": 2 },
+        { "city": "LHR", "stayDays": 4 },
+        { "city": "WAW", "stayDays": 3 }
       ],
-      "endCity": "WAW",
-      "departDate": "2026-11-24"
+      "endCity": "LHR",
+      "departDate": "2026-12-11"
     },
     {
       "id": "S04",
-      "origin": "BER",
+      "origin": "BUD",
       "visited": [
-        { "city": "BCN", "stayDays": 3 },
-        { "city": "IST", "stayDays": 2 },
-        { "city": "LHR", "stayDays": 3 },
-        { "city": "WAW", "stayDays": 4 }
+        { "city": "BER", "stayDays": 2 },
+        { "city": "CDG", "stayDays": 4 },
+        { "city": "FCO", "stayDays": 2 },
+        { "city": "IST", "stayDays": 3 }
       ],
-      "endCity": "LHR",
-      "departDate": "2026-11-20"
+      "endCity": "BER",
+      "departDate": "2026-12-02"
     },
     {
       "id": "S05",
-      "origin": "BCN",
+      "origin": "IST",
       "visited": [
-        { "city": "CDG", "stayDays": 3 },
-        { "city": "FCO", "stayDays": 3 },
-        { "city": "LHR", "stayDays": 4 },
-        { "city": "WAW", "stayDays": 2 }
+        { "city": "BUD", "stayDays": 2 },
+        { "city": "CDG", "stayDays": 2 },
+        { "city": "LHR", "stayDays": 2 },
+        { "city": "WAW", "stayDays": 3 }
       ],
-      "endCity": "FCO",
-      "departDate": "2026-11-22"
+      "endCity": "LHR",
+      "departDate": "2026-12-10"
     },
     {
       "id": "S06",
-      "origin": "BER",
+      "origin": "FCO",
       "visited": [
-        { "city": "BCN", "stayDays": 4 },
-        { "city": "CDG", "stayDays": 2 },
-        { "city": "FCO", "stayDays": 3 },
+        { "city": "BUD", "stayDays": 4 },
+        { "city": "CDG", "stayDays": 4 },
         { "city": "IST", "stayDays": 3 },
-        { "city": "LHR", "stayDays": 2 }
+        { "city": "LHR", "stayDays": 2 },
+        { "city": "WAW", "stayDays": 4 }
       ],
-      "endCity": "LHR",
-      "departDate": "2026-11-15"
+      "endCity": "BUD",
+      "departDate": "2026-12-07"
     },
     {
       "id": "S07",
-      "origin": "BCN",
+      "origin": "BUD",
       "visited": [
-        { "city": "BUD", "stayDays": 2 },
-        { "city": "FCO", "stayDays": 4 },
-        { "city": "IST", "stayDays": 4 },
-        { "city": "LHR", "stayDays": 2 },
-        { "city": "WAW", "stayDays": 2 }
+        { "city": "BER", "stayDays": 3 },
+        { "city": "CDG", "stayDays": 2 },
+        { "city": "FCO", "stayDays": 2 },
+        { "city": "IST", "stayDays": 2 },
+        { "city": "WAW", "stayDays": 4 }
       ],
-      "endCity": "BUD",
-      "departDate": "2026-11-24"
+      "endCity": "CDG",
+      "departDate": "2026-12-07"
     },
     {
       "id": "S08",
-      "origin": "CDG",
+      "origin": "IST",
+      "visited": [
+        { "city": "BCN", "stayDays": 3 },
+        { "city": "BUD", "stayDays": 4 },
+        { "city": "CDG", "stayDays": 3 },
+        { "city": "FCO", "stayDays": 4 },
+        { "city": "LHR", "stayDays": 3 }
+      ],
+      "endCity": "CDG",
+      "departDate": "2026-11-28"
+    },
+    {
+      "id": "S09",
+      "origin": "FCO",
+      "visited": [
+        { "city": "BER", "stayDays": 3 },
+        { "city": "CDG", "stayDays": 4 },
+        { "city": "IST", "stayDays": 3 },
+        { "city": "LHR", "stayDays": 2 },
+        { "city": "WAW", "stayDays": 4 }
+      ],
+      "endCity": "IST",
+      "departDate": "2026-12-04"
+    },
+    {
+      "id": "S10",
+      "origin": "LHR",
+      "visited": [
+        { "city": "BCN", "stayDays": 4 },
+        { "city": "BER", "stayDays": 3 },
+        { "city": "BUD", "stayDays": 4 },
+        { "city": "CDG", "stayDays": 3 },
+        { "city": "FCO", "stayDays": 4 }
+      ],
+      "endCity": "CDG",
+      "departDate": "2026-12-07"
+    },
+    {
+      "id": "S11",
+      "origin": "BUD",
+      "visited": [
+        { "city": "BCN", "stayDays": 4 },
+        { "city": "CDG", "stayDays": 2 },
+        { "city": "FCO", "stayDays": 2 },
+        { "city": "IST", "stayDays": 4 },
+        { "city": "LHR", "stayDays": 2 },
+        { "city": "WAW", "stayDays": 4 }
+      ],
+      "endCity": "IST",
+      "departDate": "2026-12-07"
+    },
+    {
+      "id": "S12",
+      "origin": "BCN",
       "visited": [
         { "city": "BER", "stayDays": 2 },
-        { "city": "BUD", "stayDays": 2 },
-        { "city": "FCO", "stayDays": 2 },
+        { "city": "BUD", "stayDays": 3 },
+        { "city": "CDG", "stayDays": 4 },
+        { "city": "FCO", "stayDays": 4 },
+        { "city": "LHR", "stayDays": 2 },
+        { "city": "WAW", "stayDays": 3 }
+      ],
+      "endCity": "LHR",
+      "departDate": "2026-12-02"
+    },
+    {
+      "id": "S13",
+      "origin": "LHR",
+      "visited": [
+        { "city": "BCN", "stayDays": 2 },
+        { "city": "BER", "stayDays": 2 },
+        { "city": "BUD", "stayDays": 4 },
+        { "city": "CDG", "stayDays": 3 },
+        { "city": "FCO", "stayDays": 4 },
+        { "city": "IST", "stayDays": 4 }
+      ],
+      "endCity": "BUD",
+      "departDate": "2026-11-28"
+    },
+    {
+      "id": "S14",
+      "origin": "CDG",
+      "visited": [
+        { "city": "BCN", "stayDays": 3 },
+        { "city": "BER", "stayDays": 4 },
+        { "city": "FCO", "stayDays": 3 },
+        { "city": "IST", "stayDays": 2 },
         { "city": "LHR", "stayDays": 4 },
         { "city": "WAW", "stayDays": 2 }
       ],
       "endCity": "BER",
-      "departDate": "2026-11-26"
-    },
-    {
-      "id": "S09",
-      "origin": "LHR",
-      "visited": [
-        { "city": "BUD", "stayDays": 2 },
-        { "city": "CDG", "stayDays": 4 },
-        { "city": "FCO", "stayDays": 3 },
-        { "city": "IST", "stayDays": 3 },
-        { "city": "WAW", "stayDays": 2 }
-      ],
-      "endCity": "WAW",
-      "departDate": "2026-11-19"
-    },
-    {
-      "id": "S10",
-      "origin": "BCN",
-      "visited": [
-        { "city": "BER", "stayDays": 3 },
-        { "city": "CDG", "stayDays": 2 },
-        { "city": "FCO", "stayDays": 3 },
-        { "city": "IST", "stayDays": 2 },
-        { "city": "LHR", "stayDays": 3 }
-      ],
-      "endCity": "IST",
-      "departDate": "2026-11-22"
-    },
-    {
-      "id": "S11",
-      "origin": "BCN",
-      "visited": [
-        { "city": "BER", "stayDays": 4 },
-        { "city": "BUD", "stayDays": 3 },
-        { "city": "CDG", "stayDays": 4 },
-        { "city": "FCO", "stayDays": 3 },
-        { "city": "LHR", "stayDays": 3 },
-        { "city": "WAW", "stayDays": 2 }
-      ],
-      "endCity": "BUD",
-      "departDate": "2026-11-22"
-    },
-    {
-      "id": "S12",
-      "origin": "CDG",
-      "visited": [
-        { "city": "BCN", "stayDays": 3 },
-        { "city": "BUD", "stayDays": 2 },
-        { "city": "FCO", "stayDays": 4 },
-        { "city": "IST", "stayDays": 2 },
-        { "city": "LHR", "stayDays": 4 },
-        { "city": "WAW", "stayDays": 2 }
-      ],
-      "endCity": "FCO",
-      "departDate": "2026-11-23"
-    },
-    {
-      "id": "S13",
-      "origin": "BCN",
-      "visited": [
-        { "city": "BER", "stayDays": 2 },
-        { "city": "CDG", "stayDays": 2 },
-        { "city": "FCO", "stayDays": 4 },
-        { "city": "IST", "stayDays": 3 },
-        { "city": "LHR", "stayDays": 4 },
-        { "city": "WAW", "stayDays": 4 }
-      ],
-      "endCity": "FCO",
-      "departDate": "2026-11-19"
-    },
-    {
-      "id": "S14",
-      "origin": "BCN",
-      "visited": [
-        { "city": "BER", "stayDays": 4 },
-        { "city": "BUD", "stayDays": 2 },
-        { "city": "FCO", "stayDays": 4 },
-        { "city": "IST", "stayDays": 4 },
-        { "city": "LHR", "stayDays": 2 },
-        { "city": "WAW", "stayDays": 4 }
-      ],
-      "endCity": "LHR",
-      "departDate": "2026-11-19"
+      "departDate": "2026-12-01"
     },
     {
       "id": "S15",
-      "origin": "BCN",
+      "origin": "CDG",
       "visited": [
-        { "city": "BER", "stayDays": 3 },
-        { "city": "BUD", "stayDays": 2 },
-        { "city": "CDG", "stayDays": 4 },
-        { "city": "IST", "stayDays": 2 },
-        { "city": "LHR", "stayDays": 2 },
-        { "city": "WAW", "stayDays": 2 }
+        { "city": "BCN", "stayDays": 3 },
+        { "city": "BER", "stayDays": 2 },
+        { "city": "BUD", "stayDays": 4 },
+        { "city": "IST", "stayDays": 3 },
+        { "city": "LHR", "stayDays": 3 },
+        { "city": "WAW", "stayDays": 3 }
       ],
-      "endCity": "CDG",
-      "departDate": "2026-11-23"
+      "endCity": "BCN",
+      "departDate": "2026-12-03"
     },
     {
       "id": "S16",
-      "origin": "IST",
+      "origin": "BCN",
       "visited": [
-        { "city": "BCN", "stayDays": 2 },
-        { "city": "BER", "stayDays": 2 },
-        { "city": "BUD", "stayDays": 3 },
+        { "city": "BER", "stayDays": 4 },
+        { "city": "BUD", "stayDays": 4 },
         { "city": "CDG", "stayDays": 3 },
-        { "city": "FCO", "stayDays": 4 },
-        { "city": "LHR", "stayDays": 3 },
+        { "city": "FCO", "stayDays": 2 },
+        { "city": "IST", "stayDays": 4 },
+        { "city": "LHR", "stayDays": 4 },
         { "city": "WAW", "stayDays": 4 }
       ],
-      "endCity": "BCN",
-      "departDate": "2026-11-15"
+      "endCity": "BER",
+      "departDate": "2026-11-28"
     },
     {
       "id": "S17",
-      "origin": "BER",
+      "origin": "LHR",
       "visited": [
-        { "city": "BCN", "stayDays": 4 },
+        { "city": "BCN", "stayDays": 3 },
+        { "city": "BER", "stayDays": 2 },
         { "city": "BUD", "stayDays": 3 },
-        { "city": "CDG", "stayDays": 2 },
-        { "city": "FCO", "stayDays": 4 },
+        { "city": "CDG", "stayDays": 4 },
+        { "city": "FCO", "stayDays": 3 },
         { "city": "IST", "stayDays": 3 },
-        { "city": "LHR", "stayDays": 2 },
-        { "city": "WAW", "stayDays": 3 }
+        { "city": "WAW", "stayDays": 2 }
       ],
-      "endCity": "WAW",
-      "departDate": "2026-11-19"
+      "endCity": "FCO",
+      "departDate": "2026-11-28"
     },
     {
       "id": "S18",
       "origin": "BER",
       "visited": [
-        { "city": "BCN", "stayDays": 3 },
-        { "city": "BUD", "stayDays": 2 },
-        { "city": "CDG", "stayDays": 2 },
-        { "city": "FCO", "stayDays": 2 },
-        { "city": "IST", "stayDays": 3 },
-        { "city": "LHR", "stayDays": 2 },
-        { "city": "WAW", "stayDays": 2 }
+        { "city": "BCN", "stayDays": 2 },
+        { "city": "BUD", "stayDays": 3 },
+        { "city": "CDG", "stayDays": 4 },
+        { "city": "FCO", "stayDays": 3 },
+        { "city": "IST", "stayDays": 4 },
+        { "city": "LHR", "stayDays": 3 },
+        { "city": "WAW", "stayDays": 4 }
       ],
-      "endCity": "CDG",
-      "departDate": "2026-11-18"
+      "endCity": "LHR",
+      "departDate": "2026-11-28"
     },
     {
       "id": "S19",
-      "origin": "BCN",
+      "origin": "FCO",
       "visited": [
-        { "city": "BER", "stayDays": 3 },
-        { "city": "BUD", "stayDays": 4 },
+        { "city": "BCN", "stayDays": 3 },
+        { "city": "BER", "stayDays": 4 },
+        { "city": "BUD", "stayDays": 3 },
         { "city": "CDG", "stayDays": 3 },
-        { "city": "FCO", "stayDays": 3 },
-        { "city": "IST", "stayDays": 4 },
-        { "city": "LHR", "stayDays": 4 },
-        { "city": "WAW", "stayDays": 4 }
+        { "city": "IST", "stayDays": 3 },
+        { "city": "LHR", "stayDays": 3 },
+        { "city": "WAW", "stayDays": 2 }
       ],
-      "endCity": "BUD",
-      "departDate": "2026-11-14"
+      "endCity": "BCN",
+      "departDate": "2026-12-02"
     },
     {
       "id": "S20",
-      "origin": "WAW",
+      "origin": "LHR",
       "visited": [
         { "city": "BCN", "stayDays": 2 },
         { "city": "BER", "stayDays": 2 },
-        { "city": "BUD", "stayDays": 3 },
+        { "city": "BUD", "stayDays": 2 },
         { "city": "CDG", "stayDays": 3 },
-        { "city": "FCO", "stayDays": 3 },
+        { "city": "FCO", "stayDays": 2 },
         { "city": "IST", "stayDays": 4 },
-        { "city": "LHR", "stayDays": 3 }
+        { "city": "WAW", "stayDays": 4 }
       ],
-      "endCity": "CDG",
-      "departDate": "2026-11-19"
+      "endCity": "FCO",
+      "departDate": "2026-12-02"
     }
   ]
 }
