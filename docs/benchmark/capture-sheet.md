@@ -104,7 +104,7 @@ city), confirm EUR and the Cheapest sort, then screenshot.
 Drawn from the fare checklist with seed **20261031**, 10 per session,
 before any price was seen. Use only your own session’s list.
 
-### CaptureSession 1 (2026-10-31)
+### CaptureSession 1 (2026-11-01)
 
 | ID  | From | To  | Date       |
 | --- | ---- | --- | ---------- |

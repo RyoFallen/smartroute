@@ -17,8 +17,8 @@ const MIN_STAY_DAYS = 2;
 const MAX_STAY_DAYS = 4;
 /**
  * Every flight of every scenario — the first and the last alike — falls in this
- * window, 2–8 weeks out from all three CaptureSessions (31 Oct, 7 Nov, 14 Nov
- * 2026: 28 Nov is 2 weeks after the last, 22 Dec 8 weeks after the first).
+ * window, 2–8 weeks out from all three CaptureSessions (1 Nov, 7 Nov, 14 Nov
+ * 2026: 28 Nov is 2 weeks after the last, 22 Dec under 8 weeks after the first).
  * It is 25 days, and the longest flown span (six 4-day stays before the end
  * city) is 24, so every scenario has at least one departure date that fits.
  */

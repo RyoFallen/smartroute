@@ -28,7 +28,7 @@ const docs = BENCHMARK_DOCS;
 const notePath = path.join(docs, 'capture-sheet.md');
 
 /** The three CaptureSessions (#35). */
-const SESSIONS = ['2026-10-31', '2026-11-07', '2026-11-14'] as const;
+const SESSIONS = ['2026-11-01', '2026-11-07', '2026-11-14'] as const;
 const SPOT_CHECKS_PER_SESSION = 10;
 /**
  * Seeds the spot-check draw, so the 30 checked fares are fixed — and committed —

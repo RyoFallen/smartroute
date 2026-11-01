@@ -1,22 +1,39 @@
 # CaptureSession protocol
 
 How to run one **CaptureSession** of the competitor benchmark (#35, ADR-0006). All three sessions
-(**Sat 31 Oct, Sat 7 Nov, Sat 14 Nov 2026**) follow this page with no changes. A session takes
-about 3½ hours. The working list of every screenshot, in order, is
-[`capture-sheet.md`](capture-sheet.md). Keep it open next to the browser.
+(**Sun 1 Nov, Sat 7 Nov, Sat 14 Nov 2026**) follow this page with no changes. Session 1 moved from
+Sat 31 Oct, which was not run, to Sun 1 Nov: still at least 2 and under 8 weeks before every
+flight (28 Nov – 22 Dec). A session takes about 2 hours. The working list of every screenshot, in
+order, is [`capture-sheet.md`](capture-sheet.md).
+
+## 0. How a session is run (revised 2026-11-01, before Session 1)
+
+Every session is run by **the agent driving the owner's browser** through a browser extension, on
+the owner's Windows PC, with the owner's go-ahead. A pilot on 2026-11-01 (G01, G02, G11, N01,
+screenshots not used as data) showed this works and is faster than by hand. It replaces the
+original Mac-by-hand steps; nothing about _what_ is recorded changes.
+
+- **Reading prices.** The agent reads each date-grid price from the page's own date cells (each
+  cell carries its ISO date) rather than from the image, and each Nomad result from the page
+  text. The screenshots are still the evidence, and transcription (§8) is checked against them.
+- **Screenshots.** A PowerShell script captures the **whole monitor the browser is on, taskbar
+  clock included**, and saves it already named `<ID> Screenshot YYYY-MM-DD at HH.MM.SS.png` from
+  the system clock (§7). The other monitor is not captured.
+- **Disclosed in the thesis, the same in all three sessions:** the browser is **Brave** (Chromium),
+  not Chrome; its profile is the owner's everyday one, **signed into Google**, not a signed-out
+  capture profile; the extension shows a debugging banner across the top of every screenshot; and
+  prices were read by an automated agent, with the owner's 5% audit (§8) as the human check.
 
 Terms are as in `CONTEXT.md` § Benchmark: a session records **RecordedFares** for the 56 directed
 city pairs, then one **CompetitorResult** per **BenchmarkScenario**.
 
 ## 1. Before you start (10 min)
 
-1. Use a Chrome profile kept for captures only, signed out of Google and Kiwi.com, with no
-   extensions that change pages. Use the same profile every session.
-2. Show seconds in the macOS menu-bar clock (System Settings → Control Center → Clock Options →
-   "Display the time with seconds"). Take every screenshot of the **whole screen** (⇧⌘3), so the
-   date and time show in the image itself.
-3. Point screenshots at an empty folder for this session: ⇧⌘5 → Options → Save to → a new folder
-   `capture-session-N-YYYY-MM-DD` (N = 1, 2, 3).
+1. Use the same browser profile every session (§0). Kiwi.com stays signed out.
+2. Every screenshot is of the **whole browser monitor**, so the taskbar's date and time show in
+   the image itself; the file name carries the time to the second (§7).
+3. Save screenshots to an empty folder for this session, `capture-session-N-YYYY-MM-DD`
+   (N = 1, 2, 3).
 4. **Google Flights**: open `https://www.google.com/travel/flights?hl=en&curr=EUR`. In the footer,
    check Language = English (United States), Location = **Poland**, Currency = **EUR**. Set
    **One way**, **1** passenger, **Economy**. Leave stops and every other filter at their
@@ -63,9 +80,9 @@ whole airport list, never just that one airport.
 Do the steps in this order, with no breaks longer than 15 minutes (note any break in the notes
 file):
 
-1. **G01–G56**: Google Flights date grids, all 56 pairs (about 2 h).
-2. **N01–N20**: Kiwi.com Nomad, one search per scenario (about 1 h).
-3. **L01–L10**: live spot-checks on Google Flights (about 20 min).
+1. **G01–G56**: Google Flights date grids, all 56 pairs (about 1 h).
+2. **N01–N20**: Kiwi.com Nomad, one search per scenario (about 30 min).
+3. **L01–L10**: live spot-checks on Google Flights (about 15 min).
 4. Write the session end time in the notes file.
 
 Grids come first so that every scenario's Nomad capture falls after all of its fares, within
@@ -90,6 +107,13 @@ screenshot again.
 - Prices are whole euros as shown. Do not open individual days in this step.
 - If a chip shows more or fewer airports than the sheet's row, fix it before taking the
   screenshot.
+- The open grid covers the To chips. Where either city has more than one airport, first take a
+  screenshot of the form with both fields' chips visible as `<ID>b`, then open the grid for the
+  main `<ID>` screenshot. (The tab title, e.g. "Barcelona to London and 5 more", only counts them.)
+- A pair whose cities each have one airport (BCN, BER, BUD) may be opened from a `q=` link, e.g.
+  `…/travel/flights?q=one way flights from BCN to BER on 2026-11-28&hl=en&curr=EUR`, which now
+  fills the form (it did not on 2026-10-03). A list of airports in `q=` still does not, so
+  multi-airport fields are set up with **+** as above.
 
 ## 5. Kiwi.com Nomad (N01–N20)
 
@@ -145,9 +169,9 @@ that gap, and the thesis says so.
 
 ## 7. Screenshots and naming
 
-- After each screenshot, rename the file by **putting the item ID and a space in front of**
-  macOS's own name. For example, `G07 Screenshot 2026-10-31 at 09.41.05.png`. Do not change the
-  rest: the name carries the capture time to the second.
+- Each file is named **the item ID, a space, then `Screenshot YYYY-MM-DD at HH.MM.SS.png`** from
+  the system clock at capture, e.g. `G07 Screenshot 2026-11-01 at 09.41.05.png`. The name carries
+  the capture time to the second, so it is never edited afterwards.
 - A retake gets the same ID with a letter: `G07b …`. The latest letter is the one used. Keep the
   others.
 - Extra screenshots for one item (Show details, a scrolled list) also take the item ID with a
@@ -162,17 +186,19 @@ that gap, and the thesis says so.
 
    ```sh
    cd capture-session-N-YYYY-MM-DD
-   shasum -a 256 *.png notes.txt > <repo>/docs/benchmark/sessions/YYYY-MM-DD.sha256
-   shasum -a 256 ../capture-session-N-YYYY-MM-DD.zip >> <repo>/docs/benchmark/sessions/YYYY-MM-DD.sha256
+   sha256sum *.png notes.txt > <repo>/docs/benchmark/sessions/YYYY-MM-DD.sha256
+   sha256sum ../capture-session-N-YYYY-MM-DD.zip >> <repo>/docs/benchmark/sessions/YYYY-MM-DD.sha256
    ```
 
-5. Hand the zip to the agent. It transcribes the session into JSON twice and reconciles the two
-   copies. The owner then audits a random 5% of the transcribed prices against the screenshots.
+5. The agent transcribes the session into JSON twice, from the screenshots, and reconciles the
+   two copies and the prices it read during capture. The owner then audits a random 5% of the
+   transcribed prices against the screenshots.
 
 ## 9. Session-prep checks (done 2026-10-03)
 
-All checks were done in Chrome (signed out, region Poland) on 2026-10-03. None fails, so nothing is
-blocking 31 Oct.
+All checks were done in Chrome (signed out, region Poland) on 2026-10-03. None fails. The
+2026-11-01 pilot (§0) re-confirmed them in the session browser, and found Kiwi.com showing PLN
+until switched to EUR, which §1 step 5 already covers.
 
 | Check                                                                        | Result | What was seen                                                                                                                                                                                                                                                                                                                                 |
 | ---------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -184,8 +210,8 @@ blocking 31 Oct.
 | Google Flights' grid shows the needed months                                 | Pass   | The grid shows two months side by side. Paging once gives November and December together, with a price on every day of both months for the pair tried, so one screenshot covers the whole window (then 14 Nov – 8 Dec; since the 2026-10-30 reschedule, 28 Nov – 22 Dec).                                                                     |
 | Both sites can show EUR                                                      | Pass   | Google: `curr=EUR` in the URL, confirmed in the footer. Kiwi: header → Currency → Euro, which persists in the profile.                                                                                                                                                                                                                        |
 
-Google Flights offers no stable shareable link for a multi-airport search (its `q=` links did not
-fill the form), so grids are set up by hand. The swap button halves the work.
+Google Flights offers no stable shareable link for a multi-airport search, so those grids are set
+up in the form (§4). The swap button halves the work.
 
 ## 10. Consistency with ADR-0006 and `CONTEXT.md`
 
