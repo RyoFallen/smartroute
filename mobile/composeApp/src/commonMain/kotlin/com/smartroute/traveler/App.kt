@@ -29,6 +29,7 @@ import com.smartroute.traveler.ui.navigation.MainTabsScaffold
 import com.smartroute.traveler.ui.onboarding.OnboardingScreen
 import com.smartroute.traveler.ui.onboarding.OnboardingUiState
 import com.smartroute.traveler.ui.onboarding.OnboardingViewModel
+import com.smartroute.traveler.ui.theme.SmartRouteTheme
 import org.jetbrains.compose.resources.stringResource
 import smartroute_mobile.composeapp.generated.resources.Res
 import smartroute_mobile.composeapp.generated.resources.missing_config
@@ -41,7 +42,7 @@ fun App() {
     CompositionLocalProvider(LocalAppLocale provides language?.tag) {
         // key() re-resolves every string resource when the language changes.
         key(language) {
-            MaterialTheme {
+            SmartRouteTheme {
                 if (AppConfig.CLERK_PUBLISHABLE_KEY.isBlank()) {
                     MissingConfigScreen()
                 } else {
