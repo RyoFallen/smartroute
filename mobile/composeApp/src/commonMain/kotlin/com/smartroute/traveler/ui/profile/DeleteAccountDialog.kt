@@ -5,6 +5,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import com.smartroute.traveler.ui.theme.SrShapes
 import org.jetbrains.compose.resources.stringResource
 import smartroute_mobile.composeapp.generated.resources.Res
 import smartroute_mobile.composeapp.generated.resources.cancel
@@ -27,6 +29,8 @@ fun DeleteAccountDialog(
         is DeleteAccountUiState.Confirming, DeleteAccountUiState.Deleting, DeleteAccountUiState.Failed -> {
             val busy = state is DeleteAccountUiState.Deleting
             AlertDialog(
+                shape = SrShapes.Card,
+                containerColor = Color.White,
                 onDismissRequest = { if (!busy) onCancel() },
                 title = { Text(stringResource(Res.string.delete_account)) },
                 text = {

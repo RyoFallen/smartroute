@@ -47,7 +47,7 @@
     <string name="saved">Saved</string>
     <string name="preferences_error_load">Could not load your preferences</string>
     <string name="preferences_error_save">Could not save your preferences</string>
-    <string name="my_trips_empty">No saved trips yet.</string>
+    <string name="my_trips_empty">No saved trips yet. Plan your first route and it shows up here.</string>
     <string name="my_trips_error_load">Could not load your saved trips</string>
     <string name="trip_detail_error_load">Could not load this trip</string>
     <string name="trip_detail_flights">Flights</string>

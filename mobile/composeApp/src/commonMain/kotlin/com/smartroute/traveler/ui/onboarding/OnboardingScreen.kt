@@ -15,11 +15,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material.icons.rounded.ThumbDown
 import androidx.compose.material.icons.rounded.ThumbUp
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -40,6 +42,7 @@ import com.smartroute.traveler.ui.components.GlassCard
 import com.smartroute.traveler.ui.components.GlassIconButton
 import com.smartroute.traveler.ui.components.MOTION_MS
 import com.smartroute.traveler.ui.components.RetryErrorState
+import com.smartroute.traveler.ui.components.imageVector
 import com.smartroute.traveler.ui.i18n.labelRes
 import com.smartroute.traveler.ui.theme.SrColors
 import kotlinx.coroutines.launch
@@ -194,7 +197,12 @@ private fun SwipeableInterestCard(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(text = category.icon, style = MaterialTheme.typography.displayLarge)
+                Icon(
+                    category.imageVector,
+                    contentDescription = null,
+                    tint = SrColors.Primary,
+                    modifier = Modifier.size(72.dp),
+                )
                 Spacer(Modifier.height(16.dp))
                 Text(
                     text = stringResource(category.labelRes),

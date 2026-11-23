@@ -1,28 +1,34 @@
 package com.smartroute.traveler.ui.profile
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.smartroute.traveler.domain.TripIntensity
+import com.smartroute.traveler.ui.components.GlassPill
+import com.smartroute.traveler.ui.components.GlassTextFieldShape
 import com.smartroute.traveler.ui.components.LocalBottomBarInset
+import com.smartroute.traveler.ui.components.PrimaryButton
 import com.smartroute.traveler.ui.components.RetryErrorState
 import com.smartroute.traveler.ui.components.SubScreenHeader
+import com.smartroute.traveler.ui.components.glassTextFieldColors
+import com.smartroute.traveler.ui.theme.SrColors
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import smartroute_mobile.composeapp.generated.resources.Res
@@ -87,65 +93,65 @@ private fun EditingContent(
     onWakeUpTimeChange: (String) -> Unit,
     onSave: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(bottom = LocalBottomBarInset.current).padding(16.dp)) {
-        Text(
-            text = stringResource(Res.string.preferences_intensity),
-            style = MaterialTheme.typography.titleMedium,
-        )
-        Spacer(Modifier.height(8.dp))
-        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-            TripIntensity.entries.forEachIndexed { index, intensity ->
-                SegmentedButton(
-                    selected = editing.intensity == intensity,
-                    onClick = { onIntensityChange(intensity) },
-                    shape =
-                        SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = TripIntensity.entries.size,
-                        ),
-                    enabled = !editing.saving,
-                ) {
-                    Text(stringResource(intensity.labelRes))
+    Column(modifier = Modifier.fillMaxSize().padding(bottom = LocalBottomBarInset.current)) {
+        // The fields scroll; Save stays pinned below them so a small screen or the
+        // keyboard can never push it out of reach.
+        Column(modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(16.dp)) {
+            Text(
+                text = stringResource(Res.string.preferences_intensity),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Spacer(Modifier.height(10.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                TripIntensity.entries.forEach { intensity ->
+                    GlassPill(
+                        text = stringResource(intensity.labelRes),
+                        selected = editing.intensity == intensity,
+                        onClick = { if (!editing.saving) onIntensityChange(intensity) },
+                    )
                 }
             }
-        }
-        Spacer(Modifier.height(24.dp))
-        Text(
-            text = stringResource(Res.string.preferences_wake_up),
-            style = MaterialTheme.typography.titleMedium,
-        )
-        Spacer(Modifier.height(8.dp))
-        OutlinedTextField(
-            value = editing.wakeUpTime,
-            onValueChange = onWakeUpTimeChange,
-            singleLine = true,
-            enabled = !editing.saving,
-            isError = !WAKE_UP_PATTERN.matches(editing.wakeUpTime),
-            placeholder = { Text("09:00") },
-            modifier = Modifier.fillMaxWidth(),
-        )
-        Spacer(Modifier.height(24.dp))
-        Button(
-            onClick = onSave,
-            enabled = !editing.saving && WAKE_UP_PATTERN.matches(editing.wakeUpTime),
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(stringResource(if (editing.saving) Res.string.saving else Res.string.save))
-        }
-        if (editing.saveFailed) {
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(24.dp))
             Text(
-                text = stringResource(Res.string.preferences_error_save),
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium,
+                text = stringResource(Res.string.preferences_wake_up),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Spacer(Modifier.height(10.dp))
+            OutlinedTextField(
+                value = editing.wakeUpTime,
+                onValueChange = onWakeUpTimeChange,
+                singleLine = true,
+                enabled = !editing.saving,
+                isError = !WAKE_UP_PATTERN.matches(editing.wakeUpTime),
+                placeholder = { Text("09:00") },
+                shape = GlassTextFieldShape,
+                colors = glassTextFieldColors(),
+                modifier = Modifier.fillMaxWidth(),
             )
         }
-        if (editing.saved) {
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = stringResource(Res.string.saved),
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyMedium,
+        Column(modifier = Modifier.padding(16.dp)) {
+            if (editing.saveFailed) {
+                Text(
+                    text = stringResource(Res.string.preferences_error_save),
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(Modifier.height(8.dp))
+            }
+            if (editing.saved) {
+                Text(
+                    text = stringResource(Res.string.saved),
+                    color = SrColors.Primary,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(Modifier.height(8.dp))
+            }
+            PrimaryButton(
+                text = stringResource(if (editing.saving) Res.string.saving else Res.string.save),
+                onClick = onSave,
+                enabled = !editing.saving && WAKE_UP_PATTERN.matches(editing.wakeUpTime),
             )
         }
     }
