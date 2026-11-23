@@ -1,6 +1,6 @@
 # UI redesign: soft light theme with restrained glass
 
-Status: agreed with the owner on 2026-11-23. Not started.
+Status: implemented, 2026-11-23.
 
 ## Intent
 
