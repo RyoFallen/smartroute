@@ -11,9 +11,8 @@ Thesis project (deadline: **early December 2026**). Multi-city trip optimizer: b
 
 ## Stack & layout
 
-- `mobile/` — **Kotlin + Compose Multiplatform** app (Gradle build, NOT in the pnpm workspace). Replaces the legacy Expo app.
+- `mobile/` — **Kotlin + Compose Multiplatform** app (Gradle build, NOT in the pnpm workspace). The legacy Expo app `apps/mobile` was removed 2026-11-23 (still in git history).
 - `apps/backend/` — Node 22 + **Fastify** + Prisma + Postgres 16, Clerk auth, Duffel flight provider (mock provider in CI/by default)
-- `apps/mobile/` — legacy Expo app; keep working until KMP reaches feature parity, then retire. Don't invest in it.
 - `packages/shared/` — zod schemas/types (backend-side only)
 
 ## Current state (2026-11-23)
@@ -44,7 +43,7 @@ Thesis project (deadline: **early December 2026**). Multi-city trip optimizer: b
     4. ~~"Recorded fares" demo mode.~~ **Done 2026-11-23:** `FLIGHT_PROVIDER=recorded` (`services/flights/recorded.ts`, optional `RECORDED_FARES_SESSION`, default Session 1) serves the real 1 Nov fares, EUR, uncached, departures 28 Nov–22 Dec only. Owner chose to **store currency**: `/optimize` returns `currency`, `Trip.currency` column (migration `20261123120000_trip_currency`, default USD), and mobile shows the stored code instead of hardcoded USD. `recordedFareSource` now shares the provider's lookup; the benchmark report regenerates unchanged apart from timings. Unknown `FLIGHT_PROVIDER` values now fail at boot instead of falling back to mock. README has a "Real recorded fares" section.
     5. Manual QA pass on Android (Phase 10's QA half). ~half a day.
     6. Route map on Results (and maybe a walking map in Itinerary), Android only. ADR-0004 deferred this; the iOS Swift bridge cannot be tested on Windows. ~1 day.
-    7. Remove the legacy Expo app `apps/mobile`, so a reviewer doesn't find two mobile apps. ~1 h.
+    7. ~~Remove the legacy Expo app `apps/mobile`.~~ **Done 2026-11-23:** directory, eslint/prettier/gitignore entries, root `expo-*` pnpm overrides and README sections removed.
     8. Optional: Swagger docs; deploying the backend (only needed for a real-phone demo).
   - **User satisfaction (§2.4, > 4.2/5)** has no study behind it. A small SUS survey (5–10 people) would need to start immediately. Open decision.
   - **Cut, and listed as future work in the thesis:** trip edit/duplicate, iCal, share link, push notifications, store release, hour-level opening hours, the five blocked #25 unknowns, Places API (Phase 6).

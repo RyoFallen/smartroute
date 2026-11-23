@@ -2,7 +2,7 @@ package com.smartroute.traveler.data.api
 
 import kotlinx.serialization.Serializable
 
-/** Mirrors the backend `{ error: { code, message } }` envelope, like the legacy Expo ApiClientError. */
+/** Mirrors the backend `{ error: { code, message } }` envelope. */
 class ApiError(
     val code: String,
     message: String,

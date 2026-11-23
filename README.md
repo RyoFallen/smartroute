@@ -4,13 +4,13 @@ Mobile app that finds the cheapest order to visit multiple cities, with a route 
 
 ## Stack
 
-- **Mobile:** Kotlin + Compose Multiplatform (Android + iOS from one codebase) — replacing the legacy Expo app
+- **Mobile:** Kotlin + Compose Multiplatform (Android + iOS from one codebase)
 - **Backend:** Node 22 + Fastify + Prisma + Postgres 16
 - **Auth:** Clerk (added in Plan 2)
 - **Maps (mobile):** MapLibre via expect/actual native embedding
 - **Hosting (later):** Fly.io + Neon
 
-> **Tech stack pivot (July 2026):** the mobile client is being rewritten in Kotlin/Compose Multiplatform (see `docs/superpowers/specs/2026-07-06-smartroute-traveler-thesis-spec.md`). The Expo app in `apps/mobile` remains until the KMP app reaches feature parity, then gets retired.
+> **Tech stack pivot (July 2026):** the mobile client was rewritten from React Native/Expo to Kotlin/Compose Multiplatform (see `docs/superpowers/specs/2026-07-06-smartroute-traveler-thesis-spec.md`). The Expo app (`apps/mobile`) was removed in November 2026 once the KMP app had replaced it; it remains in git history.
 
 ## Repo layout
 
@@ -22,7 +22,6 @@ mobile/      # Kotlin Multiplatform app (Gradle build, NOT part of the pnpm work
     src/iosMain/      # iOS entry point (compiled in CI; needs macOS)
 apps/
   backend/   # Fastify API
-  mobile/    # Expo app (legacy, being replaced by mobile/)
 packages/
   shared/    # Zod schemas + types
 docs/
@@ -46,7 +45,6 @@ docker compose up -d                # start Postgres
 pnpm --filter @smartroute/backend db:migrate
 pnpm --filter @smartroute/backend db:seed     # load must-go attractions (8 cities)
 pnpm --filter @smartroute/backend dev   # backend on :3000
-pnpm --filter @smartroute/mobile start  # Expo dev server
 ```
 
 ## Scripts
@@ -104,18 +102,6 @@ cd mobile
 Gradle locates the Android SDK via `ANDROID_HOME` or `mobile/local.properties` (`sdk.dir=...`) — on a fresh clone, set one of them or `assembleDebug` fails with "SDK location not found".
 
 Windows note: iOS targets cannot compile locally — the `Mobile CI` workflow's macOS job (`ios-framework`) is the iOS compile check.
-
-## Mobile setup (legacy Expo app)
-
-```bash
-cd apps/mobile
-cp .env.example .env
-# Edit .env: set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY (from your Clerk dashboard)
-# EXPO_PUBLIC_API_URL defaults to http://localhost:3000 (use your LAN IP for physical devices)
-pnpm --filter @smartroute/mobile start
-```
-
-Sign in with email + 6-digit code (Clerk). The planner accepts 2–8 IATA airport codes from a built-in list of ~50 popular airports (real geocoding lands in Plan 4).
 
 ## Specs and plans
 

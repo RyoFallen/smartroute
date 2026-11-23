@@ -5,8 +5,6 @@ node_modules/
 # build output
 dist/
 build/
-.expo/
-.expo-shared/
 *.tsbuildinfo
 
 # env
