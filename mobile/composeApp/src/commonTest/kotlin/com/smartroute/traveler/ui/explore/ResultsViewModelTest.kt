@@ -1,5 +1,6 @@
 package com.smartroute.traveler.ui.explore
 
+import com.smartroute.traveler.data.CityCatalog
 import com.smartroute.traveler.data.api.ApiClient
 import com.smartroute.traveler.data.api.CreateTripRequestDto
 import com.smartroute.traveler.data.api.OptimizeRequestDto
@@ -14,10 +15,12 @@ import io.ktor.client.request.HttpResponseData
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -45,6 +48,11 @@ private const val EUR_RESPONSE_JSON = """
 ], "currency": "EUR"}
 """
 
+private const val CITIES_JSON = """
+[{"iata": "SOF", "name": "Sofia", "country": "Bulgaria", "lat": 42.7, "lon": 23.3},
+ {"iata": "BEG", "name": "Belgrade", "country": "Serbia", "lat": 44.8, "lon": 20.4}]
+"""
+
 private const val NO_ROUTE_JSON = """{"options": [], "reason": "No viable routes found."}"""
 
 private const val TRIP_CREATED_JSON = """
@@ -53,6 +61,8 @@ private const val TRIP_CREATED_JSON = """
   "flights": [], "totalPriceCents": 84700,
   "createdAt": "2026-07-12T00:00:00Z", "updatedAt": "2026-07-12T00:00:00Z"}
 """
+
+private val LENIENT_JSON = Json { ignoreUnknownKeys = true }
 
 private val REQUEST =
     OptimizeRequestDto(
@@ -85,11 +95,16 @@ class ResultsViewModelTest {
         status: HttpStatusCode = HttpStatusCode.OK,
     ): HttpResponseData = respond(body, status, headersOf(HttpHeaders.ContentType, "application/json"))
 
-    private fun viewModel(handler: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData): ResultsViewModel =
-        ResultsViewModel(
-            ApiClient(MockEngine { handler(it) }, "https://api.example.dev") { "jwt" },
-            REQUEST,
-        )
+    private fun viewModel(handler: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData): ResultsViewModel {
+        val api =
+            ApiClient(
+                MockEngine { request ->
+                    if (request.url.encodedPath == "/cities") json(CITIES_JSON) else handler(request)
+                },
+                "https://api.example.dev",
+            ) { "jwt" }
+        return ResultsViewModel(api, REQUEST, CityCatalog(api))
+    }
 
     @Test
     fun `load runs the optimize request and renders the returned options`() =
@@ -154,7 +169,7 @@ class ResultsViewModelTest {
             assertEquals("trip_1", state.savedTripId)
 
             val decoded =
-                Json { ignoreUnknownKeys = true }
+                LENIENT_JSON
                     .decodeFromString<CreateTripRequestDto>(createdBody!!)
             // #34: Sofia is where the traveler flies out from, so the trip ends
             // after Belgrade's stay alone — 2026-08-01 + 3 days, not + 2 + 3.
@@ -217,7 +232,113 @@ class ResultsViewModelTest {
             vm.save()
             vm.state.first { (it as? ResultsUiState.Loaded)?.savedTripId != null }
 
-            val decoded = Json { ignoreUnknownKeys = true }.decodeFromString<CreateTripRequestDto>(createdBody!!)
+            val decoded = LENIENT_JSON.decodeFromString<CreateTripRequestDto>(createdBody!!)
             assertEquals("EUR", decoded.currency)
+        }
+
+    @Test
+    fun `selecting a preset re-runs optimize with it and clears the selection`() =
+        runTest(dispatcher) {
+            val optimizeBodies = mutableListOf<String>()
+            val vm =
+                viewModel { request ->
+                    optimizeBodies += request.body.toByteArray().decodeToString()
+                    json(OPTIMIZE_RESPONSE_JSON)
+                }
+            vm.load()
+            vm.state.first { it is ResultsUiState.Loaded }
+            vm.selectOption(0)
+
+            vm.selectPreset(OptimizePreset.BUDGET)
+            advanceUntilIdle()
+
+            val state = vm.state.first { it is ResultsUiState.Loaded } as ResultsUiState.Loaded
+            assertEquals(2, optimizeBodies.size)
+            val decoded = LENIENT_JSON.decodeFromString<OptimizeRequestDto>(optimizeBodies[1])
+            assertEquals(OptimizePreset.BUDGET, decoded.preset)
+            assertNull(state.selectedIndex)
+            assertEquals(OptimizePreset.BUDGET, state.preset)
+        }
+
+    @Test
+    fun `selecting the current preset does nothing`() =
+        runTest(dispatcher) {
+            var optimizeCalls = 0
+            val vm =
+                viewModel {
+                    optimizeCalls++
+                    json(OPTIMIZE_RESPONSE_JSON)
+                }
+            vm.load()
+            vm.state.first { it is ResultsUiState.Loaded }
+
+            vm.selectPreset(OptimizePreset.BALANCED)
+            advanceUntilIdle()
+
+            assertEquals(1, optimizeCalls)
+        }
+
+    @Test
+    fun `a preset change during a save is ignored`() =
+        runTest(dispatcher) {
+            var optimizeCalls = 0
+            val gate = CompletableDeferred<Unit>()
+            val vm =
+                viewModel { request ->
+                    when (request.url.encodedPath) {
+                        "/optimize" -> {
+                            optimizeCalls++
+                            json(OPTIMIZE_RESPONSE_JSON)
+                        }
+                        else -> {
+                            gate.await()
+                            json(TRIP_CREATED_JSON, HttpStatusCode.Created)
+                        }
+                    }
+                }
+            vm.load()
+            vm.state.first { it is ResultsUiState.Loaded }
+            vm.selectOption(0)
+            vm.save()
+            vm.state.first { (it as? ResultsUiState.Loaded)?.saving == true }
+
+            vm.selectPreset(OptimizePreset.TIME)
+            advanceUntilIdle()
+            assertEquals(1, optimizeCalls)
+
+            gate.complete(Unit)
+            val state = vm.state.first { (it as? ResultsUiState.Loaded)?.savedTripId != null } as ResultsUiState.Loaded
+            assertEquals("trip_1", state.savedTripId)
+            assertEquals(OptimizePreset.BALANCED, state.preset)
+        }
+
+    @Test
+    fun `coordinates come from the catalog`() =
+        runTest(dispatcher) {
+            val vm = viewModel { json(OPTIMIZE_RESPONSE_JSON) }
+            vm.load()
+            val state = vm.state.first { it is ResultsUiState.Loaded } as ResultsUiState.Loaded
+            assertEquals(setOf("SOF", "BEG"), state.coordinates.keys)
+        }
+
+    @Test
+    fun `a catalog failure still loads routes with an empty map`() =
+        runTest(dispatcher) {
+            val api =
+                ApiClient(
+                    MockEngine { request ->
+                        if (request.url.encodedPath == "/cities") {
+                            json("""{"error":{}}""", HttpStatusCode.InternalServerError)
+                        } else {
+                            json(OPTIMIZE_RESPONSE_JSON)
+                        }
+                    },
+                    "https://api.example.dev",
+                ) { "jwt" }
+            val vm = ResultsViewModel(api, REQUEST, CityCatalog(api))
+            vm.load()
+            val state = vm.state.first { it is ResultsUiState.Loaded } as ResultsUiState.Loaded
+            assertEquals(2, state.options.size)
+            assertTrue(state.coordinates.isEmpty())
         }
 }

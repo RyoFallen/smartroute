@@ -131,7 +131,11 @@
     <string name="results_label_cheapest">Cheapest</string>
     <string name="results_label_fastest">Fastest</string>
     <string name="results_label_most_direct">Most direct</string>
-    <string name="results_save">Save selected trip</string>
+    <string name="results_save">Save this trip</string>
+    <plurals name="results_flights">
+        <item quantity="one">%1$d flight</item>
+        <item quantity="other">%1$d flights</item>
+    </plurals>
     <string name="results_saving">Saving…</string>
     <string name="results_save_error">Could not save this trip</string>
 </resources>

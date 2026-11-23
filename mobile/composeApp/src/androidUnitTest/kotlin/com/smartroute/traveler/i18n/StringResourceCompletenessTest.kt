@@ -14,6 +14,16 @@ class StringResourceCompletenessTest {
             .findAll(file.readText())
             .associate { it.groupValues[1] to it.groupValues[2] }
 
+    private val pluralsBlock = Regex("<plurals name=\"([^\"]+)\">(.*?)</plurals>", RegexOption.DOT_MATCHES_ALL)
+    private val quantityItem = Regex("<item quantity=\"([^\"]+)\">")
+
+    private fun pluralsWithQuantities(file: File): Map<String, Set<String>> =
+        pluralsBlock
+            .findAll(file.readText())
+            .associate { block ->
+                block.groupValues[1] to quantityItem.findAll(block.groupValues[2]).map { it.groupValues[1] }.toSet()
+            }
+
     private fun resourcesDir(): File {
         var dir = File(System.getProperty("user.dir")).absoluteFile
         repeat(6) {
@@ -36,6 +46,18 @@ class StringResourceCompletenessTest {
         assertEquals(en.keys, tr.keys, "EN and TR string keys differ")
         (en + tr).forEach { (key, value) ->
             assertTrue(value.isNotBlank(), "blank value for $key")
+        }
+    }
+
+    @Test
+    fun `every plural exists in both EN and TR and each EN plural has an other item`() {
+        val base = resourcesDir()
+        val en = pluralsWithQuantities(base.resolve("values/strings.xml"))
+        val tr = pluralsWithQuantities(base.resolve("values-tr/strings.xml"))
+
+        assertEquals(en.keys, tr.keys, "EN and TR plural keys differ")
+        en.forEach { (key, quantities) ->
+            assertTrue("other" in quantities, "EN plural $key has no 'other' item")
         }
     }
 }

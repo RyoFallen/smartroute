@@ -322,12 +322,13 @@ fun MainTabsScaffold(
                                 preset = OptimizePreset.valueOf(route.preset),
                                 startCity = route.startCity.ifEmpty { null },
                             )
-                        val resultsViewModel = viewModel { ResultsViewModel(AppGraph.apiClient, request) }
+                        val resultsViewModel = viewModel { ResultsViewModel(AppGraph.apiClient, request, AppGraph.cityCatalog) }
                         val resultsState by resultsViewModel.state.collectAsState()
                         LaunchedEffect(request) { resultsViewModel.load() }
                         ResultsScreen(
                             state = resultsState,
                             onSelectOption = resultsViewModel::selectOption,
+                            onPresetSelected = resultsViewModel::selectPreset,
                             onSave = resultsViewModel::save,
                             onRetryLoad = resultsViewModel::load,
                             onSaved = { tripId ->
