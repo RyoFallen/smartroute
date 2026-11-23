@@ -19,7 +19,10 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -29,6 +32,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -252,12 +256,13 @@ class ResultsViewModelTest {
             vm.selectPreset(OptimizePreset.BUDGET)
             advanceUntilIdle()
 
-            val state = vm.state.first { it is ResultsUiState.Loaded } as ResultsUiState.Loaded
+            val state = vm.state.first { it is ResultsUiState.Loaded && !it.reloading } as ResultsUiState.Loaded
             assertEquals(2, optimizeBodies.size)
             val decoded = LENIENT_JSON.decodeFromString<OptimizeRequestDto>(optimizeBodies[1])
             assertEquals(OptimizePreset.BUDGET, decoded.preset)
             assertNull(state.selectedIndex)
             assertEquals(OptimizePreset.BUDGET, state.preset)
+            assertFalse(state.reloading)
         }
 
     @Test
@@ -340,5 +345,36 @@ class ResultsViewModelTest {
             val state = vm.state.first { it is ResultsUiState.Loaded } as ResultsUiState.Loaded
             assertEquals(2, state.options.size)
             assertTrue(state.coordinates.isEmpty())
+        }
+
+    @Test
+    fun `a second preset during a re-run supersedes it without ever showing the error state`() =
+        runTest(dispatcher) {
+            val gate = CompletableDeferred<Unit>()
+            var optimizeCalls = 0
+            val vm =
+                viewModel {
+                    optimizeCalls++
+                    if (optimizeCalls == 2) gate.await()
+                    json(OPTIMIZE_RESPONSE_JSON)
+                }
+            vm.load()
+            vm.state.first { it is ResultsUiState.Loaded }
+
+            val seen = mutableListOf<ResultsUiState>()
+            val collector = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { vm.state.toList(seen) }
+
+            vm.selectPreset(OptimizePreset.BUDGET)
+            advanceUntilIdle()
+            vm.selectPreset(OptimizePreset.TIME)
+            advanceUntilIdle()
+            gate.complete(Unit)
+            advanceUntilIdle()
+
+            val state = vm.state.first { it is ResultsUiState.Loaded && !it.reloading } as ResultsUiState.Loaded
+            assertEquals(OptimizePreset.TIME, state.preset)
+            assertFalse(state.reloading)
+            assertTrue(seen.none { it is ResultsUiState.LoadFailed }, "error state flashed: $seen")
+            collector.cancel()
         }
 }

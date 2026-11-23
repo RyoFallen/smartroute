@@ -9,6 +9,7 @@ import com.smartroute.traveler.data.api.OptimizeRequestDto
 import com.smartroute.traveler.data.api.RouteOptionDto
 import com.smartroute.traveler.domain.OptimizePreset
 import com.smartroute.traveler.ui.map.MapPoint
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -74,6 +75,9 @@ class ResultsViewModel(
                             coordinates = cityCatalog.coordinates(),
                             currency = response.currency,
                         )
+                    } catch (e: CancellationException) {
+                        // A superseded run is cancelled on purpose; it must not report failure.
+                        throw e
                     } catch (_: Exception) {
                         ResultsUiState.LoadFailed
                     }
@@ -106,6 +110,9 @@ class ResultsViewModel(
                             selectedIndex = null,
                             saveFailed = false,
                         )
+                    } catch (e: CancellationException) {
+                        // A superseded run is cancelled on purpose; it must not report failure.
+                        throw e
                     } catch (_: Exception) {
                         ResultsUiState.LoadFailed
                     }
@@ -126,6 +133,9 @@ class ResultsViewModel(
                 try {
                     val trip = api.createTrip(tripRequestFor(option, loaded.currency))
                     loaded.copy(saving = false, savedTripId = trip.id)
+                } catch (e: CancellationException) {
+                    // A superseded run is cancelled on purpose; it must not report failure.
+                    throw e
                 } catch (_: Exception) {
                     loaded.copy(saving = false, saveFailed = true)
                 }
