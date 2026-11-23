@@ -45,3 +45,25 @@ agreed with the bug it was meant to catch).
   airports do not.
 - **New threats to validity** for the thesis: Google's calendar prices are cached estimates (measured
   by live spot checks each session), and transcription error (measured by a 5% audit).
+
+## Amendment (2026-11-23): one CaptureSession, not three
+
+CaptureSessions 2 (Sat 7 Nov) and 3 (Sat 14 Nov) were not run. They cannot be run late: the
+protocol requires every flight to be at least 2 weeks after its session, and the frozen scenarios'
+first flights leave on 28 Nov. A session captured now would price a different market (fares five
+days before departure). Comparing it with Session 1 would mix two booking lead times, and the
+difference would look like run-to-run variation. Redrawing the scenarios for later dates would
+leave Session 1 incomparable too.
+
+**Decision:** the benchmark reports **Session 1 (Sun 1 Nov 2026)** alone. The code is unchanged.
+Every across-session median is over one session, and the report says so.
+
+**Consequences for the thesis:**
+
+- The results are one market snapshot, not a median over three. How stable they are over time is
+  **not measured**. This is stated as a threat to validity, not hidden.
+- What each session was meant to give is still there for the one session: the audit gives the
+  transcription error rate, the spot-checks give calendar-vs-live drift, and Nomad results are
+  either valid or excluded with reasons.
+- The GA results that do not depend on prices (orders evaluated, optimality gap, wall-clock time)
+  are deterministic given the fares. More sessions would not have changed what they show.

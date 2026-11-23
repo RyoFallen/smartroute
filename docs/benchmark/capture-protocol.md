@@ -1,5 +1,8 @@
 # CaptureSession protocol
 
+> **2026-11-23:** only Session 1 (1 Nov) was run. Sessions 2 and 3 were dropped because they could not
+> be run late without breaking the 2-week lead-time rule (ADR-0006, amendment).
+
 How to run one **CaptureSession** of the competitor benchmark (#35, ADR-0006). All three sessions
 (**Sun 1 Nov, Sat 7 Nov, Sat 14 Nov 2026**) follow this page with no changes. Session 1 moved from
 Sat 31 Oct, which was not run, to Sun 1 Nov: still at least 2 and under 8 weeks before every
