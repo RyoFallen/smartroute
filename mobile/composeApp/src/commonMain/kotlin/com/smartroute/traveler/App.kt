@@ -24,6 +24,7 @@ import com.smartroute.traveler.data.storage.AppLanguage
 import com.smartroute.traveler.ui.auth.AuthUiState
 import com.smartroute.traveler.ui.auth.AuthViewModel
 import com.smartroute.traveler.ui.auth.SignInScreen
+import com.smartroute.traveler.ui.components.GlassBackground
 import com.smartroute.traveler.ui.i18n.LocalAppLocale
 import com.smartroute.traveler.ui.navigation.MainTabsScaffold
 import com.smartroute.traveler.ui.onboarding.OnboardingScreen
@@ -43,16 +44,18 @@ fun App() {
         // key() re-resolves every string resource when the language changes.
         key(language) {
             SmartRouteTheme {
-                if (AppConfig.CLERK_PUBLISHABLE_KEY.isBlank()) {
-                    MissingConfigScreen()
-                } else {
-                    AuthenticatedApp(
-                        language = language,
-                        onLanguageSelected = {
-                            languageStore.language = it
-                            language = it
-                        },
-                    )
+                GlassBackground {
+                    if (AppConfig.CLERK_PUBLISHABLE_KEY.isBlank()) {
+                        MissingConfigScreen()
+                    } else {
+                        AuthenticatedApp(
+                            language = language,
+                            onLanguageSelected = {
+                                languageStore.language = it
+                                language = it
+                            },
+                        )
+                    }
                 }
             }
         }

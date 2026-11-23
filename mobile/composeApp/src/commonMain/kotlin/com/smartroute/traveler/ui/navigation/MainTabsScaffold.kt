@@ -1,23 +1,50 @@
 package com.smartroute.traveler.ui.navigation
 
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.Explore
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Luggage
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -32,6 +59,7 @@ import com.smartroute.traveler.AppGraph
 import com.smartroute.traveler.data.api.OptimizeRequestDto
 import com.smartroute.traveler.data.storage.AppLanguage
 import com.smartroute.traveler.domain.OptimizePreset
+import com.smartroute.traveler.ui.components.MOTION_MS
 import com.smartroute.traveler.ui.explore.ResultsScreen
 import com.smartroute.traveler.ui.explore.ResultsViewModel
 import com.smartroute.traveler.ui.explore.TripConfigScreen
@@ -46,6 +74,8 @@ import com.smartroute.traveler.ui.profile.LanguageScreen
 import com.smartroute.traveler.ui.profile.PreferencesScreen
 import com.smartroute.traveler.ui.profile.PreferencesViewModel
 import com.smartroute.traveler.ui.profile.ProfileScreen
+import com.smartroute.traveler.ui.theme.SrColors
+import com.smartroute.traveler.ui.theme.SrShapes
 import com.smartroute.traveler.ui.trips.ItineraryScreen
 import com.smartroute.traveler.ui.trips.ItineraryViewModel
 import com.smartroute.traveler.ui.trips.TripDeleteUiState
@@ -53,6 +83,11 @@ import com.smartroute.traveler.ui.trips.TripDetailScreen
 import com.smartroute.traveler.ui.trips.TripDetailViewModel
 import com.smartroute.traveler.ui.trips.TripsListScreen
 import com.smartroute.traveler.ui.trips.TripsListViewModel
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -128,10 +163,10 @@ private class TabItem(
 
 private val tabs =
     listOf(
-        TabItem(HomeRoute, HomeRoute::class, Res.string.tab_home, Icons.Filled.Home),
-        TabItem(MyTripsRoute, MyTripsRoute::class, Res.string.tab_my_trips, Icons.Filled.Place),
-        TabItem(ExploreRoute, ExploreRoute::class, Res.string.tab_explore, Icons.Filled.Search),
-        TabItem(ProfileGraphRoute, ProfileGraphRoute::class, Res.string.tab_profile, Icons.Filled.Person),
+        TabItem(HomeRoute, HomeRoute::class, Res.string.tab_home, Icons.Rounded.Home),
+        TabItem(MyTripsRoute, MyTripsRoute::class, Res.string.tab_my_trips, Icons.Rounded.Luggage),
+        TabItem(ExploreRoute, ExploreRoute::class, Res.string.tab_explore, Icons.Rounded.Explore),
+        TabItem(ProfileGraphRoute, ProfileGraphRoute::class, Res.string.tab_profile, Icons.Rounded.Person),
     )
 
 @Composable
@@ -145,14 +180,19 @@ fun MainTabsScaffold(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
 
+    val hazeState = remember { HazeState() }
+
     Scaffold(
+        containerColor = Color.Transparent,
         bottomBar = {
-            NavigationBar {
+            GlassBottomBar(hazeState = hazeState) {
                 tabs.forEach { tab ->
                     val label = stringResource(tab.label)
-                    NavigationBarItem(
+                    GlassBarItem(
                         selected =
                             currentDestination?.hierarchy?.any { it.hasRoute(tab.routeClass) } == true,
+                        icon = tab.icon,
+                        label = label,
                         onClick = {
                             navController.navigate(tab.route) {
                                 popUpTo(navController.graph.findStartDestination().id) {
@@ -162,184 +202,266 @@ fun MainTabsScaffold(
                                 restoreState = true
                             }
                         },
-                        icon = { Icon(tab.icon, contentDescription = label) },
-                        label = { Text(label) },
+                        modifier = Modifier.weight(1f),
                     )
                 }
             }
         },
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = HomeRoute,
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
-        ) {
-            composable<HomeRoute> { HomeScreen() }
-            navigation<MyTripsRoute>(startDestination = MyTripsListRoute) {
-                composable<MyTripsListRoute> {
-                    val tripsViewModel = viewModel { TripsListViewModel(AppGraph.apiClient) }
-                    val tripsState by tripsViewModel.state.collectAsState()
-                    LaunchedEffect(Unit) { tripsViewModel.load() }
-                    TripsListScreen(
-                        state = tripsState,
-                        onTripClick = { tripId -> navController.navigate(TripDetailRoute(tripId)) },
-                        onRetryLoad = tripsViewModel::load,
-                    )
-                }
-                composable<TripDetailRoute> { backStackEntry ->
-                    val route = backStackEntry.toRoute<TripDetailRoute>()
-                    val detailViewModel =
-                        viewModel { TripDetailViewModel(AppGraph.apiClient, route.tripId) }
-                    val detailState by detailViewModel.state.collectAsState()
-                    val deleteState by detailViewModel.deleteState.collectAsState()
-                    LaunchedEffect(route.tripId) { detailViewModel.load() }
-                    // Back on the list, its LaunchedEffect re-runs and drops the deleted trip.
-                    LaunchedEffect(deleteState) {
-                        if (deleteState == TripDeleteUiState.Deleted) navController.popBackStack()
-                    }
-                    TripDetailScreen(
-                        state = detailState,
-                        onRetryLoad = detailViewModel::load,
-                        onPlanTripClick = { navController.navigate(ItineraryRoute(route.tripId)) },
-                        onBack = { navController.popBackStack() },
-                        deleteState = deleteState,
-                        onDeleteClick = detailViewModel::requestDelete,
-                        onConfirmDelete = detailViewModel::confirmDelete,
-                        onCancelDelete = detailViewModel::cancelDelete,
-                    )
-                }
-                composable<ItineraryRoute> { backStackEntry ->
-                    val route = backStackEntry.toRoute<ItineraryRoute>()
-                    val itineraryViewModel =
-                        viewModel { ItineraryViewModel(AppGraph.apiClient, route.tripId) }
-                    val itineraryState by itineraryViewModel.state.collectAsState()
-                    LaunchedEffect(route.tripId) { itineraryViewModel.load() }
-                    ItineraryScreen(
-                        state = itineraryState,
-                        onRetryLoad = itineraryViewModel::load,
-                        onBack = { navController.popBackStack() },
-                    )
-                }
-            }
-            navigation<ExploreRoute>(startDestination = TripConfigRoute) {
-                composable<TripConfigRoute> {
-                    val configViewModel = viewModel { TripConfigViewModel(AppGraph.apiClient) }
-                    val configState by configViewModel.state.collectAsState()
-                    LaunchedEffect(Unit) { configViewModel.load() }
-                    TripConfigScreen(
-                        state = configState,
-                        onToggleCity = configViewModel::toggleCity,
-                        onSetDays = configViewModel::setDays,
-                        onSetOrigin = configViewModel::setOrigin,
-                        onSetPreset = configViewModel::setPreset,
-                        onSetDirectOnly = configViewModel::setDirectOnly,
-                        onSetDepartDate = configViewModel::setDepartDate,
-                        onSubmit = {
-                            configViewModel.buildRequest()?.let { request ->
-                                navController.navigate(
-                                    ResultsRoute(
-                                        cities = request.cities,
-                                        perCityDays = request.perCityDays,
-                                        departDate = request.departDate,
-                                        directOnly = request.directOnly,
-                                        preset = request.preset.name,
-                                        startCity = request.startCity.orEmpty(),
-                                    ),
-                                )
-                            }
-                        },
-                        onRetryLoad = configViewModel::load,
-                    )
-                }
-                composable<ResultsRoute> { backStackEntry ->
-                    val route = backStackEntry.toRoute<ResultsRoute>()
-                    val request =
-                        OptimizeRequestDto(
-                            cities = route.cities,
-                            departDate = route.departDate,
-                            perCityDays = route.perCityDays,
-                            travelers = OptimizeRequestDto.DEFAULT_TRAVELERS,
-                            cabinClass = OptimizeRequestDto.DEFAULT_CABIN_CLASS,
-                            directOnly = route.directOnly,
-                            preset = OptimizePreset.valueOf(route.preset),
-                            startCity = route.startCity.ifEmpty { null },
+        // Content runs under the frosted bar so the blur has something to blur; screens
+        // that need to clear the bar read LocalBottomBarInset.
+        CompositionLocalProvider(LocalBottomBarInset provides innerPadding.calculateBottomPadding()) {
+            NavHost(
+                navController = navController,
+                startDestination = HomeRoute,
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(top = innerPadding.calculateTopPadding())
+                        .hazeSource(hazeState),
+                enterTransition = {
+                    slideInHorizontally(tween(MOTION_MS, easing = EaseOut)) { it / 8 } +
+                        fadeIn(tween(MOTION_MS))
+                },
+                exitTransition = { fadeOut(tween(MOTION_MS)) },
+                popEnterTransition = {
+                    slideInHorizontally(tween(MOTION_MS, easing = EaseOut)) { -it / 8 } +
+                        fadeIn(tween(MOTION_MS))
+                },
+                popExitTransition = { fadeOut(tween(MOTION_MS)) },
+            ) {
+                composable<HomeRoute> { HomeScreen() }
+                navigation<MyTripsRoute>(startDestination = MyTripsListRoute) {
+                    composable<MyTripsListRoute> {
+                        val tripsViewModel = viewModel { TripsListViewModel(AppGraph.apiClient) }
+                        val tripsState by tripsViewModel.state.collectAsState()
+                        LaunchedEffect(Unit) { tripsViewModel.load() }
+                        TripsListScreen(
+                            state = tripsState,
+                            onTripClick = { tripId -> navController.navigate(TripDetailRoute(tripId)) },
+                            onRetryLoad = tripsViewModel::load,
                         )
-                    val resultsViewModel = viewModel { ResultsViewModel(AppGraph.apiClient, request) }
-                    val resultsState by resultsViewModel.state.collectAsState()
-                    LaunchedEffect(request) { resultsViewModel.load() }
-                    ResultsScreen(
-                        state = resultsState,
-                        onSelectOption = resultsViewModel::selectOption,
-                        onSave = resultsViewModel::save,
-                        onRetryLoad = resultsViewModel::load,
-                        onSaved = { tripId ->
-                            // Pop the whole Explore flow (config + results) so back-navigation
-                            // from the new trip's detail doesn't return to a stale, already-saved
-                            // Results screen — which would also re-fire this same save callback.
-                            navController.navigate(TripDetailRoute(tripId)) {
-                                popUpTo<ExploreRoute> { inclusive = true }
-                            }
-                        },
-                        onBack = { navController.popBackStack() },
-                    )
-                }
-            }
-            navigation<ProfileGraphRoute>(startDestination = ProfileRoute) {
-                composable<ProfileRoute> {
-                    val deleteViewModel =
-                        viewModel { DeleteAccountViewModel(AppGraph.apiClient, AppGraph.tokenStore) }
-                    val deleteState by deleteViewModel.state.collectAsState()
-                    ProfileScreen(
-                        email = email,
-                        onInterestsClick = { navController.navigate(InterestsRoute) },
-                        onPreferencesClick = { navController.navigate(PreferencesRoute) },
-                        onLanguageClick = { navController.navigate(LanguageRoute) },
-                        onSignOut = onSignOut,
-                        onDeleteAccountClick = deleteViewModel::requestDelete,
-                    )
-                    DeleteAccountDialog(
-                        state = deleteState,
-                        onConfirm = deleteViewModel::confirm,
-                        onCancel = deleteViewModel::cancel,
-                    )
-                    if (deleteState is DeleteAccountUiState.Deleted) {
-                        // Tokens are already cleared; this flips auth state to the sign-in screen.
-                        LaunchedEffect(Unit) { onSignOut() }
+                    }
+                    composable<TripDetailRoute> { backStackEntry ->
+                        val route = backStackEntry.toRoute<TripDetailRoute>()
+                        val detailViewModel =
+                            viewModel { TripDetailViewModel(AppGraph.apiClient, route.tripId) }
+                        val detailState by detailViewModel.state.collectAsState()
+                        val deleteState by detailViewModel.deleteState.collectAsState()
+                        LaunchedEffect(route.tripId) { detailViewModel.load() }
+                        // Back on the list, its LaunchedEffect re-runs and drops the deleted trip.
+                        LaunchedEffect(deleteState) {
+                            if (deleteState == TripDeleteUiState.Deleted) navController.popBackStack()
+                        }
+                        TripDetailScreen(
+                            state = detailState,
+                            onRetryLoad = detailViewModel::load,
+                            onPlanTripClick = { navController.navigate(ItineraryRoute(route.tripId)) },
+                            onBack = { navController.popBackStack() },
+                            deleteState = deleteState,
+                            onDeleteClick = detailViewModel::requestDelete,
+                            onConfirmDelete = detailViewModel::confirmDelete,
+                            onCancelDelete = detailViewModel::cancelDelete,
+                        )
+                    }
+                    composable<ItineraryRoute> { backStackEntry ->
+                        val route = backStackEntry.toRoute<ItineraryRoute>()
+                        val itineraryViewModel =
+                            viewModel { ItineraryViewModel(AppGraph.apiClient, route.tripId) }
+                        val itineraryState by itineraryViewModel.state.collectAsState()
+                        LaunchedEffect(route.tripId) { itineraryViewModel.load() }
+                        ItineraryScreen(
+                            state = itineraryState,
+                            onRetryLoad = itineraryViewModel::load,
+                            onBack = { navController.popBackStack() },
+                        )
                     }
                 }
-                composable<InterestsRoute> {
-                    val viewModel = viewModel { InterestsViewModel(AppGraph.apiClient) }
-                    val interestsState by viewModel.state.collectAsState()
-                    LaunchedEffect(Unit) { viewModel.load() }
-                    InterestsScreen(
-                        state = interestsState,
-                        onRate = viewModel::setRating,
-                        onSave = viewModel::save,
-                        onRetryLoad = viewModel::load,
-                        onBack = { navController.popBackStack() },
-                    )
+                navigation<ExploreRoute>(startDestination = TripConfigRoute) {
+                    composable<TripConfigRoute> {
+                        val configViewModel = viewModel { TripConfigViewModel(AppGraph.apiClient) }
+                        val configState by configViewModel.state.collectAsState()
+                        LaunchedEffect(Unit) { configViewModel.load() }
+                        TripConfigScreen(
+                            state = configState,
+                            onToggleCity = configViewModel::toggleCity,
+                            onSetDays = configViewModel::setDays,
+                            onSetOrigin = configViewModel::setOrigin,
+                            onSetPreset = configViewModel::setPreset,
+                            onSetDirectOnly = configViewModel::setDirectOnly,
+                            onSetDepartDate = configViewModel::setDepartDate,
+                            onSubmit = {
+                                configViewModel.buildRequest()?.let { request ->
+                                    navController.navigate(
+                                        ResultsRoute(
+                                            cities = request.cities,
+                                            perCityDays = request.perCityDays,
+                                            departDate = request.departDate,
+                                            directOnly = request.directOnly,
+                                            preset = request.preset.name,
+                                            startCity = request.startCity.orEmpty(),
+                                        ),
+                                    )
+                                }
+                            },
+                            onRetryLoad = configViewModel::load,
+                        )
+                    }
+                    composable<ResultsRoute> { backStackEntry ->
+                        val route = backStackEntry.toRoute<ResultsRoute>()
+                        val request =
+                            OptimizeRequestDto(
+                                cities = route.cities,
+                                departDate = route.departDate,
+                                perCityDays = route.perCityDays,
+                                travelers = OptimizeRequestDto.DEFAULT_TRAVELERS,
+                                cabinClass = OptimizeRequestDto.DEFAULT_CABIN_CLASS,
+                                directOnly = route.directOnly,
+                                preset = OptimizePreset.valueOf(route.preset),
+                                startCity = route.startCity.ifEmpty { null },
+                            )
+                        val resultsViewModel = viewModel { ResultsViewModel(AppGraph.apiClient, request) }
+                        val resultsState by resultsViewModel.state.collectAsState()
+                        LaunchedEffect(request) { resultsViewModel.load() }
+                        ResultsScreen(
+                            state = resultsState,
+                            onSelectOption = resultsViewModel::selectOption,
+                            onSave = resultsViewModel::save,
+                            onRetryLoad = resultsViewModel::load,
+                            onSaved = { tripId ->
+                                // Pop the whole Explore flow (config + results) so back-navigation
+                                // from the new trip's detail doesn't return to a stale, already-saved
+                                // Results screen — which would also re-fire this same save callback.
+                                navController.navigate(TripDetailRoute(tripId)) {
+                                    popUpTo<ExploreRoute> { inclusive = true }
+                                }
+                            },
+                            onBack = { navController.popBackStack() },
+                        )
+                    }
                 }
-                composable<PreferencesRoute> {
-                    val viewModel = viewModel { PreferencesViewModel(AppGraph.apiClient) }
-                    val prefState by viewModel.state.collectAsState()
-                    LaunchedEffect(Unit) { viewModel.load() }
-                    PreferencesScreen(
-                        state = prefState,
-                        onIntensityChange = viewModel::setIntensity,
-                        onWakeUpTimeChange = viewModel::setWakeUpTime,
-                        onSave = viewModel::save,
-                        onRetryLoad = viewModel::load,
-                        onBack = { navController.popBackStack() },
-                    )
-                }
-                composable<LanguageRoute> {
-                    LanguageScreen(
-                        selected = language,
-                        onSelect = onLanguageSelected,
-                        onBack = { navController.popBackStack() },
-                    )
+                navigation<ProfileGraphRoute>(startDestination = ProfileRoute) {
+                    composable<ProfileRoute> {
+                        val deleteViewModel =
+                            viewModel { DeleteAccountViewModel(AppGraph.apiClient, AppGraph.tokenStore) }
+                        val deleteState by deleteViewModel.state.collectAsState()
+                        ProfileScreen(
+                            email = email,
+                            onInterestsClick = { navController.navigate(InterestsRoute) },
+                            onPreferencesClick = { navController.navigate(PreferencesRoute) },
+                            onLanguageClick = { navController.navigate(LanguageRoute) },
+                            onSignOut = onSignOut,
+                            onDeleteAccountClick = deleteViewModel::requestDelete,
+                        )
+                        DeleteAccountDialog(
+                            state = deleteState,
+                            onConfirm = deleteViewModel::confirm,
+                            onCancel = deleteViewModel::cancel,
+                        )
+                        if (deleteState is DeleteAccountUiState.Deleted) {
+                            // Tokens are already cleared; this flips auth state to the sign-in screen.
+                            LaunchedEffect(Unit) { onSignOut() }
+                        }
+                    }
+                    composable<InterestsRoute> {
+                        val viewModel = viewModel { InterestsViewModel(AppGraph.apiClient) }
+                        val interestsState by viewModel.state.collectAsState()
+                        LaunchedEffect(Unit) { viewModel.load() }
+                        InterestsScreen(
+                            state = interestsState,
+                            onRate = viewModel::setRating,
+                            onSave = viewModel::save,
+                            onRetryLoad = viewModel::load,
+                            onBack = { navController.popBackStack() },
+                        )
+                    }
+                    composable<PreferencesRoute> {
+                        val viewModel = viewModel { PreferencesViewModel(AppGraph.apiClient) }
+                        val prefState by viewModel.state.collectAsState()
+                        LaunchedEffect(Unit) { viewModel.load() }
+                        PreferencesScreen(
+                            state = prefState,
+                            onIntensityChange = viewModel::setIntensity,
+                            onWakeUpTimeChange = viewModel::setWakeUpTime,
+                            onSave = viewModel::save,
+                            onRetryLoad = viewModel::load,
+                            onBack = { navController.popBackStack() },
+                        )
+                    }
+                    composable<LanguageRoute> {
+                        LanguageScreen(
+                            selected = language,
+                            onSelect = onLanguageSelected,
+                            onBack = { navController.popBackStack() },
+                        )
+                    }
                 }
             }
         }
+    }
+}
+
+/** Height of the frosted bottom bar; screens add it as bottom content padding. */
+val LocalBottomBarInset = compositionLocalOf { 0.dp }
+
+private val BarShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+
+@Composable
+private fun GlassBottomBar(
+    hazeState: HazeState,
+    content: @Composable RowScope.() -> Unit,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .shadow(16.dp, BarShape, ambientColor = SrColors.GlassShadow, spotColor = SrColors.GlassShadow)
+                .clip(BarShape)
+                .hazeEffect(
+                    hazeState,
+                    HazeStyle(
+                        backgroundColor = SrColors.Background,
+                        tints = listOf(HazeTint(Color.White.copy(alpha = 0.6f))),
+                        blurRadius = 20.dp,
+                    ),
+                ).border(1.dp, Color.White.copy(alpha = 0.9f), BarShape)
+                .navigationBarsPadding()
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically,
+        content = content,
+    )
+}
+
+@Composable
+private fun GlassBarItem(
+    selected: Boolean,
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val tint = if (selected) SrColors.Primary else SrColors.MutedForeground
+    Column(
+        modifier =
+            modifier
+                .clip(SrShapes.SmallCard)
+                .clickable(role = Role.Tab, onClick = onClick)
+                .padding(vertical = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        Box(
+            modifier =
+                Modifier
+                    .width(56.dp)
+                    .height(32.dp)
+                    .clip(SrShapes.Pill)
+                    .background(if (selected) SrColors.Primary.copy(alpha = 0.12f) else Color.Transparent),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(24.dp))
+        }
+        Text(label, style = MaterialTheme.typography.labelMedium, color = tint)
     }
 }
