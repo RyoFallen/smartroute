@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -87,7 +87,7 @@ private fun LoadedContent(
         item {
             SubScreenHeader(title = trip.name, onBack = onBack) {
                 IconButton(onClick = onDeleteClick) {
-                    Icon(Icons.Filled.Delete, contentDescription = stringResource(Res.string.delete_trip))
+                    Icon(Icons.Rounded.Delete, contentDescription = stringResource(Res.string.delete_trip))
                 }
             }
             Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {

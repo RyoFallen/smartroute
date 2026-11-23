@@ -2,6 +2,7 @@ package com.smartroute.traveler
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.MaterialTheme
@@ -25,6 +26,7 @@ import com.smartroute.traveler.ui.auth.AuthUiState
 import com.smartroute.traveler.ui.auth.AuthViewModel
 import com.smartroute.traveler.ui.auth.SignInScreen
 import com.smartroute.traveler.ui.components.GlassBackground
+import com.smartroute.traveler.ui.components.GlassCard
 import com.smartroute.traveler.ui.i18n.LocalAppLocale
 import com.smartroute.traveler.ui.navigation.MainTabsScaffold
 import com.smartroute.traveler.ui.onboarding.OnboardingScreen
@@ -123,9 +125,12 @@ private fun MissingConfigScreen() {
         modifier = Modifier.fillMaxSize().safeDrawingPadding().padding(24.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = stringResource(Res.string.missing_config),
-            style = MaterialTheme.typography.bodyLarge,
-        )
+        GlassCard(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = stringResource(Res.string.missing_config),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(24.dp),
+            )
+        }
     }
 }
