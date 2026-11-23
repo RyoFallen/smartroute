@@ -5,7 +5,7 @@ Status: implemented, 2026-11-23.
 ## Intent
 
 The KMP app works, but it looks plain. It defines no theme, so every screen runs on Material 3's
-default purple. Some screens are still placeholders: the Home tab is the Phase 1 map spike, showing
+default purple. Some screens are still placeholders: the Home tab was the Phase 1 map spike, showing
 Istanbul with nothing on it. The thesis is defended with this app on screen, so how it looks is
 part of how the work is judged.
 
