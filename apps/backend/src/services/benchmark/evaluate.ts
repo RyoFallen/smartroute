@@ -21,6 +21,7 @@ import {
   type CompetitorResult,
   type SessionFile,
 } from './session.js';
+import { spotCheckRows, summarizeSpotChecks, type SpotCheckSummary } from './spot-checks.js';
 import { summarize, type BenchmarkSummary } from './summary.js';
 import { median } from './stats.js';
 
@@ -118,6 +119,8 @@ export interface SessionResult {
   scenarios: ScenarioResult[];
   /** Win rate, savings and order agreement against Nomad, over valid results only. */
   nomad: NomadSummary;
+  /** Calendar-vs-live drift of this session's spot-checks. */
+  spotChecks: SpotCheckSummary;
 }
 
 export interface BenchmarkReport {
@@ -165,6 +168,7 @@ export async function evaluateBenchmark(
       date: session.date,
       scenarios: results,
       nomad: nomadSummary(results.map((r) => r.competitor)),
+      spotChecks: summarizeSpotChecks(spotCheckRows(session)),
     });
   }
 

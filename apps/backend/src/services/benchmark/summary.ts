@@ -1,5 +1,6 @@
 import type { SessionResult, ScenarioResult } from './evaluate.js';
 import type { BenchmarkScenario } from './scenarios.js';
+import { summarizeSpotChecks, type SpotCheckSummary } from './spot-checks.js';
 import { median } from './stats.js';
 
 /**
@@ -65,6 +66,8 @@ export interface BenchmarkSummary {
   /** One group per scenario size, ascending. */
   bySize: GroupSummary[];
   overall: GroupSummary;
+  /** Every session's spot-checks pooled: the headline calendar-vs-live drift. */
+  spotChecks: SpotCheckSummary;
 }
 
 export function summarize(
@@ -88,6 +91,7 @@ export function summarize(
       ),
     ),
     overall: summarizeGroup(null, perScenario),
+    spotChecks: summarizeSpotChecks(sessions.flatMap((s) => s.spotChecks.rows)),
   };
 }
 

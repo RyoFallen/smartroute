@@ -555,3 +555,77 @@ describe('evaluateBenchmark across CaptureSessions', () => {
     expect(summary.overall.maxGaMs).toBeLessThan(10_000);
   });
 });
+
+describe('evaluateBenchmark spot-checks', () => {
+  const spot = (leg: string, livePriceCents: number | null, item: string) => {
+    const [pair, day] = leg.split(' ') as [string, string];
+    const [origin, destination] = pair.split('-') as [string, string];
+    return {
+      item,
+      origin,
+      destination,
+      date: `2026-11-${day}`,
+      livePriceCents,
+      screenshotAt: '2026-10-13T12:10:00+02:00',
+    };
+  };
+  const withSpots = (file: SessionFile, spots: object[]) =>
+    SessionFile.parse({ ...file, spotChecks: spots });
+
+  // Grid fares from handFares: IST-BER 20 is €100, IST-FCO 20 is €10.
+  //   L01  IST-BER 20  live €90   drift -0.1
+  //   L02  IST-FCO 20  live €15   drift +0.5
+  //   L03  IST-CDG 20  no live flight found: not compared
+  const spots = [
+    spot('IST-BER 20', 9_000, 'L01'),
+    spot('IST-FCO 20', 1_500, 'L02'),
+    spot('IST-CDG 20', null, 'L03'),
+  ];
+
+  it("measures each live price's drift from the grid's price for the same fare", async () => {
+    const report = await evaluateBenchmark([SCENARIO], [withSpots(session(handFares()), spots)], {
+      seeds: [1],
+    });
+    const { spotChecks } = report.sessions[0]!;
+    expect(spotChecks.rows.map((r) => [r.item, r.gridCents, r.liveCents])).toEqual([
+      ['L01', 10_000, 9_000],
+      ['L02', 1_000, 1_500],
+      ['L03', 10_000, null],
+    ]);
+    expect(spotChecks.rows[0]!.drift).toBeCloseTo(-0.1, 10);
+    expect(spotChecks.rows[1]!.drift).toBeCloseTo(0.5, 10);
+    expect(spotChecks.rows[2]!.drift).toBeNull();
+    expect(spotChecks.checked).toBe(3);
+    expect(spotChecks.compared).toBe(2);
+    expect(spotChecks.liveAtOrBelowGrid).toBe(1);
+    expect(spotChecks.medianDrift).toBeCloseTo(0.2, 10);
+  });
+
+  it('pools the spot-checks of every session for the headline drift', async () => {
+    const report = await evaluateBenchmark(
+      [SCENARIO],
+      [
+        withSpots(session(handFares(), '2026-10-31'), spots.slice(0, 1)),
+        withSpots(session(handFares(), '2026-11-07'), spots.slice(1)),
+      ],
+      { seeds: [1] },
+    );
+    expect(report.summary.spotChecks).toMatchObject({
+      checked: 3,
+      compared: 2,
+      liveAtOrBelowGrid: 1,
+    });
+    expect(report.summary.spotChecks.medianDrift).toBeCloseTo(0.2, 10);
+  });
+
+  it('reports no drift for a session without spot-checks', async () => {
+    const report = await evaluateBenchmark([SCENARIO], [session(handFares())], { seeds: [1] });
+    expect(report.sessions[0]!.spotChecks).toEqual({
+      rows: [],
+      checked: 0,
+      compared: 0,
+      liveAtOrBelowGrid: 0,
+      medianDrift: null,
+    });
+  });
+});

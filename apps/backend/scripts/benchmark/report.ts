@@ -22,6 +22,7 @@ import {
   type BenchmarkReport,
   type GroupSummary,
   type ScenarioResult,
+  type SpotCheckSummary,
 } from '../../src/services/benchmark/index.js';
 import { BENCHMARK_DOCS, loadFrozenScenarios } from './frozen-scenarios.js';
 
@@ -84,6 +85,17 @@ function optimumOrder(optimum: ScenarioResult['optimum']): string {
   return first!.join(' → ') + (tied.length > 0 ? ` (+${tied.length} tied)` : '');
 }
 
+/** A spot-check summary as one sentence, with its sample size. */
+function driftLine(d: SpotCheckSummary): string {
+  if (d.compared === 0) return `No spot-check compared (${d.checked} taken).`;
+  return (
+    `Median drift **${savingPct(d.medianDrift)}** (live minus grid, as a share of grid) over ` +
+    `**${d.compared}** spot-checks; the live price was at or below the grid's in ` +
+    `${d.liveAtOrBelowGrid} of ${d.compared}.` +
+    (d.checked > d.compared ? ` ${d.checked - d.compared} found no price to compare.` : '')
+  );
+}
+
 function render(r: BenchmarkReport): string {
   const out: string[] = [];
   out.push('# Competitor benchmark report');
@@ -128,7 +140,7 @@ function render(r: BenchmarkReport): string {
   );
   out.push('');
 
-  out.push(`## Across all ${n} sessions`);
+  out.push(n === 1 ? '## Summary (one session)' : `## Across all ${n} sessions`);
   out.push('');
   out.push(
     'Each scenario\'s figure is the median across sessions. Where a session has no value (a "no fare"',
@@ -143,6 +155,16 @@ function render(r: BenchmarkReport): string {
     `scenarios (${pct(sm.overall.nomad.winRate)}). The slowest scenario's median GA time is`,
     `${secs(sm.overall.maxGaMs)}.`,
   );
+  out.push('');
+  out.push('### Calendar vs live drift');
+  out.push('');
+  out.push(
+    "RecordedFares are the date grid's cached prices. Spot-checks searched a sample of checklist",
+    'fares live in the same sitting (capture-protocol § 6). A negative drift means the grid',
+    'showed a higher price than the live search.',
+  );
+  out.push('');
+  out.push(driftLine(sm.spotChecks));
   out.push('');
   out.push('### By size');
   out.push('');
@@ -206,6 +228,21 @@ function render(r: BenchmarkReport): string {
       );
     }
     out.push('');
+
+    out.push(`### Spot-checks, ${session.date}`);
+    out.push('');
+    out.push(driftLine(session.spotChecks));
+    out.push('');
+    if (session.spotChecks.rows.length > 0) {
+      out.push('| Item | Fare | Grid | Live | Drift |');
+      out.push('| ---- | ---- | ---: | ---: | ----: |');
+      for (const r of session.spotChecks.rows) {
+        out.push(
+          `| ${r.item ?? '—'} | ${r.origin} → ${r.destination} ${r.date} | ${eur(r.gridCents)} | ${eur(r.liveCents)} | ${savingPct(r.drift)} |`,
+        );
+      }
+      out.push('');
+    }
 
     const n = session.nomad;
     out.push(`### Versus Kiwi.com Nomad, ${session.date}`);

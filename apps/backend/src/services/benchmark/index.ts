@@ -15,6 +15,7 @@ export {
   type SessionResult,
 } from './evaluate.js';
 export { BENCHMARK_COORDINATES } from './naive.js';
+export { type SpotCheckRow, type SpotCheckSummary } from './spot-checks.js';
 export {
   type AcrossSessions,
   type BenchmarkSummary,
