@@ -114,4 +114,38 @@ describe('POST /optimize', () => {
     expect(res.statusCode).toBe(400);
     expect(res.json().error.code).toBe('INVALID_INPUT');
   });
+
+  it('labels mock prices USD', async () => {
+    const app = await buildServer({ withDb: true });
+    const res = await app.inject({
+      method: 'POST',
+      url: '/optimize',
+      headers: { authorization: 'Bearer good', 'content-type': 'application/json' },
+      payload: legacyPayload,
+    });
+    expect(res.json().currency).toBe('USD');
+  });
+
+  it('serves Session 1 fares in EUR when FLIGHT_PROVIDER=recorded', async () => {
+    process.env.FLIGHT_PROVIDER = 'recorded';
+    const app = await buildServer({ withDb: true });
+    const res = await app.inject({
+      method: 'POST',
+      url: '/optimize',
+      headers: { authorization: 'Bearer good', 'content-type': 'application/json' },
+      payload: {
+        cities: ['BER', 'FCO', 'CDG'],
+        startCity: 'BER',
+        perCityDays: [0, 2, 2],
+        departDate: '2026-12-01',
+        travelers: 1,
+        cabinClass: 'ECONOMY',
+      },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body.currency).toBe('EUR');
+    expect(body.options.length).toBeGreaterThan(0);
+    expect(body.options[0].flights[0].carrier).toBeNull();
+  });
 });

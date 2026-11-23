@@ -8,7 +8,10 @@ const Env = z
     LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
     CLERK_SECRET_KEY: z.string().min(1).optional(),
     CLERK_PUBLISHABLE_KEY: z.string().min(1).optional(),
-    FLIGHT_PROVIDER: z.enum(['mock', 'duffel']).default('mock'),
+    FLIGHT_PROVIDER: z.enum(['mock', 'duffel', 'recorded']).default('mock'),
+    // Only read when FLIGHT_PROVIDER=recorded; relative paths resolve against the
+    // repo root. Defaults to the committed Session 1 (see services/flights/recorded.ts).
+    RECORDED_FARES_SESSION: z.string().min(1).optional(),
     DUFFEL_API_KEY: z.string().min(1).optional(),
     DUFFEL_BASE_URL: z.string().url().default('https://api.duffel.com'),
     WALKING_PROVIDER: z.enum(['mock', 'osrm']).default('mock'),

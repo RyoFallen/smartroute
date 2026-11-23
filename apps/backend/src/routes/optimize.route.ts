@@ -10,6 +10,6 @@ export async function optimizeRoute(app: FastifyInstance): Promise<void> {
     const cache = new PriceCache(app.prisma);
     const flights = new FlightService(cache, app.flightProvider);
     const optimizer = new OptimizerService(flights);
-    return await optimizer.optimize(parsed);
+    return { ...(await optimizer.optimize(parsed)), currency: app.flightProvider.currency };
   });
 }

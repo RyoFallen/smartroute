@@ -48,6 +48,7 @@ const tripInput = {
   cities: ['IST', 'BER', 'JFK'],
   flights: [leg('IST', 'BER'), leg('BER', 'JFK')],
   totalPriceCents: 20_000,
+  currency: 'USD',
 };
 
 describe('visitOrder', () => {

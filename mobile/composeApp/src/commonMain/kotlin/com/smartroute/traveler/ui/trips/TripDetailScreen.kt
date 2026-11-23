@@ -108,12 +108,12 @@ private fun LoadedContent(
             }
         }
         items(trip.flights) { leg ->
-            FlightLegRow(leg)
+            FlightLegRow(leg, trip.currency)
             HorizontalDivider()
         }
         item {
             Text(
-                text = formatPrice(trip.totalPriceCents, "USD"),
+                text = formatPrice(trip.totalPriceCents, trip.currency),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(16.dp),
@@ -123,7 +123,10 @@ private fun LoadedContent(
 }
 
 @Composable
-private fun FlightLegRow(leg: FlightLegDto) {
+private fun FlightLegRow(
+    leg: FlightLegDto,
+    currency: String,
+) {
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
         Text(
             text = "${leg.origin} → ${leg.destination} · ${leg.carrier ?: "?"}",
@@ -135,7 +138,7 @@ private fun FlightLegRow(leg: FlightLegDto) {
         )
         Text(
             text =
-                "${formatPrice(leg.priceCents, "USD")} · ${leg.durationMin / 60}h${leg.durationMin % 60}m · " +
+                "${formatPrice(leg.priceCents, currency)} · ${leg.durationMin / 60}h${leg.durationMin % 60}m · " +
                     "${leg.stops} ${stringResource(Res.string.trip_detail_stops)}",
             style = MaterialTheme.typography.bodyMedium,
         )

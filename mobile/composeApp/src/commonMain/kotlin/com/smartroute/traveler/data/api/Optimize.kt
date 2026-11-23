@@ -48,4 +48,6 @@ data class RouteOptionDto(
 data class OptimizeResponseDto(
     val options: List<RouteOptionDto>,
     val reason: String? = null,
+    /** ISO 4217 code of every price in the options; absent from a backend older than currencies, which only priced in USD. */
+    val currency: String = "USD",
 )

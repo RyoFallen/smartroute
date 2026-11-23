@@ -33,6 +33,7 @@ const sample = {
     },
   ],
   totalPriceCents: 70_000,
+  currency: 'USD',
 };
 
 describe('TripService', () => {

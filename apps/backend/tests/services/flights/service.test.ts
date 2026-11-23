@@ -29,6 +29,7 @@ const r = (q: PriceQuery, p: number): PriceResult => ({
 });
 
 class FakeProvider implements FlightProvider {
+  readonly currency = 'USD';
   constructor(private readonly results: PriceResult[]) {}
   getPrices = vi.fn(async (qs: PriceQuery[]) =>
     qs.map((q) => this.results.find((x) => keyOf(x) === keyOf(q))!),
@@ -66,6 +67,7 @@ describe('FlightService', () => {
     await cache.upsert([r(Q1, 50_000)]);
     await new Promise((r) => setTimeout(r, 30));
     const provider: FlightProvider = {
+      currency: 'USD',
       getPrices: vi.fn(async () => {
         throw new Error('vendor down');
       }),
@@ -74,5 +76,25 @@ describe('FlightService', () => {
     const out = await svc.getPrices([Q1]);
     expect(out.prices.size).toBe(1);
     expect(out.staleCache).toBe(true);
+  });
+
+  it('bypasses the price cache entirely for a non-cacheable provider', async () => {
+    const cache = new PriceCache(prisma);
+    await cache.upsert([r(Q1, 50_000)]);
+    const provider = {
+      cacheable: false,
+      currency: 'EUR',
+      getPrices: vi.fn(async (qs: PriceQuery[]) =>
+        qs.filter((q) => keyOf(q) === keyOf(Q1)).map((q) => r(q, 4_200)),
+      ),
+    } satisfies FlightProvider;
+    const svc = new FlightService(cache, provider);
+
+    const out = await svc.getPrices([Q1, Q2]);
+
+    expect(provider.getPrices).toHaveBeenCalledWith([Q1, Q2]);
+    expect(out.prices.get(keyOf(Q1))?.priceCents).toBe(4_200);
+    expect(out.partial).toBe(true);
+    expect((await cache.lookup([Q1])).get(keyOf(Q1))?.priceCents).toBe(50_000);
   });
 });

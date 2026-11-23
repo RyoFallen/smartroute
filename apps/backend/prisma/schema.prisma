@@ -18,6 +18,7 @@ model Trip {
   cities     String[]
   flights    Json
   totalPrice Int
+  currency   String   @default("USD") // ISO 4217; the FlightProvider that priced the trip
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 

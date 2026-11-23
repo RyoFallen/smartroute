@@ -83,7 +83,7 @@ private fun TripRow(
         Text(
             // USD is the only currency SmartRoute prices in today (Duffel test-mode
             // prefers USD; no currency field exists in the domain yet — Phase 5 follow-up).
-            text = "${trip.cities.joinToString(" → ")} · ${formatPrice(trip.totalPriceCents, "USD")}",
+            text = "${trip.cities.joinToString(" → ")} · ${formatPrice(trip.totalPriceCents, trip.currency)}",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

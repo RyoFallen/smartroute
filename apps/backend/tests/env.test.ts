@@ -32,6 +32,15 @@ describe('env', () => {
     expect(env.DUFFEL_API_KEY).toBe('duffel_test_abc');
   });
 
+  it('accepts FLIGHT_PROVIDER=recorded with an optional session path', () => {
+    process.env.FLIGHT_PROVIDER = 'recorded';
+    process.env.RECORDED_FARES_SESSION = 'docs/benchmark/sessions/2026-11-01.json';
+    const env = loadEnv();
+    expect(env.FLIGHT_PROVIDER).toBe('recorded');
+    expect(env.RECORDED_FARES_SESSION).toBe('docs/benchmark/sessions/2026-11-01.json');
+    delete process.env.RECORDED_FARES_SESSION;
+  });
+
   it('exits when FLIGHT_PROVIDER=duffel but DUFFEL_API_KEY is missing', () => {
     process.env.FLIGHT_PROVIDER = 'duffel';
     const spy = vi.spyOn(process, 'exit').mockImplementation(((): never => {

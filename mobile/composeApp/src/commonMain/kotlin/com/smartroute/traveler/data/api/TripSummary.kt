@@ -12,4 +12,6 @@ data class TripSummary(
     val cities: List<String>,
     // Minor units (cents) per repo convention; format via formatPrice.
     val totalPriceCents: Long,
+    /** ISO 4217 code of every price above; absent from a backend older than currencies, which only priced in USD. */
+    val currency: String = "USD",
 )

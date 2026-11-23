@@ -251,6 +251,7 @@ class ApiClientTest {
                     cities = listOf("SOF", "BEG"),
                     flights = emptyList(),
                     totalPriceCents = 84700,
+                    currency = "USD",
                 )
 
             val trip = api.createTrip(request)
@@ -295,5 +296,25 @@ class ApiClientTest {
 
             val error = assertFailsWith<ApiError> { api.deleteTrip("missing") }
             assertEquals(404, error.status)
+        }
+
+    @Test
+    fun `trips carry their stored currency, USD when the backend predates it`() =
+        runTest {
+            val engine =
+                MockEngine { request ->
+                    val body =
+                        when (request.url.encodedPath) {
+                            "/trips" ->
+                                """[{"id":"t1","name":"A","startDate":"2026-12-01","endDate":"2026-12-03",""" +
+                                    """"cities":["BER","FCO"],"totalPriceCents":9300,"currency":"EUR"}]"""
+                            else -> TRIP_DETAIL_JSON
+                        }
+                    respond(body, HttpStatusCode.OK, headersOf(HttpHeaders.ContentType, "application/json"))
+                }
+            val api = ApiClient(engine, BASE) { "session-jwt" }
+
+            assertEquals("EUR", api.getTrips().single().currency)
+            assertEquals("USD", api.getTrip("trip_1").currency)
         }
 }

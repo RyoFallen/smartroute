@@ -80,6 +80,15 @@ By default, the backend uses `MockFlightProvider` — deterministic fake prices.
 
 Test mode only returns offers from the synthetic carrier "Duffel Airways". Prices come back in the origin region's local currency (e.g. GBP for LHR origins); the mapper prefers USD when available and falls back to the cheapest offer in any currency. Direct cross-currency comparison is not correct for production — a real FX layer is a follow-up (see Plan 5+).
 
+## Real recorded fares (demo mode)
+
+`FLIGHT_PROVIDER=recorded` serves the real Google Flights prices captured in benchmark Session 1 (`docs/benchmark/sessions/2026-11-01.json`) instead of synthetic ones. Set `RECORDED_FARES_SESSION` to use another session file; a relative path resolves against the repo root.
+
+- Coverage is the capture's: the eight seeded cities (IST, BER, WAW, BUD, LHR, CDG, FCO, BCN), economy, departures **28 Nov – 22 Dec 2026**. Pick dates in that window. Outside it every route is infeasible.
+- Prices are **EUR**, as captured. `/optimize` returns `currency: "EUR"` and saved trips store it, so the app labels them correctly. The mock and Duffel report USD.
+- Carrier, flight times and stops were not recorded. Legs show no carrier, a placeholder 1 h duration and 0 stops.
+- These prices bypass the price cache, so they never mix with mock or Duffel prices.
+
 CI always runs with the mock provider (no `FLIGHT_PROVIDER` or `DUFFEL_API_KEY` in the workflow env), so tests stay deterministic and offline.
 
 ## Mobile (Kotlin Multiplatform)

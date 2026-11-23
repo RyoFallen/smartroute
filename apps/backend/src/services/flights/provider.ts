@@ -13,6 +13,14 @@ export interface PriceResult extends Omit<FlightLeg, 'depart' | 'arrive'> {
 }
 
 export interface FlightProvider {
+  /** ISO 4217 code of every `priceCents` this provider returns. */
+  readonly currency: string;
+  /**
+   * False keeps this provider's prices out of the shared price cache, both ways:
+   * nothing it returns is stored and nothing stored is served in its place. For
+   * a fixed data set whose prices must never mix with another provider's.
+   */
+  readonly cacheable?: boolean;
   getPrices(queries: PriceQuery[]): Promise<PriceResult[]>;
 }
 
@@ -23,6 +31,8 @@ function hash(s: string): number {
 }
 
 export class MockFlightProvider implements FlightProvider {
+  readonly currency = 'USD';
+
   async getPrices(queries: PriceQuery[]): Promise<PriceResult[]> {
     return queries.map((q) => {
       const seed = hash(`${q.origin}-${q.destination}-${q.departDate}-${q.cabinClass}`);

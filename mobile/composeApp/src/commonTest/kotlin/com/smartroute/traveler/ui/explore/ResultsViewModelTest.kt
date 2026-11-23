@@ -38,6 +38,13 @@ private const val OPTIMIZE_RESPONSE_JSON = """
 ]}
 """
 
+private const val EUR_RESPONSE_JSON = """
+{"options": [
+  {"label": "recommended", "order": ["SOF", "BEG"], "flights": [],
+    "totalPriceCents": 9300, "totalDurationMin": 60}
+], "currency": "EUR"}
+"""
+
 private const val NO_ROUTE_JSON = """{"options": [], "reason": "No viable routes found."}"""
 
 private const val TRIP_CREATED_JSON = """
@@ -176,5 +183,41 @@ class ResultsViewModelTest {
             val state = vm.state.first { (it as? ResultsUiState.Loaded)?.saveFailed == true } as ResultsUiState.Loaded
             assertEquals(1, state.selectedIndex)
             assertNull(state.savedTripId)
+        }
+
+    @Test
+    fun `prices carry the response currency, USD from an older backend`() =
+        runTest(dispatcher) {
+            val eur = viewModel { json(EUR_RESPONSE_JSON) }
+            eur.load()
+            assertEquals("EUR", (eur.state.first { it is ResultsUiState.Loaded } as ResultsUiState.Loaded).currency)
+
+            val legacy = viewModel { json(OPTIMIZE_RESPONSE_JSON) }
+            legacy.load()
+            assertEquals("USD", (legacy.state.first { it is ResultsUiState.Loaded } as ResultsUiState.Loaded).currency)
+        }
+
+    @Test
+    fun `saving stores the currency the route was priced in`() =
+        runTest(dispatcher) {
+            var createdBody: String? = null
+            val vm =
+                viewModel { request ->
+                    when (request.url.encodedPath) {
+                        "/optimize" -> json(EUR_RESPONSE_JSON)
+                        else -> {
+                            createdBody = request.body.toByteArray().decodeToString()
+                            json(TRIP_CREATED_JSON, HttpStatusCode.Created)
+                        }
+                    }
+                }
+            vm.load()
+            vm.state.first { it is ResultsUiState.Loaded }
+            vm.selectOption(0)
+            vm.save()
+            vm.state.first { (it as? ResultsUiState.Loaded)?.savedTripId != null }
+
+            val decoded = Json { ignoreUnknownKeys = true }.decodeFromString<CreateTripRequestDto>(createdBody!!)
+            assertEquals("EUR", decoded.currency)
         }
 }

@@ -18,6 +18,9 @@ export interface DuffelFlightProviderOptions {
 const MAX_CONCURRENT_REQUESTS = 8;
 
 export class DuffelFlightProvider implements FlightProvider {
+  /** The mapper prefers USD offers (see `mappers.ts`); its any-currency fallback is a known gap. */
+  readonly currency = 'USD';
+
   private readonly maxRetries: number;
   private readonly retryBackoffMs: number;
 

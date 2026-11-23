@@ -67,4 +67,39 @@ describe('/trips', () => {
     const del = await app.inject({ method: 'DELETE', url: `/trips/${id}`, headers: auth });
     expect(del.statusCode).toBe(204);
   });
+
+  it('stores the currency a trip was priced in, USD when the client sends none', async () => {
+    const app = await buildServer({ withDb: true });
+    const auth = { authorization: 'Bearer u_carol', 'content-type': 'application/json' };
+
+    const eur = await app.inject({
+      method: 'POST',
+      url: '/trips',
+      headers: auth,
+      payload: { ...body, currency: 'EUR' },
+    });
+    expect(eur.json().currency).toBe('EUR');
+    const fetched = await app.inject({
+      method: 'GET',
+      url: `/trips/${eur.json().id}`,
+      headers: auth,
+    });
+    expect(fetched.json().currency).toBe('EUR');
+
+    const legacy = await app.inject({
+      method: 'POST',
+      url: '/trips',
+      headers: auth,
+      payload: body,
+    });
+    expect(legacy.json().currency).toBe('USD');
+
+    const bad = await app.inject({
+      method: 'POST',
+      url: '/trips',
+      headers: auth,
+      payload: { ...body, currency: 'euro' },
+    });
+    expect(bad.statusCode).toBe(400);
+  });
 });

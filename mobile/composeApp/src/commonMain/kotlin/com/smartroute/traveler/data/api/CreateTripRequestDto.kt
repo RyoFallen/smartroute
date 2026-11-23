@@ -13,4 +13,6 @@ data class CreateTripRequestDto(
     val cities: List<String>,
     val flights: List<FlightLegDto>,
     val totalPriceCents: Long,
+    /** The /optimize response's currency, so the saved trip keeps its label. */
+    val currency: String,
 )

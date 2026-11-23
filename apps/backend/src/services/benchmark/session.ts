@@ -1,6 +1,8 @@
+import { readFileSync } from 'node:fs';
 import { z } from 'zod';
 import { keyOf } from '../flights/cache.js';
 import type { PriceResult } from '../flights/provider.js';
+import { RecordedFareProvider } from '../flights/recorded.js';
 import type { PriceSource } from '../optimizer/index.js';
 import type { FareChecklist } from './checklist.js';
 import { BENCHMARK_CITIES, IsoDate } from './scenarios.js';
@@ -116,13 +118,10 @@ export const SessionFile = z
   .strict();
 export type SessionFile = z.infer<typeof SessionFile>;
 
-/**
- * Duration and stops are not recorded, so every RecordedFare carries the same
- * placeholder. Every order of a scenario flies the same number of legs, so
- * `fitnessScores`' min–max normalisation zeroes both terms and any preset
- * ranks by cost alone (ADR-0006).
- */
-const PLACEHOLDER_DURATION_MIN = 60;
+/** Parses a session file; throws on anything that is not one, so a bad path fails at boot. */
+export function loadRecordedSession(file: string): SessionFile {
+  return SessionFile.parse(JSON.parse(readFileSync(file, 'utf8')));
+}
 
 const fareLabel = (origin: string, destination: string, date: string) =>
   `${origin} → ${destination} ${date}`;
@@ -158,34 +157,15 @@ export function sessionProblems(session: SessionFile, checklist: FareChecklist):
  * A session's RecordedFares as the optimizer's price source, standing where
  * `FlightService` stands — in memory, so no fare reaches the price cache or
  * mixes with another session's. A "no fare" day is simply absent, so an order
- * needing it comes up a leg short and is infeasible: the product's rule.
+ * needing it comes up a leg short and is infeasible: the product's rule. The
+ * lookup itself is `RecordedFareProvider`'s, shared with the demo mode.
  */
 export function recordedFareSource(session: SessionFile): PriceSource {
-  const priceOf = new Map<string, number>();
-  for (const grid of session.grids) {
-    for (const fare of grid.fares) {
-      if (fare.priceCents === null) continue;
-      priceOf.set(fareLabel(grid.origin, grid.destination, fare.date), fare.priceCents);
-    }
-  }
-
+  const provider = new RecordedFareProvider(session);
   return {
     async getPrices(queries) {
-      const prices = new Map<string, PriceResult>();
-      for (const q of queries) {
-        const priceCents = priceOf.get(fareLabel(q.origin, q.destination, q.departDate));
-        if (priceCents === undefined || q.cabinClass !== 'ECONOMY') continue;
-        prices.set(keyOf(q), {
-          origin: q.origin,
-          destination: q.destination,
-          departDate: q.departDate,
-          cabinClass: q.cabinClass,
-          priceCents,
-          durationMin: PLACEHOLDER_DURATION_MIN,
-          stops: 0,
-          carrier: null,
-        });
-      }
+      const fetched = await provider.getPrices(queries);
+      const prices = new Map<string, PriceResult>(fetched.map((r) => [keyOf(r), r]));
       return { prices, partial: prices.size < queries.length, staleCache: false };
     },
   };

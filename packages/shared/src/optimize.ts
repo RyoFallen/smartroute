@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CabinClass, Iata } from './flights.js';
+import { CabinClass, Currency, Iata } from './flights.js';
 import { RouteOption } from './routes.js';
 
 export const OptimizePreset = z.enum(['budget', 'time', 'comfort', 'balanced']);
@@ -44,5 +44,7 @@ export const OptimizeResponse = z.object({
   partial: z.boolean().optional(),
   staleCache: z.boolean().optional(),
   reason: z.string().optional(),
+  /** What every price above is in. Set by the route from its FlightProvider; the optimizer never sees money units. */
+  currency: Currency.optional(),
 });
 export type OptimizeResponse = z.infer<typeof OptimizeResponse>;

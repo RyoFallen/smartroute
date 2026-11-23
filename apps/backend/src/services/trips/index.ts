@@ -17,6 +17,7 @@ export class TripService {
         cities: input.cities,
         flights: input.flights as unknown as Prisma.InputJsonValue,
         totalPrice: input.totalPriceCents,
+        currency: input.currency,
       },
     });
     return toTrip(row);
@@ -54,6 +55,7 @@ function toTrip(row: {
   cities: string[];
   flights: Prisma.JsonValue;
   totalPrice: number;
+  currency: string;
   createdAt: Date;
   updatedAt: Date;
 }): Trip {
@@ -67,6 +69,7 @@ function toTrip(row: {
     cities: row.cities,
     flights: row.flights as unknown as FlightLeg[],
     totalPriceCents: row.totalPrice,
+    currency: row.currency,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };

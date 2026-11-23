@@ -22,6 +22,7 @@ sealed interface ResultsUiState {
     data class Loaded(
         val options: List<RouteOptionDto>,
         val reason: String?,
+        val currency: String = "USD",
         val selectedIndex: Int? = null,
         val saving: Boolean = false,
         val saveFailed: Boolean = false,
@@ -52,7 +53,7 @@ class ResultsViewModel(
             _state.value =
                 try {
                     val response = api.optimize(request)
-                    ResultsUiState.Loaded(response.options, response.reason)
+                    ResultsUiState.Loaded(response.options, response.reason, response.currency)
                 } catch (_: Exception) {
                     ResultsUiState.LoadFailed
                 }
@@ -71,7 +72,7 @@ class ResultsViewModel(
         viewModelScope.launch {
             _state.value =
                 try {
-                    val trip = api.createTrip(tripRequestFor(option))
+                    val trip = api.createTrip(tripRequestFor(option, loaded.currency))
                     loaded.copy(saving = false, savedTripId = trip.id)
                 } catch (_: Exception) {
                     loaded.copy(saving = false, saveFailed = true)
@@ -79,7 +80,10 @@ class ResultsViewModel(
         }
     }
 
-    private fun tripRequestFor(option: RouteOptionDto): CreateTripRequestDto {
+    private fun tripRequestFor(
+        option: RouteOptionDto,
+        currency: String,
+    ): CreateTripRequestDto {
         // The first city is where the traveler flies out from and has no stay
         // (#34): the trip ends once the cities after it have had theirs.
         val totalStayDays = option.order.drop(1).sumOf { stayDaysByCity.getValue(it) }
@@ -93,6 +97,7 @@ class ResultsViewModel(
             cities = option.order,
             flights = option.flights,
             totalPriceCents = option.totalPriceCents,
+            currency = currency,
         )
     }
 

@@ -20,6 +20,12 @@ export class FlightService {
   ) {}
 
   async getPrices(queries: PriceQuery[]): Promise<FlightServiceResult> {
+    if (this.provider.cacheable === false) {
+      const fetched = await this.provider.getPrices(queries);
+      const prices = new Map(fetched.map((r) => [keyOf(r), r] as const));
+      return { prices, partial: prices.size < queries.length, staleCache: false };
+    }
+
     const freshMs = this.opts.freshMs ?? 1000 * 60 * 60 * 6; // 6h default
     const fresh = await this.cache.lookup(queries, { maxAgeMs: freshMs });
     const missing = queries.filter((q) => !fresh.has(keyOf(q)));

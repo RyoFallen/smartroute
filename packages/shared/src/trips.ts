@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CabinClass, FlightLeg, Iata } from './flights.js';
+import { CabinClass, Currency, FlightLeg, Iata } from './flights.js';
 
 export const Trip = z.object({
   id: z.string(),
@@ -11,6 +11,7 @@ export const Trip = z.object({
   cities: z.array(Iata).min(2).max(8),
   flights: z.array(FlightLeg),
   totalPriceCents: z.number().int().nonnegative(),
+  currency: Currency,
   createdAt: z.string(),
   updatedAt: z.string(),
 });
@@ -25,5 +26,7 @@ export const CreateTripRequest = z.object({
   cities: z.array(Iata).min(2).max(8),
   flights: z.array(FlightLeg),
   totalPriceCents: z.number().int().nonnegative(),
+  /** The /optimize response's currency. Absent from clients older than it, which only ever saw USD. */
+  currency: Currency.default('USD'),
 });
 export type CreateTripRequest = z.infer<typeof CreateTripRequest>;

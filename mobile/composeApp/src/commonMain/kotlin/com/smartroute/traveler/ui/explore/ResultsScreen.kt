@@ -95,6 +95,7 @@ private fun LoadedContent(
             itemsIndexed(state.options) { index, option ->
                 RouteOptionCard(
                     option = option,
+                    currency = state.currency,
                     selected = state.selectedIndex == index,
                     onClick = { onSelectOption(index) },
                 )
@@ -121,6 +122,7 @@ private fun LoadedContent(
 @Composable
 private fun RouteOptionCard(
     option: RouteOptionDto,
+    currency: String,
     selected: Boolean,
     onClick: () -> Unit,
 ) {
@@ -151,7 +153,7 @@ private fun RouteOptionCard(
             )
             Text(
                 text =
-                    "${formatPrice(option.totalPriceCents, "USD")} · " +
+                    "${formatPrice(option.totalPriceCents, currency)} · " +
                         "${option.totalDurationMin / 60}h${option.totalDurationMin % 60}m",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(top = 4.dp),
