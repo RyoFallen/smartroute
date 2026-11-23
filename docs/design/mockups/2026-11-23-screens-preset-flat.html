@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--p:#007595;--pf:#ecfeff;--fg:#0c0a09;--mf:#79716b;--mu:#f5f5f4;--bd:#e7e5e4;--c1:#53eafd;--c2:#00b8db;--c5:#005f78;--r:14px}
+.row{display:flex;gap:14px}
+.col{flex:1;min-width:0}
+.label{font:600 13px var(--font-sans);margin:0 0 8px;color:var(--muted-foreground)}
+.phone{width:100%;aspect-ratio:9/19;border-radius:28px;overflow:hidden;position:relative;background:#fff;color:var(--fg);font-family:Inter,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.in{position:absolute;inset:0;padding:28px 13px 0}
+h1,h2{font-family:"Noto Sans",sans-serif;margin:0;letter-spacing:-.3px}
+h1{font-size:18px;font-weight:700}
+h2{font-size:13px;font-weight:600}
+.hi{font-size:10.5px;color:var(--mf);margin:0 0 2px}
+.btn{background:var(--p);color:var(--pf);border-radius:var(--r);padding:11px 12px;font-size:11.5px;font-weight:600;display:flex;justify-content:space-between;margin-top:12px}
+.card{border:1px solid var(--bd);border-radius:var(--r);padding:11px;margin-top:10px;background:#fff}
+.card.sel{border:1.5px solid var(--p);box-shadow:0 0 0 3px rgba(0,117,149,.10)}
+.k{font-size:9px;color:var(--mf);text-transform:uppercase;letter-spacing:.6px;font-weight:500}
+.meta{font-size:10px;color:var(--mf)}
+.price{font:700 16px "Noto Sans",sans-serif}
+.map{height:72px;border-radius:10px;margin-top:8px;background:linear-gradient(135deg,#eef7fa,#f5f5f4);position:relative;overflow:hidden}
+.map svg{position:absolute;inset:0;width:100%;height:100%}
+.badge{display:inline-block;font-size:9px;font-weight:600;padding:3px 7px;border-radius:99px;background:#ecfeff;color:var(--c5)}
+.chips{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}
+.chip{font-size:9px;padding:4px 8px;border-radius:99px;border:1px solid var(--bd);color:var(--fg)}
+.chip.on{background:var(--p);border-color:var(--p);color:var(--pf)}
+.flex{display:flex;justify-content:space-between;align-items:center}
+.nav{position:absolute;left:10px;right:10px;bottom:11px;height:48px;border-radius:18px;display:flex;justify-content:space-around;align-items:center;font-size:9px;color:var(--mf);background:rgba(255,255,255,.78);backdrop-filter:blur(14px);border:1px solid rgba(231,229,228,.9);box-shadow:0 4px 16px rgba(12,10,9,.07)}
+.nav span{display:flex;flex-direction:column;align-items:center;gap:3px}
+.ic{width:16px;height:16px;border-radius:5px;background:#d6d3d1}
+.on2{color:var(--p);font-weight:600}.on2 .ic{background:var(--p)}
+.day{display:flex;gap:8px;margin-top:9px}
+.t{font-size:9.5px;color:var(--mf);width:30px;padding-top:2px}
+.slot{flex:1;border:1px solid var(--bd);border-radius:12px;padding:8px}
+.walk{font-size:9px;color:var(--mf);margin:3px 0 0 38px}
+.tabs{display:flex;gap:5px;margin-top:10px}
+.tab{font-size:9.5px;padding:5px 10px;border-radius:99px;background:var(--mu);color:var(--mf)}
+.tab.on{background:var(--fg);color:#fff}
+</style></head><body>
+<div class="row">
+<div class="col"><p class="label">Home</p>
+<div class="phone"><div class="in">
+<p class="hi">Merhaba, Burak</p><h1>Nereye gidiyoruz?</h1>
+<div class="btn">＋ Yeni rota planla <span>→</span></div>
+<div class="card"><div class="flex"><span class="k">Yaklaşan trip</span><span class="badge">12 gün kaldı</span></div>
+<h2 style="margin-top:5px">Berlin → Roma → Paris</h2><div class="meta">5 – 12 Ara · 3 uçuş</div>
+<div class="map"><svg viewBox="0 0 200 86"><polyline points="38,20 108,64 158,26" fill="none" stroke="#007595" stroke-width="2.4" stroke-dasharray="5 4"/><circle cx="38" cy="20" r="5" fill="#007595"/><circle cx="108" cy="64" r="5" fill="#007595"/><circle cx="158" cy="26" r="5" fill="#007595"/></svg></div>
+<div class="flex" style="margin-top:8px"><span class="meta">Toplam</span><span class="price">€214</span></div></div>
+<p class="k" style="margin:12px 0 0">Son aramalar</p>
+<div class="chips"><span class="chip">İstanbul · Budapeşte</span><span class="chip">Londra · Varşova</span></div>
+</div><div class="nav"><span class="on2"><i class="ic"></i>Ana sayfa</span><span><i class="ic"></i>Tripler</span><span><i class="ic"></i>Keşfet</span><span><i class="ic"></i>Profil</span></div></div></div>
+
+<div class="col"><p class="label">Rota sonuçları</p>
+<div class="phone"><div class="in">
+<p class="hi">5 Ara · 4 şehir</p><h1>Rota seçenekleri</h1>
+<div class="chips"><span class="chip on">Bütçe</span><span class="chip">Hızlı</span><span class="chip">Konfor</span><span class="chip">Dengeli</span></div>
+<div class="card sel"><div class="flex"><span class="badge">Önerilen</span><span class="price">€214</span></div>
+<h2 style="margin-top:6px">BER → FCO → CDG → WAW</h2><div class="meta">3 uçuş · 11 sa 40 dk</div>
+<div class="map" style="height:54px"><svg viewBox="0 0 200 70"><polyline points="70,16 92,58 40,30 150,14" fill="none" stroke="#007595" stroke-width="2.2"/><circle cx="70" cy="16" r="4.5" fill="#007595"/><circle cx="92" cy="58" r="4.5" fill="#007595"/><circle cx="40" cy="30" r="4.5" fill="#007595"/><circle cx="150" cy="14" r="4.5" fill="#fff" stroke="#007595" stroke-width="2"/></svg></div></div>
+<div class="card"><div class="flex"><span class="k">En ucuz</span><span class="price" style="font-size:14px">€221</span></div><div class="meta" style="margin-top:3px">BER → CDG → FCO → WAW</div></div>
+<div class="card"><div class="flex"><span class="k">En hızlı</span><span class="price" style="font-size:14px">€268</span></div><div class="meta" style="margin-top:3px">9 sa 05 dk · 3 uçuş</div></div>
+<div class="btn">Bu tripi kaydet <span>✓</span></div>
+</div></div></div>
+
+<div class="col"><p class="label">Itinerary</p>
+<div class="phone"><div class="in">
+<p class="hi">Roma · 3 gün</p><h1>Gün gün plan</h1>
+<div class="tabs"><span class="tab on">1. gün</span><span class="tab">2. gün</span><span class="tab">3. gün</span></div>
+<div class="day"><span class="t">10:00</span><div class="slot"><h2 style="font-size:11.5px">Kolezyum</h2><div class="meta">Tarihi yer · 2 sa</div></div></div>
+<p class="walk">🚶 12 dk yürüyüş</p>
+<div class="day"><span class="t">12:30</span><div class="slot"><h2 style="font-size:11.5px">Roma Forumu</h2><div class="meta">Tarihi yer · 1 sa 30 dk</div></div></div>
+<p class="walk">🚶 18 dk yürüyüş</p>
+<div class="day"><span class="t">14:30</span><div class="slot"><h2 style="font-size:11.5px">Pantheon</h2><div class="meta">Dini yapı · 45 dk</div><span class="badge" style="margin-top:4px;background:#f5f5f4;color:#79716b">ⓘ saatler tahmini</span></div></div>
+<p class="walk">🚶 9 dk yürüyüş</p>
+<div class="day"><span class="t">15:45</span><div class="slot"><h2 style="font-size:11.5px">Trevi Çeşmesi</h2><div class="meta">Simge yapı · 30 dk</div></div></div>
+</div><div class="nav"><span><i class="ic"></i>Ana sayfa</span><span class="on2"><i class="ic"></i>Tripler</span><span><i class="ic"></i>Keşfet</span><span><i class="ic"></i>Profil</span></div></div></div>
+</div>
+</body></html>
