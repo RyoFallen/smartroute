@@ -54,6 +54,10 @@
     <string name="trip_detail_travelers">traveler(s)</string>
     <string name="trip_detail_stops">stop(s)</string>
     <string name="plan_trip">Plan trip</string>
+    <string name="delete_trip">Delete trip</string>
+    <string name="delete_trip_message">This removes the trip and its flights from My Trips. This cannot be undone.</string>
+    <string name="delete_trip_confirm">Delete</string>
+    <string name="delete_trip_error">Could not delete this trip</string>
     <string name="itinerary_title">Itinerary</string>
     <string name="itinerary_error_load">Could not load this trip\'s itinerary</string>
     <string name="itinerary_no_guide">No guide for this city yet.</string>

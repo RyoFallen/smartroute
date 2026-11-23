@@ -48,6 +48,7 @@ import com.smartroute.traveler.ui.profile.PreferencesViewModel
 import com.smartroute.traveler.ui.profile.ProfileScreen
 import com.smartroute.traveler.ui.trips.ItineraryScreen
 import com.smartroute.traveler.ui.trips.ItineraryViewModel
+import com.smartroute.traveler.ui.trips.TripDeleteUiState
 import com.smartroute.traveler.ui.trips.TripDetailScreen
 import com.smartroute.traveler.ui.trips.TripDetailViewModel
 import com.smartroute.traveler.ui.trips.TripsListScreen
@@ -190,12 +191,21 @@ fun MainTabsScaffold(
                     val detailViewModel =
                         viewModel { TripDetailViewModel(AppGraph.apiClient, route.tripId) }
                     val detailState by detailViewModel.state.collectAsState()
+                    val deleteState by detailViewModel.deleteState.collectAsState()
                     LaunchedEffect(route.tripId) { detailViewModel.load() }
+                    // Back on the list, its LaunchedEffect re-runs and drops the deleted trip.
+                    LaunchedEffect(deleteState) {
+                        if (deleteState == TripDeleteUiState.Deleted) navController.popBackStack()
+                    }
                     TripDetailScreen(
                         state = detailState,
                         onRetryLoad = detailViewModel::load,
                         onPlanTripClick = { navController.navigate(ItineraryRoute(route.tripId)) },
                         onBack = { navController.popBackStack() },
+                        deleteState = deleteState,
+                        onDeleteClick = detailViewModel::requestDelete,
+                        onConfirmDelete = detailViewModel::confirmDelete,
+                        onCancelDelete = detailViewModel::cancelDelete,
                     )
                 }
                 composable<ItineraryRoute> { backStackEntry ->

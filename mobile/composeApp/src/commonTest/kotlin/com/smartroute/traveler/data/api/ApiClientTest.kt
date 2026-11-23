@@ -8,6 +8,7 @@ import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.toByteArray
 import io.ktor.client.request.HttpRequestData
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import kotlinx.coroutines.test.runTest
@@ -258,5 +259,41 @@ class ApiClientTest {
             val decoded =
                 requestJson.decodeFromString<CreateTripRequestDto>(sentBody!!.body.toByteArray().decodeToString())
             assertEquals(request, decoded)
+        }
+
+    @Test
+    fun `deletes a trip by id`() =
+        runTest {
+            var method: HttpMethod? = null
+            var path: String? = null
+            val engine =
+                MockEngine { request ->
+                    method = request.method
+                    path = request.url.encodedPath
+                    respond("", HttpStatusCode.NoContent)
+                }
+            val api = ApiClient(engine, BASE) { "session-jwt" }
+
+            api.deleteTrip("trip_7")
+
+            assertEquals(HttpMethod.Delete, method)
+            assertEquals("/trips/trip_7", path)
+        }
+
+    @Test
+    fun `delete trip surfaces a 404 as ApiError`() =
+        runTest {
+            val engine =
+                MockEngine {
+                    respond(
+                        """{"error":{"code":"TRIP_NOT_FOUND","message":"nope"}}""",
+                        HttpStatusCode.NotFound,
+                        headersOf(HttpHeaders.ContentType, "application/json"),
+                    )
+                }
+            val api = ApiClient(engine, BASE) { "session-jwt" }
+
+            val error = assertFailsWith<ApiError> { api.deleteTrip("missing") }
+            assertEquals(404, error.status)
         }
 }

@@ -51,6 +51,12 @@ class ApiClient(
 
     suspend fun getTrip(id: String): TripDetail = get("/trips/$id")
 
+    /** DELETE /trips/:id — 204 on success; another user's or a missing trip is a 404. */
+    suspend fun deleteTrip(id: String) {
+        val response = http.delete("$baseUrl/trips/$id")
+        if (!response.status.isSuccess()) throw response.toApiError()
+    }
+
     suspend fun getTripItinerary(id: String): ItineraryResponseDto = get("/trips/$id/itinerary")
 
     suspend fun getCities(): List<CitySummaryDto> = get("/cities")

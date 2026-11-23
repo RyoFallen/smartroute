@@ -7,9 +7,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +29,7 @@ import com.smartroute.traveler.ui.components.RetryErrorState
 import com.smartroute.traveler.ui.components.SubScreenHeader
 import org.jetbrains.compose.resources.stringResource
 import smartroute_mobile.composeapp.generated.resources.Res
+import smartroute_mobile.composeapp.generated.resources.delete_trip
 import smartroute_mobile.composeapp.generated.resources.plan_trip
 import smartroute_mobile.composeapp.generated.resources.trip_detail_error_load
 import smartroute_mobile.composeapp.generated.resources.trip_detail_flights
@@ -37,7 +42,12 @@ fun TripDetailScreen(
     onRetryLoad: () -> Unit,
     onPlanTripClick: () -> Unit,
     onBack: () -> Unit,
+    deleteState: TripDeleteUiState = TripDeleteUiState.Idle,
+    onDeleteClick: () -> Unit = {},
+    onConfirmDelete: () -> Unit = {},
+    onCancelDelete: () -> Unit = {},
 ) {
+    DeleteTripDialog(state = deleteState, onConfirm = onConfirmDelete, onCancel = onCancelDelete)
     Column(modifier = Modifier.fillMaxSize()) {
         when (state) {
             is TripDetailUiState.Loading -> {
@@ -54,7 +64,12 @@ fun TripDetailScreen(
                 )
             }
             is TripDetailUiState.Loaded ->
-                LoadedContent(trip = state.trip, onPlanTripClick = onPlanTripClick, onBack = onBack)
+                LoadedContent(
+                    trip = state.trip,
+                    onPlanTripClick = onPlanTripClick,
+                    onBack = onBack,
+                    onDeleteClick = onDeleteClick,
+                )
         }
     }
 }
@@ -64,10 +79,15 @@ private fun LoadedContent(
     trip: TripDetail,
     onPlanTripClick: () -> Unit,
     onBack: () -> Unit,
+    onDeleteClick: () -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
-            SubScreenHeader(title = trip.name, onBack = onBack)
+            SubScreenHeader(title = trip.name, onBack = onBack) {
+                IconButton(onClick = onDeleteClick) {
+                    Icon(Icons.Filled.Delete, contentDescription = stringResource(Res.string.delete_trip))
+                }
+            }
             Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Text(
                     text =

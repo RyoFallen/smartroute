@@ -7,12 +7,14 @@ import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.HttpRequestData
 import io.ktor.client.request.HttpResponseData
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -20,6 +22,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 private const val TRIP_DETAIL_JSON = """
 {"id": "trip_1", "name": "Balkans", "startDate": "2026-08-01T00:00:00.000Z",
@@ -98,5 +101,91 @@ class TripDetailViewModelTest {
             fail = false
             vm.load()
             vm.state.first { it is TripDetailUiState.Loaded }
+        }
+
+    private suspend fun TripDetailViewModel.loaded() {
+        load()
+        state.first { it is TripDetailUiState.Loaded }
+    }
+
+    @Test
+    fun `delete asks for confirmation and cancel is safe`() =
+        runTest(dispatcher) {
+            var deletes = 0
+            val vm =
+                viewModel { request ->
+                    if (request.method == HttpMethod.Delete) deletes++
+                    json(TRIP_DETAIL_JSON)
+                }
+            vm.loaded()
+            assertEquals(TripDeleteUiState.Idle, vm.deleteState.value)
+
+            vm.requestDelete()
+            assertEquals(TripDeleteUiState.Confirming, vm.deleteState.value)
+
+            vm.cancelDelete()
+            advanceUntilIdle()
+            assertEquals(TripDeleteUiState.Idle, vm.deleteState.value)
+            assertEquals(0, deletes)
+        }
+
+    @Test
+    fun `confirm deletes the trip and reports deleted`() =
+        runTest(dispatcher) {
+            var deletedPath: String? = null
+            val vm =
+                viewModel(tripId = "trip_9") { request ->
+                    if (request.method == HttpMethod.Delete) {
+                        deletedPath = request.url.encodedPath
+                        respond("", HttpStatusCode.NoContent)
+                    } else {
+                        json(TRIP_DETAIL_JSON)
+                    }
+                }
+            vm.loaded()
+            vm.requestDelete()
+            vm.confirmDelete()
+
+            vm.deleteState.first { it is TripDeleteUiState.Deleted }
+            assertEquals("/trips/trip_9", deletedPath)
+        }
+
+    @Test
+    fun `delete failure keeps the trip and allows retry`() =
+        runTest(dispatcher) {
+            var fail = true
+            val vm =
+                viewModel { request ->
+                    when {
+                        request.method != HttpMethod.Delete -> json(TRIP_DETAIL_JSON)
+                        fail -> json("""{"error":{}}""", HttpStatusCode.InternalServerError)
+                        else -> respond("", HttpStatusCode.NoContent)
+                    }
+                }
+            vm.loaded()
+            vm.requestDelete()
+            vm.confirmDelete()
+            vm.deleteState.first { it is TripDeleteUiState.Failed }
+            assertTrue(vm.state.value is TripDetailUiState.Loaded)
+
+            fail = false
+            vm.confirmDelete()
+            vm.deleteState.first { it is TripDeleteUiState.Deleted }
+        }
+
+    @Test
+    fun `confirm without a pending request does nothing`() =
+        runTest(dispatcher) {
+            var deletes = 0
+            val vm =
+                viewModel { request ->
+                    if (request.method == HttpMethod.Delete) deletes++
+                    json(TRIP_DETAIL_JSON)
+                }
+            vm.loaded()
+            vm.confirmDelete()
+            advanceUntilIdle()
+            assertEquals(TripDeleteUiState.Idle, vm.deleteState.value)
+            assertEquals(0, deletes)
         }
 }

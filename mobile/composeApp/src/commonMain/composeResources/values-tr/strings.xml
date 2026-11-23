@@ -54,6 +54,10 @@
     <string name="trip_detail_travelers">yolcu</string>
     <string name="trip_detail_stops">aktarma</string>
     <string name="plan_trip">Gezi planı</string>
+    <string name="delete_trip">Geziyi sil</string>
+    <string name="delete_trip_message">Bu gezi ve uçuşları Gezilerim listesinden kaldırılır. Geri alınamaz.</string>
+    <string name="delete_trip_confirm">Sil</string>
+    <string name="delete_trip_error">Bu gezi silinemedi</string>
     <string name="itinerary_title">Gezi programı</string>
     <string name="itinerary_error_load">Bu gezinin programı yüklenemedi</string>
     <string name="itinerary_no_guide">Bu şehir için henüz rehber yok.</string>
