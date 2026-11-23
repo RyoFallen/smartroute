@@ -49,6 +49,56 @@ const sessions = sessionFiles.map((f) =>
   SessionFile.parse(JSON.parse(readFileSync(path.join(sessionsDir, f), 'utf8'))),
 );
 
+/**
+ * A session's owner audit, `<date>-audit.md` beside its session file: each
+ * table row's last cell is `[x]` (matches), `[ ]` (not yet audited) or the
+ * value the auditor saw instead (a mismatch).
+ */
+interface Audit {
+  date: string;
+  sampled: number;
+  audited: number;
+  mismatches: number;
+}
+const audits: Audit[] = sessions.flatMap(({ date }) => {
+  const file = path.join(sessionsDir, `${date}-audit.md`);
+  if (!existsSync(file)) return [];
+  const cells = readFileSync(file, 'utf8')
+    .split('\n')
+    .filter((line) => /^\|\s*\d+\s*\|/.test(line))
+    .map((line) => line.split('|').at(-2)!.trim());
+  return [
+    {
+      date,
+      sampled: cells.length,
+      audited: cells.filter((c) => c !== '[ ]').length,
+      mismatches: cells.filter((c) => c !== '[ ]' && c !== '[x]').length,
+    },
+  ];
+});
+/** One-sided exact (Clopper–Pearson) 95% upper bound on an error rate. */
+function upperBound95(errors: number, n: number): number {
+  if (errors === n) return 1;
+  // Bisection on P(X ≤ errors | p) = 0.05.
+  const cdf = (p: number) => {
+    let sum = 0;
+    let term = Math.pow(1 - p, n);
+    for (let k = 0; k <= errors; k++) {
+      sum += term;
+      term *= ((n - k) / (k + 1)) * (p / (1 - p));
+    }
+    return sum;
+  };
+  let lo = errors / n;
+  let hi = 1;
+  for (let i = 0; i < 60; i++) {
+    const mid = (lo + hi) / 2;
+    if (cdf(mid) > 0.05) lo = mid;
+    else hi = mid;
+  }
+  return hi;
+}
+
 const report = await evaluateBenchmark(file.scenarios, sessions, { seeds: BENCHMARK_SEEDS });
 if (report.refused.length > 0) {
   for (const { date, problems } of report.refused) {
@@ -165,6 +215,50 @@ function render(r: BenchmarkReport): string {
   );
   out.push('');
   out.push(driftLine(sm.spotChecks));
+  out.push('');
+  out.push('### Spec § 2.4 targets');
+  out.push('');
+  const allMs = r.sessions
+    .flatMap((x) => x.scenarios.flatMap((sc) => sc.gaRuns.map((g) => g.ms)))
+    .sort((a, b) => a - b);
+  const p95 = allMs.length > 0 ? allMs[Math.ceil(0.95 * allMs.length) - 1]! : null;
+  const naiveSavings = sm.scenarios.flatMap((x) =>
+    x.savingVsNaive.value === null ? [] : [x.savingVsNaive.value],
+  );
+  const meanNaive =
+    naiveSavings.length > 0 ? naiveSavings.reduce((a, b) => a + b, 0) / naiveSavings.length : null;
+  const met = (ok: boolean | null) => (ok === null ? '—' : ok ? 'met' : 'not met');
+  out.push('| Metric | Target | Measured | Result |');
+  out.push('| ------ | ------ | -------- | ------ |');
+  out.push(
+    `| Route optimisation time | < 10 s, 95th percentile | ${secs(p95)} over ${allMs.length} GA runs | ${met(p95 === null ? null : p95 < 10_000)} |`,
+    `| Cost savings | > 15% vs NaiveOrder, average over scenarios | mean ${savingPct(meanNaive)}, median ${savingPct(sm.overall.savingVsNaive)} (${naiveSavings.length} priced scenarios) | ${met(meanNaive === null ? null : meanNaive > 0.15)} |`,
+    `| Competitor benchmark | match or beat Nomad in ≥ 60% of scenarios | ${sm.overall.nomad.wins} of ${sm.overall.nomad.compared} (${pct(sm.overall.nomad.winRate)}) | ${met(sm.overall.nomad.winRate === null ? null : sm.overall.nomad.winRate >= 0.6)} |`,
+  );
+  out.push('');
+  out.push(
+    'User satisfaction and itinerary generation time are outside this benchmark. The timing figure',
+    "is the GA's own time on in-memory fares, without provider latency.",
+  );
+  out.push('');
+  out.push('### Threats to validity, measured');
+  out.push('');
+  const sampled = audits.reduce((a, b) => a + b.audited, 0);
+  const wrong = audits.reduce((a, b) => a + b.mismatches, 0);
+  const excluded = r.sessions.reduce((a, s) => a + s.nomad.excluded + s.nomad.missing, 0);
+  out.push(
+    sampled === 0
+      ? '- **Transcription:** no owner audit recorded yet.'
+      : `- **Transcription:** the owner's audit of a random 5% found **${wrong} mismatch${wrong === 1 ? '' : 'es'} in ${sampled}** sampled prices (${audits.map((a) => a.date).join(', ')}); error rate ${savingPct(wrong / sampled)}, one-sided 95% upper bound ${savingPct(upperBound95(wrong, sampled))}.` +
+          (audits.some((a) => a.audited < a.sampled)
+            ? ' Some sampled items are not yet audited.'
+            : ''),
+    `- **Calendar vs live:** ${driftLine(sm.spotChecks)}`,
+    `- **Nomad comparability:** ${excluded} of ${r.sessions.length * file.scenarios.length} scenario captures were excluded or missing (dates or stays differ, or no all-flight result) and are left out of the win rate.`,
+    n === 1
+      ? '- **One session:** the planned second and third CaptureSessions were not run (ADR-0006 amendment), so these are one market snapshot and stability over time is not measured. Optimality gap, orders evaluated and GA time depend only on the fares, not on the session.'
+      : `- **Sessions:** ${n}; each figure is a median across them.`,
+  );
   out.push('');
   out.push('### By size');
   out.push('');
