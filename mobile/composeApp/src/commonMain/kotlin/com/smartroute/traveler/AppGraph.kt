@@ -1,6 +1,7 @@
 package com.smartroute.traveler
 
 import com.smartroute.traveler.config.AppConfig
+import com.smartroute.traveler.data.CityCatalog
 import com.smartroute.traveler.data.api.ApiClient
 import com.smartroute.traveler.data.api.httpClientEngine
 import com.smartroute.traveler.data.auth.ClerkAuthClient
@@ -30,4 +31,6 @@ object AppGraph {
             sessionJwtProvider = authClient::fetchSessionJwt,
         )
     }
+
+    val cityCatalog: CityCatalog by lazy { CityCatalog(apiClient) }
 }

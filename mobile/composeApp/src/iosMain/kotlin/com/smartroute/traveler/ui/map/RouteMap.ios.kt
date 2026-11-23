@@ -6,11 +6,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.UIKitView
+import com.smartroute.traveler.ui.theme.SrColors
 
 @Composable
-actual fun RouteMap(modifier: Modifier) {
+actual fun RouteMap(
+    state: RouteMapState,
+    modifier: Modifier,
+) {
     val createMapView = MapViewBridge.createMapView
     if (createMapView != null) {
         UIKitView(
@@ -19,10 +22,13 @@ actual fun RouteMap(modifier: Modifier) {
         )
     } else {
         Box(
-            modifier = modifier.background(Color(0xFFCCFBF1)),
+            modifier = modifier.background(SrColors.Muted),
             contentAlignment = Alignment.Center,
         ) {
-            Text("Map unavailable — no MapViewBridge factory registered")
+            Text(
+                text = "Map unavailable — no MapViewBridge factory registered",
+                color = SrColors.MutedForeground,
+            )
         }
     }
 }

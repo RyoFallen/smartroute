@@ -8,4 +8,6 @@ data class CitySummaryDto(
     val iata: String,
     val name: String,
     val country: String,
+    val lat: Double? = null,
+    val lon: Double? = null,
 )

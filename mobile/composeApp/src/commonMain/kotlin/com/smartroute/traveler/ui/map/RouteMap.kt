@@ -4,8 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 /**
- * Platform-embedded map. Spike scope: render a map centered on Istanbul.
- * Later phases add route polylines and markers as parameters.
+ * Platform-embedded map. Renders [state]'s route; evolve through the state holder, not positional params.
  */
 @Composable
-expect fun RouteMap(modifier: Modifier = Modifier)
+expect fun RouteMap(
+    state: RouteMapState,
+    modifier: Modifier = Modifier,
+)

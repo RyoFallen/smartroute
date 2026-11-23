@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.smartroute.traveler.ui.map.RouteMap
+import com.smartroute.traveler.ui.map.RouteMapState
 import org.jetbrains.compose.resources.stringResource
 import smartroute_mobile.composeapp.generated.resources.Res
 import smartroute_mobile.composeapp.generated.resources.app_title
@@ -32,6 +33,7 @@ fun HomeScreen() {
             )
         }
         RouteMap(
+            state = RouteMapState(emptyList()),
             modifier =
                 Modifier
                     .fillMaxWidth()

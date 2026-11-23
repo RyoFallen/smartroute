@@ -7,7 +7,7 @@ export class CityService {
   async list(): Promise<CitySummary[]> {
     const rows = await this.db.city.findMany({
       orderBy: { name: 'asc' },
-      select: { iata: true, name: true, country: true },
+      select: { iata: true, name: true, country: true, lat: true, lon: true },
     });
     return rows;
   }

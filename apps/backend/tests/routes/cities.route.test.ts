@@ -16,8 +16,8 @@ vi.mock('@clerk/backend', () => ({
 
 const alice = { authorization: 'Bearer u_alice' };
 
-function city(iata: string, name: string, country: string) {
-  return { iata, name, country, altCodes: [], lat: 0, lon: 0, timezone: 'UTC' };
+function city(iata: string, name: string, country: string, lat = 0, lon = 0) {
+  return { iata, name, country, altCodes: [], lat, lon, timezone: 'UTC' };
 }
 
 describe('GET /cities', () => {
@@ -30,9 +30,9 @@ describe('GET /cities', () => {
   it('returns curated cities sorted by name', async () => {
     await prisma.city.createMany({
       data: [
-        city('IST', 'Istanbul', 'Türkiye'),
-        city('BCN', 'Barcelona', 'Spain'),
-        city('WAW', 'Warsaw', 'Poland'),
+        city('IST', 'Istanbul', 'Türkiye', 41.0082, 28.9784),
+        city('BCN', 'Barcelona', 'Spain', 41.3874, 2.1686),
+        city('WAW', 'Warsaw', 'Poland', 52.2297, 21.0122),
       ],
     });
 
@@ -40,10 +40,16 @@ describe('GET /cities', () => {
     const res = await app.inject({ method: 'GET', url: '/cities', headers: alice });
 
     expect(res.statusCode).toBe(200);
-    expect(res.json()).toEqual([
-      { iata: 'BCN', name: 'Barcelona', country: 'Spain' },
-      { iata: 'IST', name: 'Istanbul', country: 'Türkiye' },
-      { iata: 'WAW', name: 'Warsaw', country: 'Poland' },
-    ]);
+    const items = res.json() as { iata: string; name: string; lat: number; lon: number }[];
+    expect(items.map((c) => c.name)).toEqual(['Barcelona', 'Istanbul', 'Warsaw']);
+    for (const c of items) {
+      expect(typeof c.lat).toBe('number');
+      expect(typeof c.lon).toBe('number');
+    }
+    const ist = items.find((c) => c.iata === 'IST')!;
+    expect(ist.lat).toBeGreaterThan(40.9);
+    expect(ist.lat).toBeLessThan(41.1);
+    expect(ist.lon).toBeGreaterThan(28.9);
+    expect(ist.lon).toBeLessThan(29.1);
   });
 });

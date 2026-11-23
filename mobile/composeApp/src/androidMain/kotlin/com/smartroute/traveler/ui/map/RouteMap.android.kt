@@ -18,7 +18,10 @@ private const val DEMO_STYLE_URL = "https://demotiles.maplibre.org/style.json"
 private val ISTANBUL = LatLng(41.0082, 28.9784)
 
 @Composable
-actual fun RouteMap(modifier: Modifier) {
+actual fun RouteMap(
+    state: RouteMapState,
+    modifier: Modifier,
+) {
     val context = LocalContext.current
     val mapView =
         remember {
