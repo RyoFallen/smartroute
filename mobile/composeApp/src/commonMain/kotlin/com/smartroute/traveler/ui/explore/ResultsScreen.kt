@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +35,7 @@ import com.smartroute.traveler.ui.components.LocalBottomBarInset
 import com.smartroute.traveler.ui.components.PrimaryButton
 import com.smartroute.traveler.ui.components.RetryErrorState
 import com.smartroute.traveler.ui.components.SubScreenHeader
+import com.smartroute.traveler.ui.components.formatDuration
 import com.smartroute.traveler.ui.map.MapPoint
 import com.smartroute.traveler.ui.map.RouteMap
 import com.smartroute.traveler.ui.map.RouteMapState
@@ -61,7 +62,6 @@ import smartroute_mobile.composeapp.generated.resources.results_save_error
 import smartroute_mobile.composeapp.generated.resources.results_saving
 import smartroute_mobile.composeapp.generated.resources.results_title
 
-private const val MINUTES_PER_HOUR = 60
 private const val MAP_HEIGHT_DP = 140
 private const val RELOADING_ALPHA = 0.5f
 
@@ -151,15 +151,16 @@ private fun LoadedContent(
                     onClick = { onSelectOption(recommendedIndex) },
                 )
             }
-            itemsIndexed(state.options) { index, option ->
-                if (index != recommendedIndex) {
-                    CompactCard(
-                        option = option,
-                        currency = state.currency,
-                        selected = state.selectedIndex == index,
-                        onClick = { onSelectOption(index) },
-                    )
-                }
+            items(
+                items = state.options.withIndex().filter { it.index != recommendedIndex },
+                key = { it.index },
+            ) { (index, option) ->
+                CompactCard(
+                    option = option,
+                    currency = state.currency,
+                    selected = state.selectedIndex == index,
+                    onClick = { onSelectOption(index) },
+                )
             }
         }
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
@@ -202,8 +203,7 @@ private fun PresetPills(
 @Composable
 private fun flightsAndDuration(option: RouteOptionDto): String {
     val flights = option.flights.size
-    val minutes = option.totalDurationMin
-    val duration = "${minutes / MINUTES_PER_HOUR}h ${(minutes % MINUTES_PER_HOUR).toString().padStart(2, '0')}m"
+    val duration = formatDuration(option.totalDurationMin)
     return "${pluralStringResource(Res.plurals.results_flights, flights, flights)} · $duration"
 }
 

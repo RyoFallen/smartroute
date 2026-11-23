@@ -47,6 +47,8 @@ sealed interface AuthUiState {
 
 class AuthViewModel(
     private val authClient: ClerkAuthClient,
+    /** Called whenever the signed-in identity may have changed, so cached credentials are dropped. */
+    private val onSessionChanged: () -> Unit = {},
 ) : ViewModel() {
     private val _state =
         MutableStateFlow<AuthUiState>(
@@ -73,6 +75,7 @@ class AuthViewModel(
                 // usually loses the race with construction, so by the time this
                 // runs the state is already SignedOut — and that is precisely
                 // the case that has to explain itself.
+                if (revoked) onSessionChanged()
                 if (revoked && signInId == null) {
                     signInId = null
                     _state.value = AuthUiState.SignedOut(error = AuthError.SessionExpired)
@@ -119,6 +122,7 @@ class AuthViewModel(
             try {
                 authClient.attemptCode(attemptId, code.trim())
                 signInId = null
+                onSessionChanged()
                 _state.value = AuthUiState.SignedIn
             } catch (e: Exception) {
                 _state.value =
@@ -133,6 +137,7 @@ class AuthViewModel(
     fun signOut() {
         viewModelScope.launch {
             authClient.signOut()
+            onSessionChanged()
             signInId = null
             _state.value = AuthUiState.SignedOut()
         }

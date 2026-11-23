@@ -6,6 +6,7 @@ import com.smartroute.traveler.data.CityCatalog
 import com.smartroute.traveler.data.api.ApiClient
 import com.smartroute.traveler.ui.map.MapPoint
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -34,20 +35,29 @@ class HomeViewModel(
     private val _state = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val state: StateFlow<HomeUiState> = _state
 
+    private var loadJob: Job? = null
+
+    /**
+     * First load shows [HomeUiState.Loading]; later loads (returning to the tab)
+     * refresh in the background and keep the content on screen, so Home neither
+     * blanks nor rebuilds its map. A failed background refresh keeps what it has.
+     */
     fun load() {
-        _state.value = HomeUiState.Loading
-        viewModelScope.launch {
-            _state.value =
+        val hadContent = _state.value is HomeUiState.Loaded
+        if (!hadContent) _state.value = HomeUiState.Loading
+        loadJob?.cancel()
+        loadJob =
+            viewModelScope.launch {
                 try {
                     val trips = api.getTrips()
-                    HomeUiState.Loaded(homeContent(trips, today()), cityCatalog.coordinates())
+                    _state.value = HomeUiState.Loaded(homeContent(trips, today()), cityCatalog.coordinates())
                 } catch (e: CancellationException) {
                     throw e
                 } catch (
                     @Suppress("TooGenericExceptionCaught") _: Exception,
                 ) {
-                    HomeUiState.LoadFailed
+                    if (!hadContent) _state.value = HomeUiState.LoadFailed
                 }
-        }
+            }
     }
 }

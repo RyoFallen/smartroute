@@ -317,4 +317,25 @@ class ApiClientTest {
             assertEquals("EUR", api.getTrips().single().currency)
             assertEquals("USD", api.getTrip("trip_1").currency)
         }
+
+    @Test
+    fun `clearAuth makes the next request carry the new user's token`() =
+        runTest {
+            val seen = mutableListOf<String?>()
+            val engine =
+                MockEngine { request ->
+                    seen += request.headers[HttpHeaders.Authorization]
+                    respond(TRIPS_JSON, HttpStatusCode.OK, headersOf(HttpHeaders.ContentType, "application/json"))
+                }
+            var currentJwt = "user-a-jwt"
+            val api = ApiClient(engine, BASE) { currentJwt }
+
+            api.getTrips()
+            currentJwt = "user-b-jwt"
+            api.getTrips() // still the cached token: no 401, so no refresh
+            api.clearAuth()
+            api.getTrips()
+
+            assertEquals(listOf<String?>("Bearer user-a-jwt", "Bearer user-a-jwt", "Bearer user-b-jwt"), seen)
+        }
 }

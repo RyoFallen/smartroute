@@ -69,7 +69,7 @@ private fun AuthenticatedApp(
     language: AppLanguage?,
     onLanguageSelected: (AppLanguage) -> Unit,
 ) {
-    val viewModel = viewModel { AuthViewModel(AppGraph.authClient) }
+    val viewModel = viewModel { AuthViewModel(AppGraph.authClient, onSessionChanged = AppGraph.apiClient::clearAuth) }
     val state by viewModel.state.collectAsState()
     when (val current = state) {
         is AuthUiState.SignedIn ->
@@ -97,7 +97,10 @@ private fun OnboardingGate(
     onLanguageSelected: (AppLanguage) -> Unit,
     onSignOut: () -> Unit,
 ) {
-    val viewModel = viewModel { OnboardingViewModel(AppGraph.apiClient) }
+    // Keyed by session so a new sign-in starts a fresh gate rather than inheriting
+    // the previous user's Complete state (Activity-scoped otherwise).
+    val viewModel =
+        viewModel(key = "onboarding-${AppGraph.tokenStore.sessionId}") { OnboardingViewModel(AppGraph.apiClient) }
     val state by viewModel.state.collectAsState()
     LaunchedEffect(Unit) { viewModel.refresh() }
     when (state) {

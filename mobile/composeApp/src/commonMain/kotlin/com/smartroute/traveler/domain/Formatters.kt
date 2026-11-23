@@ -27,3 +27,6 @@ fun formatIsoDateTime(iso: String): String = "${iso.substring(0, 10)} ${iso.subs
  * converting through the device timezone would be wrong.
  */
 fun formatIsoTime(iso: String): String = iso.substring(11, 16)
+
+/** Whole hours and the remaining minutes of [totalMinutes], e.g. 425 -> (7, 5). */
+fun splitDuration(totalMinutes: Int): Pair<Int, Int> = totalMinutes / 60 to totalMinutes % 60

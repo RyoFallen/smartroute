@@ -144,6 +144,26 @@ class AuthViewModelTest {
         }
 
     @Test
+    fun `verify and sign out both drop the cached API credentials`() =
+        runTest(dispatcher) {
+            var changes = 0
+            val vm =
+                AuthViewModel(
+                    ClerkAuthClient(MockEngine { happyPathHandler()(this, it) }, FAPI, TokenStore(MapSettings())),
+                    onSessionChanged = { changes++ },
+                )
+            vm.sendCode("burak@example.com")
+            vm.state.first { it == AuthUiState.SignedOut(stage = SignInStage.CODE) }
+            vm.verify("424242")
+            vm.state.first { it is AuthUiState.SignedIn }
+            assertEquals(1, changes)
+
+            vm.signOut()
+            vm.state.first { it == AuthUiState.SignedOut() }
+            assertEquals(2, changes)
+        }
+
+    @Test
     fun `a session Clerk has revoked sends the traveler back to sign in`() =
         runTest(dispatcher) {
             // #33: the app used to believe it was signed in forever, because

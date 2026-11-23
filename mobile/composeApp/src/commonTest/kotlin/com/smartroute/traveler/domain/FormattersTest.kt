@@ -45,4 +45,11 @@ class FormattersTest {
         // local — no conversion, no device timezone.
         assertEquals("09:00", formatIsoTime("2026-07-01T09:00:00+03:00"))
     }
+
+    @Test
+    fun splitsADurationIntoHoursAndMinutes() {
+        assertEquals(7 to 5, splitDuration(425))
+        assertEquals(7 to 0, splitDuration(420))
+        assertEquals(0 to 45, splitDuration(45))
+    }
 }

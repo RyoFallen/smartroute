@@ -137,6 +137,7 @@
         <item quantity="other">%1$d flights</item>
     </plurals>
     <string name="results_saving">Saving…</string>
+    <string name="duration_hours_minutes">%1$dh %2$sm</string>
     <string name="results_save_error">Could not save this trip</string>
     <string name="home_greeting_morning">Good morning</string>
     <string name="home_greeting_afternoon">Good afternoon</string>

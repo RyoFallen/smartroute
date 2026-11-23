@@ -8,6 +8,7 @@ import com.smartroute.traveler.data.api.CreateTripRequestDto
 import com.smartroute.traveler.data.api.OptimizeRequestDto
 import com.smartroute.traveler.data.api.RouteOptionDto
 import com.smartroute.traveler.domain.OptimizePreset
+import com.smartroute.traveler.domain.RouteLabel
 import com.smartroute.traveler.ui.map.MapPoint
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -74,6 +75,7 @@ class ResultsViewModel(
                             preset = request.preset,
                             coordinates = cityCatalog.coordinates(),
                             currency = response.currency,
+                            selectedIndex = recommendedIndex(response.options),
                         )
                     } catch (e: CancellationException) {
                         // A superseded run is cancelled on purpose; it must not report failure.
@@ -85,7 +87,8 @@ class ResultsViewModel(
     }
 
     /**
-     * Re-runs the optimizer for [preset] and drops the selection, since the
+     * Re-runs the optimizer for [preset] and drops the selection (the new Recommended
+     * is preselected when the results arrive), since the
      * options it pointed at are gone. Ignored for the current preset and while a
      * save is in flight, so a trip is never saved against options that are being
      * replaced (or twice).
@@ -105,9 +108,10 @@ class ResultsViewModel(
                             options = response.options,
                             reason = response.reason,
                             preset = preset,
+                            coordinates = cityCatalog.coordinates(),
                             currency = response.currency,
                             reloading = false,
-                            selectedIndex = null,
+                            selectedIndex = recommendedIndex(response.options),
                             saveFailed = false,
                         )
                     } catch (e: CancellationException) {
@@ -141,6 +145,10 @@ class ResultsViewModel(
                 }
         }
     }
+
+    /** The Recommended option, else the first, so Save is usable as soon as results arrive. */
+    private fun recommendedIndex(options: List<RouteOptionDto>): Int? =
+        if (options.isEmpty()) null else options.indexOfFirst { it.label == RouteLabel.RECOMMENDED }.coerceAtLeast(0)
 
     private fun tripRequestFor(
         option: RouteOptionDto,

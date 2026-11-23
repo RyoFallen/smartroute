@@ -39,6 +39,7 @@ fun GlassCard(
     val shadowColor = if (selected) PrimaryGlow else SrColors.GlassShadow
     var card =
         modifier
+            .then(if (onClick != null) Modifier.pressScale(interactionSource) else Modifier)
             .shadow(12.dp, shape, ambientColor = shadowColor, spotColor = shadowColor)
             .clip(shape)
             .background(Color.White.copy(alpha = GLASS_ALPHA), shape)
@@ -46,7 +47,6 @@ fun GlassCard(
     if (onClick != null) {
         card =
             card
-                .pressScale(interactionSource)
                 .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
     }
     Column(modifier = card, content = content)

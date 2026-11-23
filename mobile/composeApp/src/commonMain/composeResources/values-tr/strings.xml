@@ -137,6 +137,7 @@
         <item quantity="other">%1$d uçuş</item>
     </plurals>
     <string name="results_saving">Kaydediliyor…</string>
+    <string name="duration_hours_minutes">%1$d sa %2$s dk</string>
     <string name="results_save_error">Bu gezi kaydedilemedi</string>
     <string name="home_greeting_morning">Günaydın</string>
     <string name="home_greeting_afternoon">İyi günler</string>

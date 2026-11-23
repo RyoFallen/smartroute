@@ -4,6 +4,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.authProvider
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -46,6 +48,15 @@ class ApiClient(
                 }
             }
         }
+
+    /**
+     * Drops the bearer token the Auth plugin cached. Without this, the next
+     * signed-in user's requests go out with the previous user's JWT until a 401
+     * forces a refresh.
+     */
+    fun clearAuth() {
+        http.authProvider<BearerAuthProvider>()?.clearToken()
+    }
 
     suspend fun getTrips(): List<TripSummary> = get("/trips")
 

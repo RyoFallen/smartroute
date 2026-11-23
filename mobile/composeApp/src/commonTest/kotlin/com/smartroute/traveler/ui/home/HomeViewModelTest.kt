@@ -9,10 +9,14 @@ import io.ktor.client.request.HttpResponseData
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -115,5 +119,57 @@ class HomeViewModelTest {
             fail = false
             vm.load()
             vm.state.first { it is HomeUiState.Loaded }
+        }
+
+    @Test
+    fun `a second load keeps the content on screen while it refreshes`() =
+        runTest(dispatcher) {
+            val gate = CompletableDeferred<Unit>()
+            var tripsCalls = 0
+            val api =
+                ApiClient(
+                    MockEngine { request ->
+                        if (request.url.encodedPath.endsWith("/cities")) {
+                            json(CITIES_JSON)
+                        } else {
+                            tripsCalls++
+                            if (tripsCalls == 2) {
+                                gate.await()
+                                json("[]")
+                            } else {
+                                json(TRIPS_JSON)
+                            }
+                        }
+                    },
+                    "https://api.example.dev",
+                ) { "jwt" }
+            val vm = HomeViewModel(api, CityCatalog(api)) { LocalDate(2026, 12, 1) }
+            vm.load()
+            val first = vm.state.first { it is HomeUiState.Loaded } as HomeUiState.Loaded
+            assertEquals(
+                "trip_1",
+                first.content.upcoming
+                    ?.trip
+                    ?.id,
+            )
+
+            val seen = mutableListOf<HomeUiState>()
+            val collector = launch(UnconfinedTestDispatcher(testScheduler)) { vm.state.collect { seen += it } }
+            vm.load()
+            advanceUntilIdle() // second request is now parked on the gate
+            assertTrue(seen.all { it is HomeUiState.Loaded }, "never Loading during a refresh: $seen")
+            assertEquals(
+                "trip_1",
+                (vm.state.value as HomeUiState.Loaded)
+                    .content.upcoming
+                    ?.trip
+                    ?.id,
+            )
+
+            gate.complete(Unit)
+            val refreshed = vm.state.first { it is HomeUiState.Loaded && it.content.upcoming == null }
+            collector.cancel()
+            assertTrue(refreshed is HomeUiState.Loaded)
+            assertTrue(seen.all { it is HomeUiState.Loaded }, "never Loading after the response either: $seen")
         }
 }

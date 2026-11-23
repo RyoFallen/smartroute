@@ -45,6 +45,15 @@ private const val OPTIMIZE_RESPONSE_JSON = """
 ]}
 """
 
+private const val RECOMMENDED_SECOND_JSON = """
+{"options": [
+  {"label": "cheapest", "order": ["SOF", "BEG"], "flights": [],
+    "totalPriceCents": 70000, "totalDurationMin": 210},
+  {"label": "recommended", "order": ["SOF", "BEG"], "flights": [],
+    "totalPriceCents": 84700, "totalDurationMin": 180}
+]}
+"""
+
 private const val EUR_RESPONSE_JSON = """
 {"options": [
   {"label": "recommended", "order": ["SOF", "BEG"], "flights": [],
@@ -260,7 +269,7 @@ class ResultsViewModelTest {
             assertEquals(2, optimizeBodies.size)
             val decoded = LENIENT_JSON.decodeFromString<OptimizeRequestDto>(optimizeBodies[1])
             assertEquals(OptimizePreset.BUDGET, decoded.preset)
-            assertNull(state.selectedIndex)
+            assertEquals(0, state.selectedIndex, "the new Recommended is preselected")
             assertEquals(OptimizePreset.BUDGET, state.preset)
             assertFalse(state.reloading)
         }
@@ -376,5 +385,43 @@ class ResultsViewModelTest {
             assertFalse(state.reloading)
             assertTrue(seen.none { it is ResultsUiState.LoadFailed }, "error state flashed: $seen")
             collector.cancel()
+        }
+
+    @Test
+    fun `load preselects the Recommended option wherever it sits, so Save is usable`() =
+        runTest(dispatcher) {
+            val vm = viewModel { json(RECOMMENDED_SECOND_JSON) }
+            vm.load()
+            val state = vm.state.first { it is ResultsUiState.Loaded } as ResultsUiState.Loaded
+            assertEquals(1, state.selectedIndex)
+        }
+
+    @Test
+    fun `a preset reload preselects the new Recommended and recovers a failed catalog`() =
+        runTest(dispatcher) {
+            var catalogUp = false
+            val api =
+                ApiClient(
+                    MockEngine { request ->
+                        when (request.url.encodedPath) {
+                            "/cities" ->
+                                if (catalogUp) json(CITIES_JSON) else json("""{"error":{}}""", HttpStatusCode.InternalServerError)
+                            else -> json(RECOMMENDED_SECOND_JSON)
+                        }
+                    },
+                    "https://api.example.dev",
+                ) { "jwt" }
+            val vm = ResultsViewModel(api, REQUEST, CityCatalog(api))
+            vm.load()
+            val first = vm.state.first { it is ResultsUiState.Loaded } as ResultsUiState.Loaded
+            assertTrue(first.coordinates.isEmpty())
+
+            catalogUp = true
+            vm.selectPreset(OptimizePreset.BUDGET)
+            advanceUntilIdle()
+
+            val state = vm.state.first { it is ResultsUiState.Loaded && !it.reloading } as ResultsUiState.Loaded
+            assertEquals(1, state.selectedIndex)
+            assertEquals(setOf("SOF", "BEG"), state.coordinates.keys)
         }
 }

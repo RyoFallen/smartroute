@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.smartroute.traveler.ui.theme.GLASS_ALPHA_SUBTLE
 import com.smartroute.traveler.ui.theme.SrColors
@@ -68,10 +69,22 @@ fun GlassPill(
             Icon(leadingIcon, contentDescription = null, tint = contentColor, modifier = Modifier.size(18.dp))
         }
         if (subtitle == null) {
-            Text(text, style = MaterialTheme.typography.labelLarge, color = contentColor)
+            Text(
+                text,
+                style = MaterialTheme.typography.labelLarge,
+                color = contentColor,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
         } else {
             Column {
-                Text(text, style = MaterialTheme.typography.labelLarge, color = contentColor)
+                Text(
+                    text,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = contentColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
                 Text(subtitle, style = MaterialTheme.typography.labelSmall, color = contentColor.copy(alpha = 0.8f))
             }
         }

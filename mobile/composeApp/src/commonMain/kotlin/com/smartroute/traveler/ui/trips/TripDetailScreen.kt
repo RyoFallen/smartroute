@@ -34,6 +34,7 @@ import com.smartroute.traveler.ui.components.LocalBottomBarInset
 import com.smartroute.traveler.ui.components.PrimaryButton
 import com.smartroute.traveler.ui.components.RetryErrorState
 import com.smartroute.traveler.ui.components.SubScreenHeader
+import com.smartroute.traveler.ui.components.formatDuration
 import com.smartroute.traveler.ui.theme.SrColors
 import com.smartroute.traveler.ui.theme.SrShapes
 import org.jetbrains.compose.resources.stringResource
@@ -175,7 +176,7 @@ private fun FlightLegRow(
                 )
                 Text(
                     text =
-                        "${formatPrice(leg.priceCents, currency)} · ${leg.durationMin / 60}h${leg.durationMin % 60}m · " +
+                        "${formatPrice(leg.priceCents, currency)} · ${formatDuration(leg.durationMin)} · " +
                             "${leg.stops} ${stringResource(Res.string.trip_detail_stops)}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = SrColors.MutedForeground,
