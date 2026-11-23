@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.smartroute.traveler.data.api.RouteOptionDto
 import com.smartroute.traveler.domain.RouteLabel
 import com.smartroute.traveler.domain.formatPrice
+import com.smartroute.traveler.ui.components.LocalBottomBarInset
 import com.smartroute.traveler.ui.components.RetryErrorState
 import com.smartroute.traveler.ui.components.SubScreenHeader
 import org.jetbrains.compose.resources.StringResource
@@ -90,7 +91,7 @@ private fun LoadedContent(
     onSelectOption: (Int) -> Unit,
     onSave: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().padding(bottom = LocalBottomBarInset.current)) {
         LazyColumn(modifier = Modifier.weight(1f)) {
             itemsIndexed(state.options) { index, option ->
                 RouteOptionCard(

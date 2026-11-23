@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.smartroute.traveler.ui.components.LocalBottomBarInset
 import org.jetbrains.compose.resources.stringResource
 import smartroute_mobile.composeapp.generated.resources.Res
 import smartroute_mobile.composeapp.generated.resources.delete_account
@@ -34,7 +35,7 @@ fun ProfileScreen(
     onSignOut: () -> Unit,
     onDeleteAccountClick: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().padding(bottom = LocalBottomBarInset.current)) {
         Text(
             text = stringResource(Res.string.tab_profile),
             style = MaterialTheme.typography.headlineSmall,

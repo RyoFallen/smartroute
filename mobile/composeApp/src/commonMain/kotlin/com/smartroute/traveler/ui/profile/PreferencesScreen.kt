@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.smartroute.traveler.domain.TripIntensity
+import com.smartroute.traveler.ui.components.LocalBottomBarInset
 import com.smartroute.traveler.ui.components.RetryErrorState
 import com.smartroute.traveler.ui.components.SubScreenHeader
 import org.jetbrains.compose.resources.StringResource
@@ -86,7 +87,7 @@ private fun EditingContent(
     onWakeUpTimeChange: (String) -> Unit,
     onSave: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = Modifier.fillMaxSize().padding(bottom = LocalBottomBarInset.current).padding(16.dp)) {
         Text(
             text = stringResource(Res.string.preferences_intensity),
             style = MaterialTheme.typography.titleMedium,

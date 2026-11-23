@@ -8,6 +8,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -59,7 +59,9 @@ import com.smartroute.traveler.AppGraph
 import com.smartroute.traveler.data.api.OptimizeRequestDto
 import com.smartroute.traveler.data.storage.AppLanguage
 import com.smartroute.traveler.domain.OptimizePreset
+import com.smartroute.traveler.ui.components.LocalBottomBarInset
 import com.smartroute.traveler.ui.components.MOTION_MS
+import com.smartroute.traveler.ui.components.pressScale
 import com.smartroute.traveler.ui.explore.ResultsScreen
 import com.smartroute.traveler.ui.explore.ResultsViewModel
 import com.smartroute.traveler.ui.explore.TripConfigScreen
@@ -401,9 +403,6 @@ fun MainTabsScaffold(
     }
 }
 
-/** Height of the frosted bottom bar; screens add it as bottom content padding. */
-val LocalBottomBarInset = compositionLocalOf { 0.dp }
-
 private val BarShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
 
 @Composable
@@ -441,12 +440,14 @@ private fun GlassBarItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
     val tint = if (selected) SrColors.Primary else SrColors.MutedForeground
     Column(
         modifier =
             modifier
                 .clip(SrShapes.SmallCard)
-                .clickable(role = Role.Tab, onClick = onClick)
+                .pressScale(interactionSource)
+                .clickable(interactionSource = interactionSource, indication = null, role = Role.Tab, onClick = onClick)
                 .padding(vertical = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(2.dp),

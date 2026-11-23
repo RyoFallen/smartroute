@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.smartroute.traveler.domain.InterestCategory
+import com.smartroute.traveler.ui.components.LocalBottomBarInset
 import com.smartroute.traveler.ui.components.RetryErrorState
 import com.smartroute.traveler.ui.components.SubScreenHeader
 import com.smartroute.traveler.ui.i18n.labelRes
@@ -71,7 +72,7 @@ private fun EditingContent(
     onRate: (InterestCategory, Int) -> Unit,
     onSave: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().padding(bottom = LocalBottomBarInset.current)) {
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(InterestCategory.entries) { category ->
                 InterestRow(

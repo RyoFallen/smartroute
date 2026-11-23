@@ -3,6 +3,7 @@ package com.smartroute.traveler.ui.trips
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import com.smartroute.traveler.data.api.VisitSlotDto
 import com.smartroute.traveler.domain.AttractionCategory
 import com.smartroute.traveler.domain.EmptyDayReason
 import com.smartroute.traveler.domain.formatIsoTime
+import com.smartroute.traveler.ui.components.LocalBottomBarInset
 import com.smartroute.traveler.ui.components.RetryErrorState
 import com.smartroute.traveler.ui.components.SubScreenHeader
 import com.smartroute.traveler.ui.map.rememberMapOpener
@@ -116,7 +118,7 @@ fun ItineraryScreen(
                     onRetry = onRetryLoad,
                 )
             is ItineraryUiState.Loaded ->
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = LocalBottomBarInset.current)) {
                     state.cities.forEachIndexed { index, city ->
                         item { CityHeader(index = index, city = city) }
                         if (!city.available) {

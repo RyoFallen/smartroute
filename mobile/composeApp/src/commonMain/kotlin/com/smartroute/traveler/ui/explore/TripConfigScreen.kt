@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.smartroute.traveler.data.api.CitySummaryDto
 import com.smartroute.traveler.domain.OptimizePreset
+import com.smartroute.traveler.ui.components.LocalBottomBarInset
 import com.smartroute.traveler.ui.components.RetryErrorState
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -127,7 +129,7 @@ private fun ReadyContent(
 ) {
     val canSubmit = state.selected.size in 2..8 && state.departDate.isNotBlank()
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = LocalBottomBarInset.current)) {
         item {
             Text(
                 text = stringResource(Res.string.explore_cities_label, state.selected.size),

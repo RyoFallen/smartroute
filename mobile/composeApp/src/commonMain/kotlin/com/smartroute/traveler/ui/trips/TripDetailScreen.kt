@@ -2,6 +2,7 @@ package com.smartroute.traveler.ui.trips
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,7 @@ import com.smartroute.traveler.data.api.TripDetail
 import com.smartroute.traveler.domain.formatIsoDate
 import com.smartroute.traveler.domain.formatIsoDateTime
 import com.smartroute.traveler.domain.formatPrice
+import com.smartroute.traveler.ui.components.LocalBottomBarInset
 import com.smartroute.traveler.ui.components.RetryErrorState
 import com.smartroute.traveler.ui.components.SubScreenHeader
 import org.jetbrains.compose.resources.stringResource
@@ -81,7 +83,7 @@ private fun LoadedContent(
     onBack: () -> Unit,
     onDeleteClick: () -> Unit,
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = LocalBottomBarInset.current)) {
         item {
             SubScreenHeader(title = trip.name, onBack = onBack) {
                 IconButton(onClick = onDeleteClick) {
