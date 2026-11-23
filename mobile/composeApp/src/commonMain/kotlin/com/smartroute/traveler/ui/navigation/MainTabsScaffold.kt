@@ -283,6 +283,7 @@ fun MainTabsScaffold(
                             state = itineraryState,
                             onRetryLoad = itineraryViewModel::load,
                             onBack = { navController.popBackStack() },
+                            onSelectTab = itineraryViewModel::selectTab,
                         )
                     }
                 }

@@ -1,6 +1,8 @@
 package com.smartroute.traveler.ui.trips
 
 import com.smartroute.traveler.data.api.ApiClient
+import com.smartroute.traveler.data.api.ItineraryCityDto
+import com.smartroute.traveler.data.api.ItineraryDayDto
 import com.smartroute.traveler.domain.EmptyDayReason
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockRequestHandleScope
@@ -188,5 +190,61 @@ class ItineraryViewModelTest {
             fail = false
             vm.load()
             vm.state.first { it is ItineraryUiState.Loaded }
+        }
+
+    private fun day(n: Int) = ItineraryDayDto(date = "2026-07-0$n", dayOfStay = n, empty = false)
+
+    @Test
+    fun `dayTabs numbers days across cities`() {
+        val tabs =
+            dayTabs(
+                listOf(
+                    ItineraryCityDto("AAA", "A", true, listOf(day(1), day(2))),
+                    ItineraryCityDto("BBB", "B", true, listOf(day(1))),
+                ),
+            )
+
+        assertEquals(listOf(1, 2, 3), tabs.map { it.number })
+        assertEquals(listOf("A", "A", "B"), tabs.map { it.cityName })
+        assertEquals(listOf("AAA", "AAA", "BBB"), tabs.map { it.iata })
+    }
+
+    @Test
+    fun `an unavailable city gets one tab without a day`() {
+        val tabs =
+            dayTabs(
+                listOf(
+                    ItineraryCityDto("AAA", "A", true, listOf(day(1))),
+                    ItineraryCityDto("JFK", null, false, emptyList()),
+                ),
+            )
+
+        assertEquals(2, tabs.size)
+        assertEquals(2, tabs[1].number)
+        assertNull(tabs[1].day)
+        assertNull(tabs[1].cityName)
+    }
+
+    @Test
+    fun `empty days keep their tab`() =
+        runTest(dispatcher) {
+            val tab = loaded().tabs[1]
+
+            assertTrue(tab.day!!.empty)
+            assertEquals(EmptyDayReason.DEPARTURE_TOO_EARLY, tab.day!!.reason)
+        }
+
+    @Test
+    fun `selectTab changes the selection and ignores out of range`() =
+        runTest(dispatcher) {
+            val vm = viewModel { json(ITINERARY_JSON) }
+            vm.load()
+            vm.state.first { it is ItineraryUiState.Loaded }
+
+            vm.selectTab(2)
+            assertEquals(2, (vm.state.value as ItineraryUiState.Loaded).selectedTab)
+            vm.selectTab(3)
+            vm.selectTab(-1)
+            assertEquals(2, (vm.state.value as ItineraryUiState.Loaded).selectedTab)
         }
 }

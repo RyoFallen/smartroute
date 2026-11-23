@@ -62,7 +62,7 @@
     <string name="itinerary_error_load">Could not load this trip\'s itinerary</string>
     <string name="itinerary_no_guide">No guide for this city yet.</string>
     <string name="itinerary_open_in_maps">Open in maps</string>
-    <string name="itinerary_day_of_stay">Day %1$d</string>
+    <string name="itinerary_day">Day %1$d</string>
     <string name="itinerary_walk">%1$d min walk</string>
     <string name="itinerary_visit_minutes">%1$d min</string>
     <string name="itinerary_empty_arrival_too_late">You land too late to visit anything today.</string>

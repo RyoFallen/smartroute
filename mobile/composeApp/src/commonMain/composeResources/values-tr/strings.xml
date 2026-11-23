@@ -62,7 +62,7 @@
     <string name="itinerary_error_load">Bu gezinin programı yüklenemedi</string>
     <string name="itinerary_no_guide">Bu şehir için henüz rehber yok.</string>
     <string name="itinerary_open_in_maps">Haritada aç</string>
-    <string name="itinerary_day_of_stay">%1$d. gün</string>
+    <string name="itinerary_day">%1$d. gün</string>
     <string name="itinerary_walk">%1$d dk yürüyüş</string>
     <string name="itinerary_visit_minutes">%1$d dk</string>
     <string name="itinerary_empty_arrival_too_late">Bugün bir yer gezmek için çok geç iniyorsunuz.</string>
