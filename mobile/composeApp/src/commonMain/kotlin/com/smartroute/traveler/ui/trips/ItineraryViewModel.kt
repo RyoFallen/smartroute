@@ -54,11 +54,19 @@ class ItineraryViewModel(
     val state: StateFlow<ItineraryUiState> = _state
 
     fun load() {
+        // A reload (e.g. the route re-entering composition) keeps the day the traveler was on.
+        val previousTab = (_state.value as? ItineraryUiState.Loaded)?.selectedTab ?: 0
         _state.value = ItineraryUiState.Loading
         viewModelScope.launch {
             _state.value =
                 try {
-                    ItineraryUiState.Loaded(api.getTripItinerary(tripId).cities)
+                    val cities = api.getTripItinerary(tripId).cities
+                    val tabs = dayTabs(cities)
+                    ItineraryUiState.Loaded(
+                        cities = cities,
+                        tabs = tabs,
+                        selectedTab = previousTab.coerceIn(0, maxOf(tabs.lastIndex, 0)),
+                    )
                 } catch (e: CancellationException) {
                     throw e
                 } catch (_: Exception) {

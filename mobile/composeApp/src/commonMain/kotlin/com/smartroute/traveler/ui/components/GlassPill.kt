@@ -1,6 +1,7 @@
 package com.smartroute.traveler.ui.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -41,11 +42,11 @@ fun GlassPill(
     val interactionSource = remember { MutableInteractionSource() }
     val fill by animateColorAsState(
         if (selected) SrColors.Primary else Color.White.copy(alpha = GLASS_ALPHA_SUBTLE),
-        tween(MOTION_MS),
+        tween(MOTION_MS, easing = EaseOut),
     )
     val contentColor by animateColorAsState(
         if (selected) SrColors.OnPrimary else SrColors.Foreground,
-        tween(MOTION_MS),
+        tween(MOTION_MS, easing = EaseOut),
     )
     Row(
         modifier =

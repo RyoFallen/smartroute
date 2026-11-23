@@ -247,4 +247,35 @@ class ItineraryViewModelTest {
             vm.selectTab(-1)
             assertEquals(2, (vm.state.value as ItineraryUiState.Loaded).selectedTab)
         }
+
+    @Test
+    fun `a reload keeps the selected tab`() =
+        runTest(dispatcher) {
+            val vm = viewModel { json(ITINERARY_JSON) }
+            vm.load()
+            vm.state.first { it is ItineraryUiState.Loaded }
+            vm.selectTab(2)
+
+            vm.load()
+            vm.state.first { it is ItineraryUiState.Loaded }
+
+            assertEquals(2, (vm.state.value as ItineraryUiState.Loaded).selectedTab)
+        }
+
+    @Test
+    fun `a reload with fewer tabs clamps the selection`() =
+        runTest(dispatcher) {
+            var body = ITINERARY_JSON
+            val vm = viewModel { json(body) }
+            vm.load()
+            vm.state.first { it is ItineraryUiState.Loaded }
+            vm.selectTab(2)
+
+            // Only the unavailable city remains: one tab.
+            body = """{"tripId": "trip_1", "cities": [{"iata": "JFK", "name": null, "available": false, "days": []}]}"""
+            vm.load()
+            vm.state.first { it is ItineraryUiState.Loaded }
+
+            assertEquals(0, (vm.state.value as ItineraryUiState.Loaded).selectedTab)
+        }
 }
