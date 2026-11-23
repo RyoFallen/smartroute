@@ -1,0 +1,6904 @@
+{
+  "date": "2026-11-01",
+  "startedAt": "2026-11-01T08:28:58+01:00",
+  "endedAt": "2026-11-01T09:17:23+01:00",
+  "grids": [
+    {
+      "item": "G01",
+      "origin": "BCN",
+      "destination": "BER",
+      "screenshotAt": "2026-11-01T08:29:03+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 9300
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 8600
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 10200
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 8600
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 9600
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 12100
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 10100
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 5700
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 5200
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 6800
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 4800
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 2600
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 4200
+        }
+      ]
+    },
+    {
+      "item": "G02",
+      "origin": "BER",
+      "destination": "BCN",
+      "screenshotAt": "2026-11-01T08:29:54+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 4700
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 10400
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 10500
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 7900
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3700
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 7900
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 8600
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 8200
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 6800
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 7700
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 10600
+        }
+      ]
+    },
+    {
+      "item": "G03",
+      "origin": "BCN",
+      "destination": "BUD",
+      "screenshotAt": "2026-11-01T08:31:22+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 3700
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 5600
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 7900
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 5600
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 6900
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 9000
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 5600
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 6100
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 4700
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 5100
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 7900
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 5000
+        }
+      ]
+    },
+    {
+      "item": "G04",
+      "origin": "BUD",
+      "destination": "BCN",
+      "screenshotAt": "2026-11-01T08:31:32+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 9500
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 11700
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 13300
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 10200
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 6500
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 4800
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 4400
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 4300
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 5300
+        }
+      ]
+    },
+    {
+      "item": "G05",
+      "origin": "BCN",
+      "destination": "CDG",
+      "screenshotAt": "2026-11-01T08:33:01+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 2600
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 3700
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 3700
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 4400
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 7300
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 2600
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 3700
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 2300
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 2400
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 4500
+        }
+      ]
+    },
+    {
+      "item": "G06",
+      "origin": "CDG",
+      "destination": "BCN",
+      "screenshotAt": "2026-11-01T08:33:12+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 2300
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 4400
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 4200
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 13900
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 7800
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 2600
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 4400
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 6000
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 4800
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 6100
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 4200
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 4300
+        }
+      ]
+    },
+    {
+      "item": "G07",
+      "origin": "BCN",
+      "destination": "FCO",
+      "screenshotAt": "2026-11-01T08:33:54+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 1700
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 2300
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 2400
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 6400
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 3700
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 2100
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 1800
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 1800
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 1800
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 1700
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 3600
+        }
+      ]
+    },
+    {
+      "item": "G08",
+      "origin": "FCO",
+      "destination": "BCN",
+      "screenshotAt": "2026-11-01T08:34:05+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 2100
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 2600
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 4400
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 5600
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 12500
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 2100
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 1900
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 2400
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 2800
+        }
+      ]
+    },
+    {
+      "item": "G09",
+      "origin": "BCN",
+      "destination": "IST",
+      "screenshotAt": "2026-11-01T08:34:46+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 10700
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 10700
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 15400
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 15200
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 8900
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 10100
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 10100
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 14200
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 12200
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 10100
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 8900
+        }
+      ]
+    },
+    {
+      "item": "G10",
+      "origin": "IST",
+      "destination": "BCN",
+      "screenshotAt": "2026-11-01T08:34:57+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 9900
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 10800
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 9900
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 7500
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 7500
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 8900
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 8900
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 16400
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 9900
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 9300
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 9100
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 8900
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 6600
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 8900
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 7500
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 8900
+        }
+      ]
+    },
+    {
+      "item": "G11",
+      "origin": "BCN",
+      "destination": "LHR",
+      "screenshotAt": "2026-11-01T08:35:42+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 1500
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 1900
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 1600
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 1900
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 2100
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 6600
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 1900
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 1600
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 1600
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 1900
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 1600
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 1900
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 1700
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 1600
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 1500
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 1500
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 1600
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 1500
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 1900
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 1800
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 1600
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 2100
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 1700
+        }
+      ]
+    },
+    {
+      "item": "G12",
+      "origin": "LHR",
+      "destination": "BCN",
+      "screenshotAt": "2026-11-01T08:35:52+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 2400
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 2100
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 1800
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 11600
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 2300
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 2100
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 2300
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 3500
+        }
+      ]
+    },
+    {
+      "item": "G13",
+      "origin": "BCN",
+      "destination": "WAW",
+      "screenshotAt": "2026-11-01T08:37:13+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 5600
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 4300
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 9000
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 10200
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 6000
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 3700
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 4400
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 5200
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 7000
+        }
+      ]
+    },
+    {
+      "item": "G14",
+      "origin": "WAW",
+      "destination": "BCN",
+      "screenshotAt": "2026-11-01T08:37:23+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 4800
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 6400
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 7300
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 11000
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 5200
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 4700
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 4800
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 2400
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 5200
+        }
+      ]
+    },
+    {
+      "item": "G15",
+      "origin": "BER",
+      "destination": "BUD",
+      "screenshotAt": "2026-11-01T08:38:05+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 2300
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 6000
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 8200
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 8200
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 4400
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 5600
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 7000
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 9300
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 7000
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 7000
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 8800
+        }
+      ]
+    },
+    {
+      "item": "G16",
+      "origin": "BUD",
+      "destination": "BER",
+      "screenshotAt": "2026-11-01T08:38:15+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 6900
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 4200
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 8700
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 1600
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 8700
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 2300
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 1500
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 4300
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 4200
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 4200
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 1600
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 1800
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 2100
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 6900
+        }
+      ]
+    },
+    {
+      "item": "G17",
+      "origin": "BER",
+      "destination": "CDG",
+      "screenshotAt": "2026-11-01T08:38:58+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 7200
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 8800
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 8900
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 5800
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 8900
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 7700
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 8300
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 8900
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 7700
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 5100
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 4200
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 7200
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 7700
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 4300
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 4200
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 7200
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 9600
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 12000
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 13000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 13000
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 12200
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 12000
+        }
+      ]
+    },
+    {
+      "item": "G18",
+      "origin": "CDG",
+      "destination": "BER",
+      "screenshotAt": "2026-11-01T08:39:09+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 9700
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 9700
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 6200
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 9700
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 9700
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 6300
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 4400
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 9500
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 4800
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 4800
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 8300
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 12500
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 10500
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 6400
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 10300
+        }
+      ]
+    },
+    {
+      "item": "G19",
+      "origin": "BER",
+      "destination": "FCO",
+      "screenshotAt": "2026-11-01T08:39:50+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 6200
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 6000
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 6500
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 15000
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 12800
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 7700
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 6800
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 6000
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 9500
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 10500
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 9500
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 11700
+        }
+      ]
+    },
+    {
+      "item": "G20",
+      "origin": "FCO",
+      "destination": "BER",
+      "screenshotAt": "2026-11-01T08:40:01+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 5600
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 8700
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 8700
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 7900
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 6800
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 5700
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 7000
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 7300
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 2400
+        }
+      ]
+    },
+    {
+      "item": "G21",
+      "origin": "BER",
+      "destination": "IST",
+      "screenshotAt": "2026-11-01T08:40:43+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 6300
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 6500
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 7700
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 6800
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 8500
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 9100
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 9100
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 9500
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 9100
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 10600
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 15100
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 17400
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 15700
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 15600
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 17200
+        }
+      ]
+    },
+    {
+      "item": "G22",
+      "origin": "IST",
+      "destination": "BER",
+      "screenshotAt": "2026-11-01T08:40:53+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 6100
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 6100
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 6200
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 5400
+        }
+      ]
+    },
+    {
+      "item": "G23",
+      "origin": "BER",
+      "destination": "LHR",
+      "screenshotAt": "2026-11-01T08:41:42+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 8100
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 7800
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 3700
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 5800
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 5700
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 7200
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 7800
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 5100
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 5700
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 6100
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 7200
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 5800
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 6400
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 9300
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 9000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 7000
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 7800
+        }
+      ]
+    },
+    {
+      "item": "G24",
+      "origin": "LHR",
+      "destination": "BER",
+      "screenshotAt": "2026-11-01T08:41:52+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 6000
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 8300
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 7500
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 6900
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 6000
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 8800
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 8700
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 6900
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 5800
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 4200
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 6000
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 10200
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 9300
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 7300
+        }
+      ]
+    },
+    {
+      "item": "G25",
+      "origin": "BER",
+      "destination": "WAW",
+      "screenshotAt": "2026-11-01T08:42:35+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 11200
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 12200
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 9900
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 10800
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 10800
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 10800
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 10800
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 9400
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 9400
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 9400
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 9400
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 12600
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 15000
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 15000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 14000
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 15000
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 10000
+        }
+      ]
+    },
+    {
+      "item": "G26",
+      "origin": "WAW",
+      "destination": "BER",
+      "screenshotAt": "2026-11-01T08:42:45+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 11800
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 12700
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 11100
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 10300
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 10300
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 12200
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 11600
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 10300
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 10300
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 10300
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 10300
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 10300
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 8800
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 8800
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 8800
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 8800
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 8800
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 8800
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 10700
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 9300
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 8800
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 8800
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 8800
+        }
+      ]
+    },
+    {
+      "item": "G27",
+      "origin": "BUD",
+      "destination": "CDG",
+      "screenshotAt": "2026-11-01T08:43:28+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 5800
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 9500
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 6900
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 8200
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 3700
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 4200
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 5700
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 6200
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 7300
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 6200
+        }
+      ]
+    },
+    {
+      "item": "G28",
+      "origin": "CDG",
+      "destination": "BUD",
+      "screenshotAt": "2026-11-01T08:43:38+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 5100
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 5200
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 8100
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 9100
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 4300
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 6100
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 9200
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 5800
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 6400
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 6100
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 4800
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 9200
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 13100
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 16000
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 13700
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 9900
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 9200
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 9800
+        }
+      ]
+    },
+    {
+      "item": "G29",
+      "origin": "BUD",
+      "destination": "FCO",
+      "screenshotAt": "2026-11-01T08:44:19+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 4400
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 3700
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 13000
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 6300
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 4800
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 7000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 4400
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 3400
+        }
+      ]
+    },
+    {
+      "item": "G30",
+      "origin": "FCO",
+      "destination": "BUD",
+      "screenshotAt": "2026-11-01T08:44:30+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 5600
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 4300
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 3700
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 10200
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 11400
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 2300
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 5800
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 5100
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 2800
+        }
+      ]
+    },
+    {
+      "item": "G31",
+      "origin": "BUD",
+      "destination": "IST",
+      "screenshotAt": "2026-11-01T08:45:11+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 11300
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 11000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 15400
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 14000
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 11300
+        }
+      ]
+    },
+    {
+      "item": "G32",
+      "origin": "IST",
+      "destination": "BUD",
+      "screenshotAt": "2026-11-01T08:45:21+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 6000
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 6000
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 5600
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 6000
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 5600
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 6000
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 5600
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 4600
+        }
+      ]
+    },
+    {
+      "item": "G33",
+      "origin": "BUD",
+      "destination": "LHR",
+      "screenshotAt": "2026-11-01T08:46:06+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 4800
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 6500
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 4200
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 2600
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 2600
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 2300
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 2100
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 3400
+        }
+      ]
+    },
+    {
+      "item": "G34",
+      "origin": "LHR",
+      "destination": "BUD",
+      "screenshotAt": "2026-11-01T08:46:16+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 2400
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 7000
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 5300
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 5100
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 4400
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 2400
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 6100
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 6500
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 6200
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 6400
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 9600
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 11000
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 14300
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 14000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 13900
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 12400
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 11500
+        }
+      ]
+    },
+    {
+      "item": "G35",
+      "origin": "BUD",
+      "destination": "WAW",
+      "screenshotAt": "2026-11-01T08:46:58+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 4200
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 6300
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 7700
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 7000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 5600
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 3600
+        }
+      ]
+    },
+    {
+      "item": "G36",
+      "origin": "WAW",
+      "destination": "BUD",
+      "screenshotAt": "2026-11-01T08:47:09+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 6400
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 2600
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 1700
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 6800
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 9900
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 1800
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 4800
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 6400
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 2300
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 2300
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 1500
+        }
+      ]
+    },
+    {
+      "item": "G37",
+      "origin": "CDG",
+      "destination": "FCO",
+      "screenshotAt": "2026-11-01T08:47:52+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 7000
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 6100
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 4700
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 2400
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 6200
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 15000
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 8700
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 7500
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 12000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 10200
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 7000
+        }
+      ]
+    },
+    {
+      "item": "G38",
+      "origin": "FCO",
+      "destination": "CDG",
+      "screenshotAt": "2026-11-01T08:48:02+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 4200
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 7000
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 7200
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 6000
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 7000
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 5000
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 1700
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 2100
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 1700
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 2700
+        }
+      ]
+    },
+    {
+      "item": "G39",
+      "origin": "CDG",
+      "destination": "IST",
+      "screenshotAt": "2026-11-01T08:48:45+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 9300
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 10300
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 10300
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 11300
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 9700
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 9900
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 10600
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 12000
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 10300
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 9800
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 8800
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 10300
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 10400
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 10900
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 10500
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 11400
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 12500
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 12500
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 11600
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 15300
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 15500
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 22400
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 20600
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 17200
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 15600
+        }
+      ]
+    },
+    {
+      "item": "G40",
+      "origin": "IST",
+      "destination": "CDG",
+      "screenshotAt": "2026-11-01T08:48:56+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 8700
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 8700
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 8700
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 9300
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 8600
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 8300
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 8700
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 8700
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 7000
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 5800
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 5800
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 7200
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 8300
+        }
+      ]
+    },
+    {
+      "item": "G41",
+      "origin": "CDG",
+      "destination": "LHR",
+      "screenshotAt": "2026-11-01T08:49:43+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 8500
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 5100
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 4700
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 8400
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 6500
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 5200
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 5600
+        }
+      ]
+    },
+    {
+      "item": "G42",
+      "origin": "LHR",
+      "destination": "CDG",
+      "screenshotAt": "2026-11-01T08:49:53+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 2600
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 4700
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 4000
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 6900
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 4900
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 5800
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 6600
+        }
+      ]
+    },
+    {
+      "item": "G43",
+      "origin": "CDG",
+      "destination": "WAW",
+      "screenshotAt": "2026-11-01T08:50:37+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 6600
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 6000
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 6600
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 11000
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 7000
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 5600
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 6600
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 8600
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 5600
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 11000
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 7500
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 8200
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 15300
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 22200
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 9200
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 10700
+        }
+      ]
+    },
+    {
+      "item": "G44",
+      "origin": "WAW",
+      "destination": "CDG",
+      "screenshotAt": "2026-11-01T08:50:48+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 2900
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 6800
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 6400
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 5100
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 6800
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 6400
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 6400
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 6400
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 2100
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 5200
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 5200
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 1900
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 6400
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 1800
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 2900
+        }
+      ]
+    },
+    {
+      "item": "G45",
+      "origin": "FCO",
+      "destination": "IST",
+      "screenshotAt": "2026-11-01T08:51:29+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 10500
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 11500
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 11200
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 17700
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 11400
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 7400
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 9500
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 8300
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 9400
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 10500
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 14500
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 10300
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 11400
+        }
+      ]
+    },
+    {
+      "item": "G46",
+      "origin": "IST",
+      "destination": "FCO",
+      "screenshotAt": "2026-11-01T08:51:40+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 9700
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 9700
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 14100
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 9700
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 7100
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 8000
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 7600
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 7600
+        }
+      ]
+    },
+    {
+      "item": "G47",
+      "origin": "FCO",
+      "destination": "LHR",
+      "screenshotAt": "2026-11-01T08:52:26+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 9500
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 5500
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 4800
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 2300
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 2100
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 1500
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 2500
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 2300
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 2400
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 3100
+        }
+      ]
+    },
+    {
+      "item": "G48",
+      "origin": "LHR",
+      "destination": "FCO",
+      "screenshotAt": "2026-11-01T08:52:37+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 2300
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 13100
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 6100
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 3700
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 3600
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 4300
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 5800
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 8300
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 11000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 9400
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 8800
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 8800
+        }
+      ]
+    },
+    {
+      "item": "G49",
+      "origin": "FCO",
+      "destination": "WAW",
+      "screenshotAt": "2026-11-01T08:53:19+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 7000
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 5900
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 4300
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 8100
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 4300
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 4700
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 2600
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 1800
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 2800
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 3900
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 3500
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 2000
+        }
+      ]
+    },
+    {
+      "item": "G50",
+      "origin": "WAW",
+      "destination": "FCO",
+      "screenshotAt": "2026-11-01T08:53:30+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 2400
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 1600
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 1900
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 4800
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 3800
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 4100
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 2100
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 3000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 2000
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 1800
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 3400
+        }
+      ]
+    },
+    {
+      "item": "G51",
+      "origin": "IST",
+      "destination": "LHR",
+      "screenshotAt": "2026-11-01T08:54:15+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 8500
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 8500
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 7500
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 6700
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 6700
+        }
+      ]
+    },
+    {
+      "item": "G52",
+      "origin": "LHR",
+      "destination": "IST",
+      "screenshotAt": "2026-11-01T08:54:26+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 9400
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 11800
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 8500
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 8500
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 7700
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 7700
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 8500
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 8600
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 10600
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 8600
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 8800
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 11100
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 12100
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 11900
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 11300
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 13800
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 13500
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 16600
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 16500
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 19900
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 19000
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 23000
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 23000
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 17500
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 16500
+        }
+      ]
+    },
+    {
+      "item": "G53",
+      "origin": "IST",
+      "destination": "WAW",
+      "screenshotAt": "2026-11-01T08:55:11+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 12000
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 12100
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 14800
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 11000
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 12100
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 12100
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 12700
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 10600
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 10600
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 10600
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 10600
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 10600
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 10600
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 9200
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 9200
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 12100
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 9200
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 12100
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 12700
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 12100
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 12700
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 12100
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 12100
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 12600
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 12600
+        }
+      ]
+    },
+    {
+      "item": "G54",
+      "origin": "WAW",
+      "destination": "IST",
+      "screenshotAt": "2026-11-01T08:55:21+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 12000
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 12000
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 14600
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 15100
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 12500
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 12000
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 12500
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 14600
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 12500
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 14600
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 13300
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 12500
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 12000
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 12000
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 12600
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 12500
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 15100
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 12500
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 19300
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 14200
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 18500
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 24800
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 18600
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 19400
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 23900
+        }
+      ]
+    },
+    {
+      "item": "G55",
+      "origin": "LHR",
+      "destination": "WAW",
+      "screenshotAt": "2026-11-01T08:56:07+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 5100
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 5100
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 4600
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 4400
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 5100
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 5400
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 5100
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 5100
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 5100
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 6900
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 4700
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 6400
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 7700
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 7700
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 9000
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 8800
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 10000
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 13800
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 18400
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 20700
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 18000
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 17800
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 17000
+        }
+      ]
+    },
+    {
+      "item": "G56",
+      "origin": "WAW",
+      "destination": "LHR",
+      "screenshotAt": "2026-11-01T08:56:17+01:00",
+      "fares": [
+        {
+          "date": "2026-11-28",
+          "priceCents": 5200
+        },
+        {
+          "date": "2026-11-29",
+          "priceCents": 4200
+        },
+        {
+          "date": "2026-11-30",
+          "priceCents": 2400
+        },
+        {
+          "date": "2026-12-01",
+          "priceCents": 7300
+        },
+        {
+          "date": "2026-12-02",
+          "priceCents": 5200
+        },
+        {
+          "date": "2026-12-03",
+          "priceCents": 4500
+        },
+        {
+          "date": "2026-12-04",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-05",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-06",
+          "priceCents": 3400
+        },
+        {
+          "date": "2026-12-07",
+          "priceCents": 3300
+        },
+        {
+          "date": "2026-12-08",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-09",
+          "priceCents": 3200
+        },
+        {
+          "date": "2026-12-10",
+          "priceCents": 2700
+        },
+        {
+          "date": "2026-12-11",
+          "priceCents": 3700
+        },
+        {
+          "date": "2026-12-12",
+          "priceCents": 2400
+        },
+        {
+          "date": "2026-12-13",
+          "priceCents": 3100
+        },
+        {
+          "date": "2026-12-14",
+          "priceCents": 1800
+        },
+        {
+          "date": "2026-12-15",
+          "priceCents": 1500
+        },
+        {
+          "date": "2026-12-16",
+          "priceCents": 1700
+        },
+        {
+          "date": "2026-12-17",
+          "priceCents": 1700
+        },
+        {
+          "date": "2026-12-18",
+          "priceCents": 1700
+        },
+        {
+          "date": "2026-12-19",
+          "priceCents": 1700
+        },
+        {
+          "date": "2026-12-20",
+          "priceCents": 2200
+        },
+        {
+          "date": "2026-12-21",
+          "priceCents": 1700
+        },
+        {
+          "date": "2026-12-22",
+          "priceCents": 3600
+        }
+      ]
+    }
+  ],
+  "competitorResults": [
+    {
+      "item": "N01",
+      "scenarioId": "S01",
+      "capturedAt": "2026-11-01T08:57:14+01:00",
+      "allFlight": {
+        "priceCents": 22100,
+        "order": ["WAW", "CDG", "IST", "BUD", "FCO"],
+        "legDates": ["2026-11-28", "2026-12-01", "2026-12-03", "2026-12-07"],
+        "stays": [
+          {
+            "city": "CDG",
+            "nights": 3
+          },
+          {
+            "city": "IST",
+            "nights": 2
+          },
+          {
+            "city": "BUD",
+            "nights": 4
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 22100,
+        "modes": ["flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N02",
+      "scenarioId": "S02",
+      "capturedAt": "2026-11-01T08:58:12+01:00",
+      "allFlight": {
+        "priceCents": 18100,
+        "order": ["FCO", "CDG", "LHR", "WAW", "BUD"],
+        "legDates": ["2026-12-08", "2026-12-10", "2026-12-13", "2026-12-16"],
+        "stays": [
+          {
+            "city": "CDG",
+            "nights": 2
+          },
+          {
+            "city": "LHR",
+            "nights": 3
+          },
+          {
+            "city": "WAW",
+            "nights": 3
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 18100,
+        "modes": ["flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N03",
+      "scenarioId": "S03",
+      "capturedAt": "2026-11-01T08:58:54+01:00",
+      "allFlight": {
+        "priceCents": 24700,
+        "order": ["BUD", "IST", "BER", "WAW", "LHR"],
+        "legDates": ["2026-12-11", "2026-12-13", "2026-12-16", "2026-12-19"],
+        "stays": [
+          {
+            "city": "IST",
+            "nights": 2
+          },
+          {
+            "city": "BER",
+            "nights": 3
+          },
+          {
+            "city": "WAW",
+            "nights": 3
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 24700,
+        "modes": ["flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N04",
+      "scenarioId": "S04",
+      "capturedAt": "2026-11-01T08:59:29+01:00",
+      "allFlight": {
+        "priceCents": 22600,
+        "order": ["BUD", "IST", "FCO", "CDG", "BER"],
+        "legDates": ["2026-12-02", "2026-12-05", "2026-12-07", "2026-12-11"],
+        "stays": [
+          {
+            "city": "IST",
+            "nights": 3
+          },
+          {
+            "city": "FCO",
+            "nights": 2
+          },
+          {
+            "city": "CDG",
+            "nights": 4
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 22600,
+        "modes": ["flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N05",
+      "scenarioId": "S05",
+      "capturedAt": "2026-11-01T09:00:03+01:00",
+      "allFlight": {
+        "priceCents": 15100,
+        "order": ["IST", "CDG", "WAW", "BUD", "LHR"],
+        "legDates": ["2026-12-10", "2026-12-12", "2026-12-15", "2026-12-17"],
+        "stays": [
+          {
+            "city": "CDG",
+            "nights": 2
+          },
+          {
+            "city": "WAW",
+            "nights": 3
+          },
+          {
+            "city": "BUD",
+            "nights": 2
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 15100,
+        "modes": ["flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N06",
+      "scenarioId": "S06",
+      "capturedAt": "2026-11-01T09:00:38+01:00",
+      "allFlight": {
+        "priceCents": 28100,
+        "order": ["FCO", "IST", "LHR", "CDG", "WAW", "BUD"],
+        "legDates": ["2026-12-07", "2026-12-10", "2026-12-12", "2026-12-16", "2026-12-20"],
+        "stays": [
+          {
+            "city": "IST",
+            "nights": 3
+          },
+          {
+            "city": "LHR",
+            "nights": 2
+          },
+          {
+            "city": "CDG",
+            "nights": 4
+          },
+          {
+            "city": "WAW",
+            "nights": 4
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 28100,
+        "modes": ["flight", "flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N07",
+      "scenarioId": "S07",
+      "capturedAt": "2026-11-01T09:01:12+01:00",
+      "allFlight": {
+        "priceCents": 19300,
+        "order": ["BUD", "IST", "BER", "FCO", "WAW", "CDG"],
+        "legDates": ["2026-12-07", "2026-12-09", "2026-12-12", "2026-12-15", "2026-12-19"],
+        "stays": [
+          {
+            "city": "IST",
+            "nights": 2
+          },
+          {
+            "city": "BER",
+            "nights": 3
+          },
+          {
+            "city": "FCO",
+            "nights": 2
+          },
+          {
+            "city": "WAW",
+            "nights": 4
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 19300,
+        "modes": ["flight", "flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N08",
+      "scenarioId": "S08",
+      "capturedAt": "2026-11-01T09:01:49+01:00",
+      "allFlight": {
+        "priceCents": 18400,
+        "order": ["IST", "BUD", "FCO", "BCN", "LHR", "CDG"],
+        "legDates": ["2026-11-28", "2026-12-02", "2026-12-06", "2026-12-09", "2026-12-12"],
+        "stays": [
+          {
+            "city": "BUD",
+            "nights": 4
+          },
+          {
+            "city": "FCO",
+            "nights": 4
+          },
+          {
+            "city": "BCN",
+            "nights": 3
+          },
+          {
+            "city": "LHR",
+            "nights": 3
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 18400,
+        "modes": ["flight", "flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N09",
+      "scenarioId": "S09",
+      "capturedAt": "2026-11-01T09:02:24+01:00",
+      "allFlight": {
+        "priceCents": 33400,
+        "order": ["FCO", "WAW", "LHR", "CDG", "BER", "IST"],
+        "legDates": ["2026-12-04", "2026-12-08", "2026-12-10", "2026-12-14", "2026-12-17"],
+        "stays": [
+          {
+            "city": "WAW",
+            "nights": 4
+          },
+          {
+            "city": "LHR",
+            "nights": 2
+          },
+          {
+            "city": "CDG",
+            "nights": 4
+          },
+          {
+            "city": "BER",
+            "nights": 3
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 33400,
+        "modes": ["flight", "flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N10",
+      "scenarioId": "S10",
+      "capturedAt": "2026-11-01T09:02:58+01:00",
+      "allFlight": {
+        "priceCents": 17600,
+        "order": ["LHR", "BUD", "BER", "FCO", "BCN", "CDG"],
+        "legDates": ["2026-12-07", "2026-12-11", "2026-12-14", "2026-12-18", "2026-12-22"],
+        "stays": [
+          {
+            "city": "BUD",
+            "nights": 4
+          },
+          {
+            "city": "BER",
+            "nights": 3
+          },
+          {
+            "city": "FCO",
+            "nights": 4
+          },
+          {
+            "city": "BCN",
+            "nights": 4
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 17600,
+        "modes": ["flight", "flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N11",
+      "scenarioId": "S11",
+      "capturedAt": "2026-11-01T09:03:33+01:00",
+      "allFlight": {
+        "priceCents": 25500,
+        "order": ["BUD", "LHR", "CDG", "BCN", "FCO", "WAW", "IST"],
+        "legDates": [
+          "2026-12-07",
+          "2026-12-09",
+          "2026-12-11",
+          "2026-12-15",
+          "2026-12-17",
+          "2026-12-21"
+        ],
+        "stays": [
+          {
+            "city": "LHR",
+            "nights": 2
+          },
+          {
+            "city": "CDG",
+            "nights": 2
+          },
+          {
+            "city": "BCN",
+            "nights": 4
+          },
+          {
+            "city": "FCO",
+            "nights": 2
+          },
+          {
+            "city": "WAW",
+            "nights": 4
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 25500,
+        "modes": ["flight", "flight", "flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N12",
+      "scenarioId": "S12",
+      "capturedAt": "2026-11-01T09:04:10+01:00",
+      "allFlight": {
+        "priceCents": 21000,
+        "order": ["BCN", "FCO", "CDG", "BER", "BUD", "WAW", "LHR"],
+        "legDates": [
+          "2026-12-02",
+          "2026-12-06",
+          "2026-12-10",
+          "2026-12-12",
+          "2026-12-15",
+          "2026-12-18"
+        ],
+        "stays": [
+          {
+            "city": "FCO",
+            "nights": 4
+          },
+          {
+            "city": "CDG",
+            "nights": 4
+          },
+          {
+            "city": "BER",
+            "nights": 2
+          },
+          {
+            "city": "BUD",
+            "nights": 3
+          },
+          {
+            "city": "WAW",
+            "nights": 3
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 21000,
+        "modes": ["flight", "flight", "flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N13",
+      "scenarioId": "S13",
+      "capturedAt": "2026-11-01T09:04:47+01:00",
+      "allFlight": {
+        "priceCents": 25600,
+        "order": ["LHR", "BCN", "CDG", "FCO", "IST", "BER", "BUD"],
+        "legDates": [
+          "2026-11-28",
+          "2026-11-30",
+          "2026-12-03",
+          "2026-12-08",
+          "2026-12-12",
+          "2026-12-14"
+        ],
+        "stays": [
+          {
+            "city": "BCN",
+            "nights": 2
+          },
+          {
+            "city": "CDG",
+            "nights": 3
+          },
+          {
+            "city": "FCO",
+            "nights": 4
+          },
+          {
+            "city": "IST",
+            "nights": 4
+          },
+          {
+            "city": "BER",
+            "nights": 2
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 25600,
+        "modes": ["flight", "flight", "flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N14",
+      "scenarioId": "S14",
+      "capturedAt": "2026-11-01T09:05:23+01:00",
+      "allFlight": {
+        "priceCents": 26400,
+        "order": ["CDG", "LHR", "WAW", "FCO", "BCN", "IST", "BER"],
+        "legDates": [
+          "2026-12-01",
+          "2026-12-05",
+          "2026-12-07",
+          "2026-12-10",
+          "2026-12-13",
+          "2026-12-15"
+        ],
+        "stays": [
+          {
+            "city": "LHR",
+            "nights": 4
+          },
+          {
+            "city": "WAW",
+            "nights": 2
+          },
+          {
+            "city": "FCO",
+            "nights": 3
+          },
+          {
+            "city": "BCN",
+            "nights": 3
+          },
+          {
+            "city": "IST",
+            "nights": 2
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 26400,
+        "modes": ["flight", "flight", "flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N15",
+      "scenarioId": "S15",
+      "capturedAt": "2026-11-01T09:06:01+01:00",
+      "allFlight": {
+        "priceCents": 24800,
+        "order": ["CDG", "WAW", "BUD", "IST", "BER", "LHR", "BCN"],
+        "legDates": [
+          "2026-12-03",
+          "2026-12-06",
+          "2026-12-10",
+          "2026-12-13",
+          "2026-12-15",
+          "2026-12-18"
+        ],
+        "stays": [
+          {
+            "city": "WAW",
+            "nights": 3
+          },
+          {
+            "city": "BUD",
+            "nights": 4
+          },
+          {
+            "city": "IST",
+            "nights": 3
+          },
+          {
+            "city": "BER",
+            "nights": 2
+          },
+          {
+            "city": "LHR",
+            "nights": 3
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 24800,
+        "modes": ["flight", "flight", "flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N16",
+      "scenarioId": "S16",
+      "capturedAt": "2026-11-01T09:06:38+01:00",
+      "allFlight": {
+        "priceCents": 27800,
+        "order": ["BCN", "LHR", "CDG", "FCO", "WAW", "BUD", "IST", "BER"],
+        "legDates": [
+          "2026-11-28",
+          "2026-12-02",
+          "2026-12-05",
+          "2026-12-07",
+          "2026-12-11",
+          "2026-12-15",
+          "2026-12-19"
+        ],
+        "stays": [
+          {
+            "city": "LHR",
+            "nights": 4
+          },
+          {
+            "city": "CDG",
+            "nights": 3
+          },
+          {
+            "city": "FCO",
+            "nights": 2
+          },
+          {
+            "city": "WAW",
+            "nights": 4
+          },
+          {
+            "city": "BUD",
+            "nights": 4
+          },
+          {
+            "city": "IST",
+            "nights": 4
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 27800,
+        "modes": ["flight", "flight", "flight", "flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N17",
+      "scenarioId": "S17",
+      "capturedAt": "2026-11-01T09:07:17+01:00",
+      "allFlight": {
+        "priceCents": 26700,
+        "order": ["LHR", "WAW", "BUD", "IST", "BER", "CDG", "BCN", "FCO"],
+        "legDates": [
+          "2026-11-28",
+          "2026-11-30",
+          "2026-12-03",
+          "2026-12-06",
+          "2026-12-08",
+          "2026-12-12",
+          "2026-12-15"
+        ],
+        "stays": [
+          {
+            "city": "WAW",
+            "nights": 2
+          },
+          {
+            "city": "BUD",
+            "nights": 3
+          },
+          {
+            "city": "IST",
+            "nights": 3
+          },
+          {
+            "city": "BER",
+            "nights": 2
+          },
+          {
+            "city": "CDG",
+            "nights": 4
+          },
+          {
+            "city": "BCN",
+            "nights": 3
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 26700,
+        "modes": ["flight", "flight", "flight", "flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N18",
+      "scenarioId": "S18",
+      "capturedAt": "2026-11-01T09:07:52+01:00",
+      "allFlight": {
+        "priceCents": 25500,
+        "order": ["BER", "IST", "BUD", "BCN", "CDG", "FCO", "WAW", "LHR"],
+        "legDates": [
+          "2026-11-28",
+          "2026-12-02",
+          "2026-12-05",
+          "2026-12-07",
+          "2026-12-11",
+          "2026-12-14",
+          "2026-12-18"
+        ],
+        "stays": [
+          {
+            "city": "IST",
+            "nights": 4
+          },
+          {
+            "city": "BUD",
+            "nights": 3
+          },
+          {
+            "city": "BCN",
+            "nights": 2
+          },
+          {
+            "city": "CDG",
+            "nights": 4
+          },
+          {
+            "city": "FCO",
+            "nights": 3
+          },
+          {
+            "city": "WAW",
+            "nights": 4
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 25500,
+        "modes": ["flight", "flight", "flight", "flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N19",
+      "scenarioId": "S19",
+      "capturedAt": "2026-11-01T09:08:27+01:00",
+      "allFlight": {
+        "priceCents": 31000,
+        "order": ["FCO", "IST", "BER", "CDG", "WAW", "BUD", "LHR", "BCN"],
+        "legDates": [
+          "2026-12-02",
+          "2026-12-05",
+          "2026-12-09",
+          "2026-12-12",
+          "2026-12-14",
+          "2026-12-17",
+          "2026-12-20"
+        ],
+        "stays": [
+          {
+            "city": "IST",
+            "nights": 3
+          },
+          {
+            "city": "BER",
+            "nights": 4
+          },
+          {
+            "city": "CDG",
+            "nights": 3
+          },
+          {
+            "city": "WAW",
+            "nights": 2
+          },
+          {
+            "city": "BUD",
+            "nights": 3
+          },
+          {
+            "city": "LHR",
+            "nights": 3
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 31000,
+        "modes": ["flight", "flight", "flight", "flight", "flight", "flight", "flight"]
+      }
+    },
+    {
+      "item": "N20",
+      "scenarioId": "S20",
+      "capturedAt": "2026-11-01T09:09:03+01:00",
+      "allFlight": {
+        "priceCents": 27700,
+        "order": ["LHR", "BER", "IST", "BUD", "WAW", "CDG", "BCN", "FCO"],
+        "legDates": [
+          "2026-12-02",
+          "2026-12-04",
+          "2026-12-08",
+          "2026-12-10",
+          "2026-12-14",
+          "2026-12-17",
+          "2026-12-19"
+        ],
+        "stays": [
+          {
+            "city": "BER",
+            "nights": 2
+          },
+          {
+            "city": "IST",
+            "nights": 4
+          },
+          {
+            "city": "BUD",
+            "nights": 2
+          },
+          {
+            "city": "WAW",
+            "nights": 4
+          },
+          {
+            "city": "CDG",
+            "nights": 3
+          },
+          {
+            "city": "BCN",
+            "nights": 2
+          }
+        ]
+      },
+      "anyMode": {
+        "priceCents": 27700,
+        "modes": ["flight", "flight", "flight", "flight", "flight", "flight", "flight"]
+      }
+    }
+  ],
+  "spotChecks": [
+    {
+      "item": "L01",
+      "origin": "BER",
+      "destination": "FCO",
+      "date": "2026-12-08",
+      "livePriceCents": 8600,
+      "screenshotAt": "2026-11-01T09:10:00+01:00"
+    },
+    {
+      "item": "L02",
+      "origin": "BUD",
+      "destination": "BER",
+      "date": "2026-12-14",
+      "livePriceCents": 2900,
+      "screenshotAt": "2026-11-01T09:10:41+01:00"
+    },
+    {
+      "item": "L03b",
+      "origin": "BUD",
+      "destination": "LHR",
+      "date": "2026-12-17",
+      "livePriceCents": 2200,
+      "screenshotAt": "2026-11-01T09:11:43+01:00"
+    },
+    {
+      "item": "L04",
+      "origin": "CDG",
+      "destination": "BER",
+      "date": "2026-12-16",
+      "livePriceCents": 4600,
+      "screenshotAt": "2026-11-01T09:12:46+01:00"
+    },
+    {
+      "item": "L05",
+      "origin": "CDG",
+      "destination": "FCO",
+      "date": "2026-12-11",
+      "livePriceCents": 3600,
+      "screenshotAt": "2026-11-01T09:13:26+01:00"
+    },
+    {
+      "item": "L06",
+      "origin": "CDG",
+      "destination": "IST",
+      "date": "2026-12-02",
+      "livePriceCents": 8600,
+      "screenshotAt": "2026-11-01T09:14:11+01:00"
+    },
+    {
+      "item": "L07",
+      "origin": "FCO",
+      "destination": "BER",
+      "date": "2026-12-13",
+      "livePriceCents": 4000,
+      "screenshotAt": "2026-11-01T09:14:50+01:00"
+    },
+    {
+      "item": "L08b",
+      "origin": "IST",
+      "destination": "BCN",
+      "date": "2026-12-20",
+      "livePriceCents": 7200,
+      "screenshotAt": "2026-11-01T09:16:00+01:00"
+    },
+    {
+      "item": "L09",
+      "origin": "IST",
+      "destination": "BUD",
+      "date": "2026-12-09",
+      "livePriceCents": 4200,
+      "screenshotAt": "2026-11-01T09:16:38+01:00"
+    },
+    {
+      "item": "L10",
+      "origin": "LHR",
+      "destination": "WAW",
+      "date": "2026-12-11",
+      "livePriceCents": 5400,
+      "screenshotAt": "2026-11-01T09:17:23+01:00"
+    }
+  ],
+  "notes": [
+    "G01: setup screenshots G01, G01b, G02, G02b taken 08:26-08:27 were discarded (the page had reset to the Flights home page; a terminal window covered part of the screen). Kept in discarded-setup/, not data.",
+    "G02: a screenshot at 08:28:25, triggered by a stale title marker before G01b, does not show G02; moved to discarded-setup/ and G02 retaken.",
+    "G22: the grid shows EUR 54 on 22 of 25 days (a flat fare); recorded as shown, and both transcription passes and the capture-time reading agree.",
+    "G51: the grid shows EUR 67 on 22 of 25 days (a flat fare, like G22); recorded as shown, and both transcription passes and the capture-time reading agree.",
+    "L03: the first shot was taken while Google still showed \"Fetching results\"; L03b, settled at the same EUR 22, is the record.",
+    "L08: the Cheapest tab reads EUR 72 while the list leads with nonstops (EUR 82); the EUR 72 option (1 stop, Pegasus + Ryanair) is further down, and L08b shows it.",
+    "L10: the screenshot is scrolled to the EUR 54 option, so the date field (Fri 11 Dec) is above the visible area; the date is from the capture-time reading of the search form.",
+    "L01, L08, L10: the live cheapest option is labelled \"Self transfer\" by Google (separately ticketed legs), so part of their grid-vs-live gap may come from self-transfer itineraries rather than cache staleness."
+  ]
+}
