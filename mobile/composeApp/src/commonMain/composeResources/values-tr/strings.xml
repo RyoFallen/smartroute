@@ -138,4 +138,18 @@
     </plurals>
     <string name="results_saving">Kaydediliyor…</string>
     <string name="results_save_error">Bu gezi kaydedilemedi</string>
+    <string name="home_greeting_morning">Günaydın</string>
+    <string name="home_greeting_afternoon">İyi günler</string>
+    <string name="home_greeting_evening">İyi akşamlar</string>
+    <string name="home_headline">Sırada neresi var?</string>
+    <string name="home_plan_route">Yeni rota planla</string>
+    <string name="home_upcoming">Yaklaşan gezi</string>
+    <plurals name="home_days_to_go">
+        <item quantity="one">%1$d gün kaldı</item>
+        <item quantity="other">%1$d gün kaldı</item>
+    </plurals>
+    <string name="home_today">Bugün</string>
+    <string name="home_recent">Son geziler</string>
+    <string name="home_empty">Henüz gezin yok. İlk rotanı planla, burada görünsün.</string>
+    <string name="home_error_load">Gezilerin yüklenemedi</string>
 </resources>

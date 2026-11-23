@@ -138,4 +138,18 @@
     </plurals>
     <string name="results_saving">Saving…</string>
     <string name="results_save_error">Could not save this trip</string>
+    <string name="home_greeting_morning">Good morning</string>
+    <string name="home_greeting_afternoon">Good afternoon</string>
+    <string name="home_greeting_evening">Good evening</string>
+    <string name="home_headline">Where to next?</string>
+    <string name="home_plan_route">Plan a new route</string>
+    <string name="home_upcoming">Upcoming trip</string>
+    <plurals name="home_days_to_go">
+        <item quantity="one">%1$d day to go</item>
+        <item quantity="other">%1$d days to go</item>
+    </plurals>
+    <string name="home_today">Today</string>
+    <string name="home_recent">Recent</string>
+    <string name="home_empty">No trips yet. Plan your first route and it shows up here.</string>
+    <string name="home_error_load">Could not load your trips</string>
 </resources>

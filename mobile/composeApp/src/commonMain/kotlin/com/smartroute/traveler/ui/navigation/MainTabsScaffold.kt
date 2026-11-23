@@ -46,6 +46,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -67,6 +68,7 @@ import com.smartroute.traveler.ui.explore.ResultsViewModel
 import com.smartroute.traveler.ui.explore.TripConfigScreen
 import com.smartroute.traveler.ui.explore.TripConfigViewModel
 import com.smartroute.traveler.ui.home.HomeScreen
+import com.smartroute.traveler.ui.home.HomeViewModel
 import com.smartroute.traveler.ui.profile.DeleteAccountDialog
 import com.smartroute.traveler.ui.profile.DeleteAccountUiState
 import com.smartroute.traveler.ui.profile.DeleteAccountViewModel
@@ -195,15 +197,7 @@ fun MainTabsScaffold(
                             currentDestination?.hierarchy?.any { it.hasRoute(tab.routeClass) } == true,
                         icon = tab.icon,
                         label = label,
-                        onClick = {
-                            navController.navigate(tab.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
+                        onClick = { navController.switchTab(tab.route) },
                         modifier = Modifier.weight(1f),
                     )
                 }
@@ -232,7 +226,20 @@ fun MainTabsScaffold(
                 },
                 popExitTransition = { fadeOut(tween(MOTION_MS)) },
             ) {
-                composable<HomeRoute> { HomeScreen() }
+                composable<HomeRoute> {
+                    val homeViewModel = viewModel { HomeViewModel(AppGraph.apiClient, AppGraph.cityCatalog) }
+                    val homeState by homeViewModel.state.collectAsState()
+                    // Re-runs each time Home is entered, so it refreshes after returning.
+                    LaunchedEffect(Unit) { homeViewModel.load() }
+                    HomeScreen(
+                        state = homeState,
+                        onPlanRoute = { navController.switchTab(ExploreRoute) },
+                        // Pushed straight onto Home, so back returns to Home; the trip
+                        // detail still lives in the My Trips graph, so that tab lights up.
+                        onTripClick = { tripId -> navController.navigate(TripDetailRoute(tripId)) },
+                        onRetry = homeViewModel::load,
+                    )
+                }
                 navigation<MyTripsRoute>(startDestination = MyTripsListRoute) {
                     composable<MyTripsListRoute> {
                         val tripsViewModel = viewModel { TripsListViewModel(AppGraph.apiClient) }
@@ -401,6 +408,17 @@ fun MainTabsScaffold(
                 }
             }
         }
+    }
+}
+
+/** Bottom-bar tab switch: one entry per tab, each tab's own back stack saved and restored. */
+private fun NavController.switchTab(route: Any) {
+    navigate(route) {
+        popUpTo(graph.findStartDestination().id) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
     }
 }
 
